@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'build_page.dart';
+import 'charge_page.dart';
+import 'upgrade_page.dart';
+
 void main() {
   runApp(ClickChargerApp());
 }
@@ -12,35 +16,39 @@ class ClickChargerApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MainMenu(),
+      home: MainScreen(),
     );
   }
 }
 
-class MainMenu extends StatefulWidget {
-  MainMenu({Key key}) : super(key: key);
-
-  @override
-  _MainMenuState createState() => _MainMenuState();
+enum MainScreenPage {
+  Build,
+  Charge,
+  Upgrade,
 }
 
-class _MainMenuState extends State<MainMenu> {
-  static const _pages = [
-    Text('Index 0'),
-    Text('Index 1'),
-    Text('Index 2'),
-  ];
+class MainScreen extends StatefulWidget {
+  MainScreen({Key key}) : super(key: key);
 
-  var _selectedIndex = 0;
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  MainScreenPage _currentPage = MainScreenPage.Charge;
+  int _totalWatt = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Page Title'),
-      ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
-        child: _pages[_selectedIndex],
+        child: _buildPage(context, _currentPage),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -57,14 +65,36 @@ class _MainMenuState extends State<MainMenu> {
             label: 'Upgrade',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber,
+        currentIndex: _currentPage.index,
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
           setState(() {
-            _selectedIndex = index;
+            _currentPage = MainScreenPage.values[index];
           });
         },
       ),
     );
+  }
+
+  Widget _buildPage(BuildContext context, MainScreenPage page) {
+    switch (page) {
+      case MainScreenPage.Build:
+        return BuildPage();
+      case MainScreenPage.Charge:
+        return ChargePage(
+          watt: _totalWatt,
+          onChargeButtonPressed: () => _charge(1),
+        );
+      case MainScreenPage.Upgrade:
+        return UpgradePage();
+    }
+
+    return null;
+  }
+
+  void _charge(int watt) {
+    setState(() {
+      _totalWatt += watt;
+    });
   }
 }
