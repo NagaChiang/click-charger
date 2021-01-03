@@ -13,10 +13,16 @@ class ClickChargerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Click Charger',
+      themeMode: ThemeMode.light,
       theme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.green,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       home: MainScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -46,11 +52,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: _buildPage(context, _currentPage),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.build),
@@ -66,7 +72,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _currentPage.index,
-        selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
           setState(() {
             _currentPage = MainScreenPage.values[index];

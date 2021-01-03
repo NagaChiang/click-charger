@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ChargePage extends StatelessWidget {
-  final VoidCallback onChargeButtonPressed;
-  final int watt;
-
   ChargePage({
     @required this.watt,
     @required this.onChargeButtonPressed,
   }) : assert(onChargeButtonPressed != null);
+
+  final VoidCallback onChargeButtonPressed;
+  final int watt;
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +19,17 @@ class ChargePage extends StatelessWidget {
           '$watt watts',
           style: Theme.of(context).textTheme.headline2,
         ),
-        Ink(
-          // decoration: ShapeDecoration(
-          //   color: Theme.of(context).accentColor,
-          //   shape: BeveledRectangleBorder(),
-          // ),
-          child: IconButton(
-            icon: Icon(Icons.select_all),
-            iconSize: 128.0,
-            onPressed: () => onChargeButtonPressed(),
+        ElevatedButton(
+          child: SizedBox(
+            width: 128.0,
+            height: 128.0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            ),
+          ),
+          onPressed: () => onChargeButtonPressed(),
+          style: ElevatedButton.styleFrom(
+            elevation: 10.0,
           ),
         ),
       ],
