@@ -41,19 +41,42 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  PageController _pageController;
   MainScreenPage _currentPage = MainScreenPage.Charge;
   int _totalWatt = 0;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _currentPage.index);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _buildPage(context, _currentPage),
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (int index) {
+            setState(() {
+              _currentPage = MainScreenPage.values[index];
+            });
+          },
+          children: [
+            BuildPage(),
+            ChargePage(
+              watt: _totalWatt,
+              onChargeButtonPressed: () => _charge(1),
+            ),
+            UpgradePage(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).backgroundColor,
@@ -72,9 +95,14 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _currentPage.index,
-        onTap: (index) {
+        onTap: (int index) {
           setState(() {
             _currentPage = MainScreenPage.values[index];
+            _pageController.animateToPage(
+              index,
+              duration: Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+            );
           });
         },
       ),
