@@ -3,21 +3,31 @@ import 'package:flutter/widgets.dart';
 
 class ChargePage extends StatelessWidget {
   ChargePage({
-    @required this.watt,
+    @required this.totalPower,
+    @required this.powerRate,
     @required this.onChargeButtonPressed,
   }) : assert(onChargeButtonPressed != null);
 
+  final double totalPower;
+  final double powerRate;
   final VoidCallback onChargeButtonPressed;
-  final int watt;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Text(
-          '$watt watts',
-          style: Theme.of(context).textTheme.headline2,
+        Column(
+          children: [
+            Text(
+              '${totalPower.floorToDouble()} w',
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            Text(
+              '$powerRate w/s',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+          ],
         ),
         ElevatedButton(
           child: SizedBox(

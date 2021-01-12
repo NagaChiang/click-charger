@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import 'build_page.dart';
 import 'charge_page.dart';
+import 'game_data.dart';
+import 'game_state.dart';
+import 'inventory_page.dart';
+import 'item_data.dart';
+import 'item_state.dart';
 import 'upgrade_page.dart';
 
 void main() {
@@ -41,19 +47,30 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  static const int _updateIntervalSeconds = 1;
+
+  GameData _gameData = GameData();
+  GameState _gameState;
   PageController _pageController;
   MainScreenPage _currentPage = MainScreenPage.Charge;
-  int _totalWatt = 0;
+  Timer _updateTimer;
 
   @override
   void initState() {
     super.initState();
+
+    _gameState = GameState(gameData: _gameData);
     _pageController = PageController(initialPage: _currentPage.index);
+
+    _updateTimer = Timer.periodic(
+        Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _updateTimer.cancel();
+
     super.dispose();
   }
 
@@ -69,10 +86,15 @@ class _MainScreenState extends State<MainScreen> {
             });
           },
           children: [
-            BuildPage(),
+            InventoryPage(
+              gameData: _gameData,
+              gameState: _gameState,
+              onItemTapped: _onBuildItemTapped,
+            ),
             ChargePage(
-              watt: _totalWatt,
-              onChargeButtonPressed: () => _charge(1),
+              totalPower: _gameState.totalPower,
+              powerRate: _calculateCurrentPowerRate(),
+              onChargeButtonPressed: () => _onChargeButtonPressed(),
             ),
             UpgradePage(),
           ],
@@ -83,10 +105,10 @@ class _MainScreenState extends State<MainScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.build),
-            label: 'Build',
+            label: 'Inventory',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.charging_station),
+            icon: Icon(Icons.flash_on),
             label: 'Charge',
           ),
           BottomNavigationBarItem(
@@ -101,7 +123,7 @@ class _MainScreenState extends State<MainScreen> {
             _pageController.animateToPage(
               index,
               duration: Duration(milliseconds: 250),
-              curve: Curves.easeOut,
+              curve: Curves.easeInOut,
             );
           });
         },
@@ -109,25 +131,39 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildPage(BuildContext context, MainScreenPage page) {
-    switch (page) {
-      case MainScreenPage.Build:
-        return BuildPage();
-      case MainScreenPage.Charge:
-        return ChargePage(
-          watt: _totalWatt,
-          onChargeButtonPressed: () => _charge(1),
-        );
-      case MainScreenPage.Upgrade:
-        return UpgradePage();
-    }
-
-    return null;
+  void _onTimerUpdate(Timer timer) {
+    setState(() {
+      _gameState.totalPower += _calculateCurrentPowerRate();
+    });
   }
 
-  void _charge(int watt) {
+  void _onChargeButtonPressed() {
     setState(() {
-      _totalWatt += watt;
+      _gameState.totalPower += 1000; // TODO: Upgraded press
     });
+  }
+
+  void _onBuildItemTapped(int index) {
+    setState(() {
+      ItemData data = _gameData.itemDatas[index];
+      ItemState state = _gameState.itemStates[index];
+      double price = data.calculatePrice(state.amount);
+
+      assert(_gameState.totalPower >= price);
+
+      _gameState.totalPower -= price;
+      state.amount++;
+    });
+  }
+
+  double _calculateCurrentPowerRate() {
+    double rate = 0.0;
+    for (int i = 0; i < _gameData.itemDatas.length; i++) {
+      ItemData data = _gameData.itemDatas[i];
+      ItemState state = _gameState.itemStates[i];
+      rate += data.calculatePowerRate() * state.amount;
+    }
+
+    return rate;
   }
 }
