@@ -1,6 +1,6 @@
 {
     "name": "Click Charger",
-    "short_name": "Charger",
+    "short_name": "Click Charger",
     "start_url": "./click-charger",
     "display": "standalone",
     "background_color": "#0175C2",
