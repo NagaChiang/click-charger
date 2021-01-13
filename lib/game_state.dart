@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_clicker/game_data.dart';
-import 'package:flutter_clicker/item_state.dart';
+
+import 'game_data.dart';
+import 'item_state.dart';
 
 import 'item_data.dart';
 

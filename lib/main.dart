@@ -139,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onChargeButtonPressed() {
     setState(() {
-      _gameState.totalPower += 1000; // TODO: Upgraded press
+      _gameState.totalPower += 1; // TODO: Upgraded press
     });
   }
 

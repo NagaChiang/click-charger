@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clicker/inventory_list_item.dart';
-import 'package:flutter_clicker/item_data.dart';
-import 'package:flutter_clicker/item_state.dart';
 
+import 'inventory_list_item.dart';
+import 'item_data.dart';
+import 'item_state.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 
