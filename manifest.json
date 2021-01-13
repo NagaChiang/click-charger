@@ -1,6 +1,6 @@
 {
-    "name": "Click Charger",
-    "short_name": "Click Charger",
+    "name": "flutter_clicker",
+    "short_name": "flutter_clicker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
