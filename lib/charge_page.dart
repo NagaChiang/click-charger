@@ -1,7 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-class ChargePage extends StatelessWidget {
+import 'animations/animated_number_text.dart';
+
+class ChargePage extends StatefulWidget {
   ChargePage({
     @required this.totalPower,
     @required this.powerRate,
@@ -13,18 +18,24 @@ class ChargePage extends StatelessWidget {
   final VoidCallback onChargeButtonPressed;
 
   @override
+  _ChargePageState createState() => _ChargePageState();
+}
+
+class _ChargePageState extends State<ChargePage> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Column(
           children: [
-            Text(
-              '${totalPower.floorToDouble()} w',
+            AnimatedNumberText(
+              number: widget.totalPower.floor(),
+              duration: Duration(milliseconds: 250),
               style: Theme.of(context).textTheme.headline2,
             ),
             Text(
-              '$powerRate w/s',
+              '${widget.powerRate} w/s',
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ],
@@ -37,7 +48,7 @@ class ChargePage extends StatelessWidget {
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             ),
           ),
-          onPressed: () => onChargeButtonPressed(),
+          onPressed: () => widget.onChargeButtonPressed(),
           style: ElevatedButton.styleFrom(
             elevation: 10.0,
           ),

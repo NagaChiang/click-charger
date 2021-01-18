@@ -8,13 +8,14 @@ class ItemData {
   final double initialPriceGrowth;
   final double priceGrowthPerAmount;
 
-  const ItemData(
-      {this.name,
-      this.icon,
-      this.initialPowerPerSec,
-      this.initialPrice,
-      this.initialPriceGrowth,
-      this.priceGrowthPerAmount});
+  const ItemData({
+    this.name,
+    this.icon,
+    this.initialPowerPerSec,
+    this.initialPrice,
+    this.initialPriceGrowth,
+    this.priceGrowthPerAmount,
+  });
 
   double calculatePowerRate() {
     return initialPowerPerSec; // TODO: Upgraded

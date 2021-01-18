@@ -9,7 +9,9 @@ class GameState {
   List<ItemState> itemStates = [];
   double totalPower = 0;
 
-  GameState({@required GameData gameData}) : assert(gameData != null) {
+  GameState({
+    @required GameData gameData,
+  }) : assert(gameData != null) {
     for (ItemData data in gameData.itemDatas) {
       itemStates.add(ItemState());
     }

@@ -11,9 +11,14 @@ class InventoryListItem extends StatelessWidget {
   final void Function(int itemIndex) onItemTapped;
   final bool enabled;
 
-  InventoryListItem(
-      {this.index, this.data, this.state, this.onItemTapped, this.enabled})
-      : assert(data != null),
+  InventoryListItem({
+    @required this.index,
+    @required this.data,
+    @required this.state,
+    this.onItemTapped,
+    this.enabled,
+  })  : assert(index != null),
+        assert(data != null),
         assert(state != null);
 
   @override
@@ -30,7 +35,7 @@ class InventoryListItem extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('${data.initialPowerPerSec} w/sec'),
+          Text('${data.initialPowerPerSec} w/s'),
           Text('\$$price'),
         ],
       ),
@@ -38,8 +43,8 @@ class InventoryListItem extends StatelessWidget {
         width: 30,
         child: Text('x ${state.amount}'),
       ),
-      enabled: enabled,
-      onTap: () => onItemTapped(index),
+      enabled: enabled ?? false,
+      onTap: () => onItemTapped?.call(index),
     );
   }
 }
