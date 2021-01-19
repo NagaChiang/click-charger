@@ -5,20 +5,17 @@ import 'item_data.dart';
 import 'item_state.dart';
 
 class InventoryListItem extends StatelessWidget {
-  final int index;
   final ItemData data;
   final ItemState state;
-  final void Function(int itemIndex) onItemTapped;
+  final void Function(String itemId) onItemTapped;
   final bool enabled;
 
   InventoryListItem({
-    @required this.index,
     @required this.data,
     @required this.state,
     this.onItemTapped,
     this.enabled,
-  })  : assert(index != null),
-        assert(data != null),
+  })  : assert(data != null),
         assert(state != null);
 
   @override
@@ -44,7 +41,7 @@ class InventoryListItem extends StatelessWidget {
         child: Text('x ${state.amount}'),
       ),
       enabled: enabled ?? false,
-      onTap: () => onItemTapped?.call(index),
+      onTap: () => onItemTapped?.call(data.id),
     );
   }
 }

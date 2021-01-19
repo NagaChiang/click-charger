@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import 'animations/animated_number_text.dart';
+import 'widgets/animated_number_text.dart';
 
 class ChargePage extends StatefulWidget {
   ChargePage({
@@ -35,7 +35,7 @@ class _ChargePageState extends State<ChargePage> {
               style: Theme.of(context).textTheme.headline2,
             ),
             Text(
-              '${widget.powerRate} w/s',
+              '${widget.powerRate.toStringAsFixed(1)} w/s',
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class ItemData {
+  final String id;
   final String name;
   final IconData icon;
   final double initialPowerPerSec;
@@ -9,6 +10,7 @@ class ItemData {
   final double priceGrowthPerAmount;
 
   const ItemData({
+    this.id,
     this.name,
     this.icon,
     this.initialPowerPerSec,

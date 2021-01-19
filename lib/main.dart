@@ -143,10 +143,10 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _onBuildItemTapped(int index) {
+  void _onBuildItemTapped(String itemId) {
     setState(() {
-      ItemData data = _gameData.itemDatas[index];
-      ItemState state = _gameState.itemStates[index];
+      ItemData data = _gameData.itemDatas[itemId];
+      ItemState state = _gameState.itemStates[itemId];
       double price = data.calculatePrice(state.amount);
 
       assert(_gameState.totalPower >= price);
@@ -158,9 +158,8 @@ class _MainScreenState extends State<MainScreen> {
 
   double _calculateCurrentPowerRate() {
     double rate = 0.0;
-    for (int i = 0; i < _gameData.itemDatas.length; i++) {
-      ItemData data = _gameData.itemDatas[i];
-      ItemState state = _gameState.itemStates[i];
+    for (ItemData data in _gameData.itemDatas.values) {
+      ItemState state = _gameState.itemStates[data.id];
       rate += data.calculatePowerRate() * state.amount;
     }
 

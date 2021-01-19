@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'item_data.dart';
 
 class GameData {
-  List<ItemData> itemDatas = [
-    ItemData(
+  Map<String, ItemData> itemDatas = {
+    'item_01': ItemData(
+      id: 'item_01',
       name: 'Auto Presser',
       icon: Icons.pan_tool,
       initialPowerPerSec: 0.1,
@@ -12,7 +13,8 @@ class GameData {
       initialPriceGrowth: 1,
       priceGrowthPerAmount: 1,
     ),
-    ItemData(
+    'item_02': ItemData(
+      id: 'item_02',
       name: 'Hamster Wheel',
       icon: Icons.pest_control_rodent,
       initialPowerPerSec: 2,
@@ -20,7 +22,8 @@ class GameData {
       initialPriceGrowth: 10,
       priceGrowthPerAmount: 5,
     ),
-    ItemData(
+    'item_03': ItemData(
+      id: 'item_03',
       name: 'Solar Panel',
       icon: Icons.brightness_5,
       initialPowerPerSec: 10,
@@ -28,5 +31,5 @@ class GameData {
       initialPriceGrowth: 100,
       priceGrowthPerAmount: 20,
     ),
-  ];
+  };
 }

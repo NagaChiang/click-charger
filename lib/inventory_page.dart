@@ -10,7 +10,7 @@ import 'game_state.dart';
 class InventoryPage extends StatelessWidget {
   final GameData gameData;
   final GameState gameState;
-  final Function(int) onItemTapped;
+  final Function(String) onItemTapped;
 
   const InventoryPage(
       {Key key, this.gameState, this.gameData, this.onItemTapped})
@@ -32,12 +32,9 @@ class InventoryPage extends StatelessWidget {
 
   List<Widget> _buildListItems() {
     List<Widget> itemWidgets = [];
-    for (int i = 0; i < gameData.itemDatas.length; i++) {
-      ItemData data = gameData.itemDatas[i];
-      ItemState state = gameState.itemStates[i];
-
+    for (ItemData data in gameData.itemDatas.values) {
+      ItemState state = gameState.itemStates[data.id];
       itemWidgets.add(InventoryListItem(
-        index: i,
         data: data,
         state: state,
         onItemTapped: onItemTapped,
