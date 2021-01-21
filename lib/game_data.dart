@@ -1,35 +1,20 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:flutter/widgets.dart';
 
 import 'item_data.dart';
+import 'constants.dart';
 
 class GameData {
-  Map<String, ItemData> itemDatas = {
-    'item_01': ItemData(
-      id: 'item_01',
-      name: 'Auto Presser',
-      icon: Icons.pan_tool,
-      initialPowerPerSec: 0.1,
-      initialPrice: 10,
-      initialPriceGrowth: 1,
-      priceGrowthPerAmount: 1,
-    ),
-    'item_02': ItemData(
-      id: 'item_02',
-      name: 'Hamster Wheel',
-      icon: Icons.pest_control_rodent,
-      initialPowerPerSec: 2,
-      initialPrice: 100,
-      initialPriceGrowth: 10,
-      priceGrowthPerAmount: 5,
-    ),
-    'item_03': ItemData(
-      id: 'item_03',
-      name: 'Solar Panel',
-      icon: Icons.brightness_5,
-      initialPowerPerSec: 10,
-      initialPrice: 800,
-      initialPriceGrowth: 100,
-      priceGrowthPerAmount: 20,
-    ),
-  };
+  Map<String, ItemData> itemDatas = {};
+
+  Future load(BuildContext context) async {
+    String itemDataString =
+        await DefaultAssetBundle.of(context).loadString(Constants.itemDataPath);
+    List<ItemData> itemDataList = List<ItemData>.from(
+        json.decode(itemDataString).map((j) => ItemData.fromJson(j)));
+    itemDataList.forEach((data) {
+      itemDatas[data.id] = data;
+    });
+  }
 }

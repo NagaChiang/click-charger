@@ -59,11 +59,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    _gameState = GameState(gameData: _gameData);
     _pageController = PageController(initialPage: _currentPage.index);
-
-    _updateTimer = Timer.periodic(
-        Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
   }
 
   @override
@@ -76,58 +72,72 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox.expand(
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (int index) {
-            setState(() {
-              _currentPage = MainScreenPage.values[index];
-            });
-          },
-          children: [
-            InventoryPage(
-              gameData: _gameData,
-              gameState: _gameState,
-              onItemTapped: _onBuildItemTapped,
+    return FutureBuilder(
+      future: _loadData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          print(snapshot.error);
+          return Container();
+        }
+
+        return Scaffold(
+          body: SizedBox.expand(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  _currentPage = MainScreenPage.values[index];
+                });
+              },
+              children: [
+                InventoryPage(
+                  gameData: _gameData,
+                  gameState: _gameState,
+                  onItemTapped: _onBuildItemTapped,
+                ),
+                ChargePage(
+                  totalPower: _gameState.totalPower,
+                  powerRate: _calculateCurrentPowerRate(),
+                  onChargeButtonPressed: () => _onChargeButtonPressed(),
+                ),
+                UpgradePage(),
+              ],
             ),
-            ChargePage(
-              totalPower: _gameState.totalPower,
-              powerRate: _calculateCurrentPowerRate(),
-              onChargeButtonPressed: () => _onChargeButtonPressed(),
-            ),
-            UpgradePage(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build),
-            label: 'Inventory',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flash_on),
-            label: 'Charge',
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.build),
+                label: 'Inventory',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.flash_on),
+                label: 'Charge',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.arrow_circle_up),
+                label: 'Upgrade',
+              ),
+            ],
+            currentIndex: _currentPage.index,
+            onTap: (int index) {
+              setState(() {
+                _currentPage = MainScreenPage.values[index];
+                _pageController.animateToPage(
+                  index,
+                  duration: Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                );
+              });
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.arrow_circle_up),
-            label: 'Upgrade',
-          ),
-        ],
-        currentIndex: _currentPage.index,
-        onTap: (int index) {
-          setState(() {
-            _currentPage = MainScreenPage.values[index];
-            _pageController.animateToPage(
-              index,
-              duration: Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
-          });
-        },
-      ),
+        );
+      },
     );
   }
 
@@ -154,6 +164,13 @@ class _MainScreenState extends State<MainScreen> {
       _gameState.totalPower -= price;
       state.amount++;
     });
+  }
+
+  Future _loadData() async {
+    await _gameData.load(context);
+    _gameState = GameState(gameData: _gameData);
+    _updateTimer = Timer.periodic(
+        Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
   }
 
   double _calculateCurrentPowerRate() {
