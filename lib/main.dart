@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'charge_page.dart';
+import 'console_page.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'inventory_page.dart';
 import 'item_data.dart';
 import 'item_state.dart';
 import 'upgrade_page.dart';
+import 'widgets/animated_number_text.dart';
 
 void main() {
   runApp(ClickChargerApp());
@@ -96,6 +97,13 @@ class _MainScreenState extends State<MainScreen> {
             child: AspectRatio(
               aspectRatio: 9 / 16,
               child: Scaffold(
+                appBar: AppBar(
+                  title: AnimatedNumberText(
+                    number: _gameState.totalPower.floor(),
+                    duration: Duration(milliseconds: 200),
+                  ),
+                  centerTitle: true,
+                ),
                 body: SizedBox.expand(
                   child: PageView(
                     controller: _pageController,
@@ -108,25 +116,23 @@ class _MainScreenState extends State<MainScreen> {
                       InventoryPage(
                         onItemTapped: _onBuildItemTapped,
                       ),
-                      ChargePage(
+                      ConsolePage(
                         totalPower: _gameState.totalPower,
                         powerRate: _calculateCurrentPowerRate(),
-                        onChargeButtonPressed: () => _onChargeButtonPressed(),
                       ),
                       UpgradePage(),
                     ],
                   ),
                 ),
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Theme.of(context).backgroundColor,
                   items: [
                     BottomNavigationBarItem(
                       icon: Icon(Icons.build),
                       label: 'Inventory',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.flash_on),
-                      label: 'Charge',
+                      icon: Icon(Icons.analytics),
+                      label: 'Console',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.arrow_circle_up),
@@ -144,6 +150,12 @@ class _MainScreenState extends State<MainScreen> {
                       );
                     });
                   },
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: FloatingActionButton(
+                  child: Icon(Icons.flash_on),
+                  onPressed: _onChargeButtonPressed,
                 ),
               ),
             ),
