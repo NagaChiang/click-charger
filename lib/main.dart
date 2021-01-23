@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'charge_page.dart';
 import 'game_data.dart';
@@ -49,6 +50,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   static const int _updateIntervalSeconds = 1;
 
+  Future _initFuture;
   GameData _gameData = GameData();
   GameState _gameState;
   PageController _pageController;
@@ -60,6 +62,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     _pageController = PageController(initialPage: _currentPage.index);
+    _initFuture = _initialize();
   }
 
   @override
@@ -73,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _loadData(),
+      future: _initFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(child: CircularProgressIndicator());
@@ -84,57 +87,61 @@ class _MainScreenState extends State<MainScreen> {
           return Container();
         }
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (int index) {
+        return MultiProvider(
+          providers: [
+            Provider.value(value: _gameData),
+            ChangeNotifierProvider.value(value: _gameState)
+          ],
+          child: Scaffold(
+            body: SizedBox.expand(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _currentPage = MainScreenPage.values[index];
+                  });
+                },
+                children: [
+                  InventoryPage(
+                    onItemTapped: _onBuildItemTapped,
+                  ),
+                  ChargePage(
+                    totalPower: _gameState.totalPower,
+                    powerRate: _calculateCurrentPowerRate(),
+                    onChargeButtonPressed: () => _onChargeButtonPressed(),
+                  ),
+                  UpgradePage(),
+                ],
+              ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.build),
+                  label: 'Inventory',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.flash_on),
+                  label: 'Charge',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.arrow_circle_up),
+                  label: 'Upgrade',
+                ),
+              ],
+              currentIndex: _currentPage.index,
+              onTap: (int index) {
                 setState(() {
                   _currentPage = MainScreenPage.values[index];
+                  _pageController.animateToPage(
+                    index,
+                    duration: Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                  );
                 });
               },
-              children: [
-                InventoryPage(
-                  gameData: _gameData,
-                  gameState: _gameState,
-                  onItemTapped: _onBuildItemTapped,
-                ),
-                ChargePage(
-                  totalPower: _gameState.totalPower,
-                  powerRate: _calculateCurrentPowerRate(),
-                  onChargeButtonPressed: () => _onChargeButtonPressed(),
-                ),
-                UpgradePage(),
-              ],
             ),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.build),
-                label: 'Inventory',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.flash_on),
-                label: 'Charge',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.arrow_circle_up),
-                label: 'Upgrade',
-              ),
-            ],
-            currentIndex: _currentPage.index,
-            onTap: (int index) {
-              setState(() {
-                _currentPage = MainScreenPage.values[index];
-                _pageController.animateToPage(
-                  index,
-                  duration: Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                );
-              });
-            },
           ),
         );
       },
@@ -166,8 +173,8 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  Future _loadData() async {
-    await _gameData.load(context);
+  Future _initialize() async {
+    _gameData = await GameData.loadFromAssets(context);
     _gameState = GameState(gameData: _gameData);
     _updateTimer = Timer.periodic(
         Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);

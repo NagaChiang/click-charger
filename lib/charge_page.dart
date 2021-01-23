@@ -11,7 +11,9 @@ class ChargePage extends StatefulWidget {
     @required this.totalPower,
     @required this.powerRate,
     @required this.onChargeButtonPressed,
-  }) : assert(onChargeButtonPressed != null);
+  })  : assert(totalPower != null),
+        assert(powerRate != null),
+        assert(onChargeButtonPressed != null);
 
   final double totalPower;
   final double powerRate;

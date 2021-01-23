@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 import 'inventory_list_item.dart';
 import 'item_data.dart';
@@ -8,15 +9,10 @@ import 'game_data.dart';
 import 'game_state.dart';
 
 class InventoryPage extends StatelessWidget {
-  final GameData gameData;
-  final GameState gameState;
   final Function(String) onItemTapped;
 
-  const InventoryPage(
-      {Key key, this.gameState, this.gameData, this.onItemTapped})
-      : assert(gameState != null),
-        assert(gameData != null),
-        assert(onItemTapped != null),
+  const InventoryPage({Key key, this.onItemTapped})
+      : assert(onItemTapped != null),
         super(key: key);
 
   @override
@@ -25,12 +21,15 @@ class InventoryPage extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       children: ListTile.divideTiles(
         context: context,
-        tiles: _buildListItems(),
+        tiles: _buildListItems(context),
       ).toList(),
     );
   }
 
-  List<Widget> _buildListItems() {
+  List<Widget> _buildListItems(BuildContext context) {
+    GameData gameData = Provider.of(context, listen: false);
+    GameState gameState = Provider.of(context);
+
     List<Widget> itemWidgets = [];
     for (ItemData data in gameData.itemDatas.values) {
       ItemState state = gameState.itemStates[data.id];

@@ -4,7 +4,7 @@ import 'game_data.dart';
 import 'item_state.dart';
 import 'item_data.dart';
 
-class GameState {
+class GameState with ChangeNotifier {
   Map<String, ItemState> itemStates = {};
   double totalPower = 0;
 
