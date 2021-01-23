@@ -92,55 +92,60 @@ class _MainScreenState extends State<MainScreen> {
             Provider.value(value: _gameData),
             ChangeNotifierProvider.value(value: _gameState)
           ],
-          child: Scaffold(
-            body: SizedBox.expand(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (int index) {
-                  setState(() {
-                    _currentPage = MainScreenPage.values[index];
-                  });
-                },
-                children: [
-                  InventoryPage(
-                    onItemTapped: _onBuildItemTapped,
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 9 / 16,
+              child: Scaffold(
+                body: SizedBox.expand(
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        _currentPage = MainScreenPage.values[index];
+                      });
+                    },
+                    children: [
+                      InventoryPage(
+                        onItemTapped: _onBuildItemTapped,
+                      ),
+                      ChargePage(
+                        totalPower: _gameState.totalPower,
+                        powerRate: _calculateCurrentPowerRate(),
+                        onChargeButtonPressed: () => _onChargeButtonPressed(),
+                      ),
+                      UpgradePage(),
+                    ],
                   ),
-                  ChargePage(
-                    totalPower: _gameState.totalPower,
-                    powerRate: _calculateCurrentPowerRate(),
-                    onChargeButtonPressed: () => _onChargeButtonPressed(),
-                  ),
-                  UpgradePage(),
-                ],
+                ),
+                bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.build),
+                      label: 'Inventory',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.flash_on),
+                      label: 'Charge',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.arrow_circle_up),
+                      label: 'Upgrade',
+                    ),
+                  ],
+                  currentIndex: _currentPage.index,
+                  onTap: (int index) {
+                    setState(() {
+                      _currentPage = MainScreenPage.values[index];
+                      _pageController.animateToPage(
+                        index,
+                        duration: Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                      );
+                    });
+                  },
+                ),
               ),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.build),
-                  label: 'Inventory',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.flash_on),
-                  label: 'Charge',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.arrow_circle_up),
-                  label: 'Upgrade',
-                ),
-              ],
-              currentIndex: _currentPage.index,
-              onTap: (int index) {
-                setState(() {
-                  _currentPage = MainScreenPage.values[index];
-                  _pageController.animateToPage(
-                    index,
-                    duration: Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                  );
-                });
-              },
             ),
           ),
         );
