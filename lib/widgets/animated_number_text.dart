@@ -4,11 +4,13 @@ class AnimatedNumberText extends ImplicitlyAnimatedWidget {
   final int number;
   final Duration duration;
   final TextStyle style;
+  final String postString;
 
   const AnimatedNumberText({
     @required this.number,
     @required this.duration,
     this.style,
+    this.postString,
   })  : assert(number != null),
         assert(duration != null),
         super(duration: duration);
@@ -24,7 +26,8 @@ class _AnimatedNumberTextState
   @override
   Widget build(BuildContext context) {
     return Text(
-      _numberTween.evaluate(animation).floor().toString(),
+      _numberTween.evaluate(animation).floor().toString() +
+          (widget.postString ?? ''),
       style: widget.style ?? DefaultTextStyle.of(context).style,
     );
   }

@@ -98,9 +98,18 @@ class _MainScreenState extends State<MainScreen> {
               aspectRatio: 9 / 16,
               child: Scaffold(
                 appBar: AppBar(
-                  title: AnimatedNumberText(
-                    number: _gameState.totalPower.floor(),
-                    duration: Duration(milliseconds: 200),
+                  title: Column(
+                    children: [
+                      AnimatedNumberText(
+                        number: _gameState.totalPower.floor(),
+                        duration: Duration(milliseconds: 200),
+                        postString: ' w',
+                      ),
+                      Text(
+                        '${_calculateCurrentPowerRate().toStringAsFixed(1)} w/s',
+                        style: Theme.of(context).accentTextTheme.caption,
+                      ),
+                    ],
                   ),
                   centerTitle: true,
                 ),
