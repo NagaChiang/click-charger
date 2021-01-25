@@ -100,10 +100,16 @@ class _MainScreenState extends State<MainScreen> {
                 appBar: AppBar(
                   title: Column(
                     children: [
-                      AnimatedNumberText(
-                        number: _gameState.totalPower.floor(),
-                        duration: Duration(milliseconds: 200),
-                        postString: ' w',
+                      Builder(
+                        builder: (context) {
+                          return AnimatedNumberText(
+                            number: Provider.of<GameState>(context)
+                                .totalPower
+                                .floor(),
+                            duration: Duration(milliseconds: 200),
+                            postString: ' w',
+                          );
+                        },
                       ),
                       Text(
                         '${_calculateCurrentPowerRate().toStringAsFixed(1)} w/s',
@@ -125,9 +131,14 @@ class _MainScreenState extends State<MainScreen> {
                       InventoryPage(
                         onItemTapped: _onBuildItemTapped,
                       ),
-                      ConsolePage(
-                        totalPower: _gameState.totalPower,
-                        powerRate: _calculateCurrentPowerRate(),
+                      Builder(
+                        builder: (context) {
+                          return ConsolePage(
+                            totalPower:
+                                Provider.of<GameState>(context).totalPower,
+                            powerRate: _calculateCurrentPowerRate(),
+                          );
+                        },
                       ),
                       UpgradePage(),
                     ],
@@ -175,28 +186,22 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onTimerUpdate(Timer timer) {
-    setState(() {
-      _gameState.totalPower += _calculateCurrentPowerRate();
-    });
+    _gameState.addPower(_calculateCurrentPowerRate());
   }
 
   void _onChargeButtonPressed() {
-    setState(() {
-      _gameState.totalPower += 1; // TODO: Upgraded press
-    });
+    _gameState.addPower(1); // TODO: Upgraded press
   }
 
   void _onBuildItemTapped(String itemId) {
-    setState(() {
-      ItemData data = _gameData.itemDatas[itemId];
-      ItemState state = _gameState.itemStates[itemId];
-      double price = data.calculatePrice(state.amount);
+    ItemData data = _gameData.itemDatas[itemId];
+    ItemState state = _gameState.itemStates[itemId];
+    double price = data.calculatePrice(state.amount);
 
-      assert(_gameState.totalPower >= price);
+    assert(_gameState.totalPower >= price);
 
-      _gameState.totalPower -= price;
-      state.amount++;
-    });
+    _gameState.addPower(-price);
+    _gameState.addItemAmount(itemId, 1);
   }
 
   Future _initialize() async {

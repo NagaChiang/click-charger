@@ -15,4 +15,17 @@ class GameState with ChangeNotifier {
       itemStates[data.id] = ItemState();
     }
   }
+
+  void addPower(double power) {
+    totalPower += power;
+
+    notifyListeners();
+  }
+
+  void addItemAmount(String itemId, int amount) {
+    assert(itemStates.containsKey(itemId));
+
+    itemStates[itemId].amount += amount;
+    notifyListeners();
+  }
 }
