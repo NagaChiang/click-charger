@@ -1,0 +1,32 @@
+[
+  {
+    "id": "press",
+    "name": "Strength Training",
+    "icon": "pan_tool",
+    "valuePerLevel": 1,
+    "maxLevel": 20,
+    "initialPrice": 100,
+    "initialPriceGrowth": 200,
+    "priceGrowthPerAmount": 250 
+  },
+  {
+    "id": "upgrade_01",
+    "name": "Genetic Engineering",
+    "icon": "pest_control_rodent",
+    "valuePerLevel": 0.5,
+    "maxLevel": 20,
+    "initialPrice": 400,
+    "initialPriceGrowth": 250,
+    "priceGrowthPerAmount": 400
+  },
+  {
+    "id": "upgrade_02",
+    "name": "High Efficiency Material",
+    "icon": "brightness_5",
+    "valuePerLevel": 0.5,
+    "maxLevel": 20,
+    "initialPrice": 5000,
+    "initialPriceGrowth": 2000,
+    "priceGrowthPerAmount": 2000
+  }
+]
