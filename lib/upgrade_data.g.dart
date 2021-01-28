@@ -1,31 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'item_data.dart';
+part of 'upgrade_data.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ItemData _$ItemDataFromJson(Map<String, dynamic> json) {
-  return ItemData(
+UpgradeData _$UpgradeDataFromJson(Map<String, dynamic> json) {
+  return UpgradeData(
     id: json['id'] as String,
     name: json['name'] as String,
     icon: const IconDataJsonConverter().fromJson(json['icon'] as String),
-    initialPowerPerSec: (json['initialPowerPerSec'] as num)?.toDouble(),
+    valuePerLevel: (json['valuePerLevel'] as num)?.toDouble(),
+    maxLevel: json['maxLevel'] as int,
     initialPrice: (json['initialPrice'] as num)?.toDouble(),
     initialPriceGrowth: (json['initialPriceGrowth'] as num)?.toDouble(),
     priceGrowthPerAmount: (json['priceGrowthPerAmount'] as num)?.toDouble(),
-    upgradeId: json['upgradeId'] as String,
   );
 }
 
-Map<String, dynamic> _$ItemDataToJson(ItemData instance) => <String, dynamic>{
+Map<String, dynamic> _$UpgradeDataToJson(UpgradeData instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'icon': const IconDataJsonConverter().toJson(instance.icon),
-      'initialPowerPerSec': instance.initialPowerPerSec,
+      'valuePerLevel': instance.valuePerLevel,
+      'maxLevel': instance.maxLevel,
       'initialPrice': instance.initialPrice,
       'initialPriceGrowth': instance.initialPriceGrowth,
       'priceGrowthPerAmount': instance.priceGrowthPerAmount,
-      'upgradeId': instance.upgradeId,
     };

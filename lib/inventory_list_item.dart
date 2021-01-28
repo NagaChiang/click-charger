@@ -7,21 +7,23 @@ import 'item_state.dart';
 class InventoryListItem extends StatelessWidget {
   final ItemData data;
   final ItemState state;
+  final double rate;
   final void Function(String itemId) onItemTapped;
   final bool enabled;
 
   InventoryListItem({
     @required this.data,
     @required this.state,
+    @required this.rate,
     this.onItemTapped,
     this.enabled,
   })  : assert(data != null),
-        assert(state != null);
+        assert(state != null),
+        assert(rate != null);
 
   @override
   Widget build(BuildContext context) {
     double price = data.calculatePrice(state.amount);
-
     return ListTile(
       leading: Container(
         width: 30,
@@ -32,7 +34,7 @@ class InventoryListItem extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('${data.initialPowerPerSec} w/s'),
+          Text(data.id == 'press' ? '1 time/s' : '$rate w/s'),
           Text('\$$price'),
         ],
       ),

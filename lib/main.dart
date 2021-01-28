@@ -9,7 +9,10 @@ import 'game_state.dart';
 import 'inventory_page.dart';
 import 'item_data.dart';
 import 'item_state.dart';
+import 'power_service.dart';
+import 'upgrade_data.dart';
 import 'upgrade_page.dart';
+import 'upgrade_state.dart';
 import 'widgets/animated_number_text.dart';
 
 void main() {
@@ -98,24 +101,24 @@ class _MainScreenState extends State<MainScreen> {
               aspectRatio: 9 / 16,
               child: Scaffold(
                 appBar: AppBar(
-                  title: Column(
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          return AnimatedNumberText(
+                  title: Builder(
+                    builder: (context) {
+                      return Column(
+                        children: [
+                          AnimatedNumberText(
                             number: Provider.of<GameState>(context)
                                 .totalPower
                                 .floor(),
                             duration: Duration(milliseconds: 200),
                             postString: ' w',
-                          );
-                        },
-                      ),
-                      Text(
-                        '${_calculateCurrentPowerRate().toStringAsFixed(1)} w/s',
-                        style: Theme.of(context).accentTextTheme.caption,
-                      ),
-                    ],
+                          ),
+                          Text(
+                            '${_calculateTotalPowerRate(context).toStringAsFixed(1)} w/s',
+                            style: Theme.of(context).accentTextTheme.caption,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   centerTitle: true,
                 ),
@@ -136,11 +139,13 @@ class _MainScreenState extends State<MainScreen> {
                           return ConsolePage(
                             totalPower:
                                 Provider.of<GameState>(context).totalPower,
-                            powerRate: _calculateCurrentPowerRate(),
+                            powerRate: _calculateTotalPowerRate(context),
                           );
                         },
                       ),
-                      UpgradePage(),
+                      UpgradePage(
+                        onItemTapped: _onUpgradeItemTapped,
+                      ),
                     ],
                   ),
                 ),
@@ -186,11 +191,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onTimerUpdate(Timer timer) {
-    _gameState.addPower(_calculateCurrentPowerRate());
+    _gameState.addPower(_calculateTotalPowerRate(null));
   }
 
   void _onChargeButtonPressed() {
-    _gameState.addPower(1); // TODO: Upgraded press
+    ItemData pressData = _gameData.itemDatas['press'];
+    double bonus = PowerService.calculateUpgradeBonus(
+        _gameData, _gameState, pressData.upgradeId);
+    double power = pressData.initialPowerPerSec * (1 + bonus);
+
+    _gameState.addPower(power);
   }
 
   void _onBuildItemTapped(String itemId) {
@@ -204,6 +214,17 @@ class _MainScreenState extends State<MainScreen> {
     _gameState.addItemAmount(itemId, 1);
   }
 
+  void _onUpgradeItemTapped(String upgradeId) {
+    UpgradeData data = _gameData.upgradeDatas[upgradeId];
+    UpgradeState state = _gameState.upgradeStates[upgradeId];
+    double price = data.calculatePrice(state.level);
+
+    assert(_gameState.totalPower >= price);
+
+    _gameState.addPower(-price);
+    _gameState.addUpgradeLevel(upgradeId, 1);
+  }
+
   Future _initialize() async {
     _gameData = await GameData.loadFromAssets(context);
     _gameState = GameState(gameData: _gameData);
@@ -211,13 +232,27 @@ class _MainScreenState extends State<MainScreen> {
         Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
   }
 
-  double _calculateCurrentPowerRate() {
-    double rate = 0.0;
-    for (ItemData data in _gameData.itemDatas.values) {
-      ItemState state = _gameState.itemStates[data.id];
-      rate += data.calculatePowerRate() * state.amount;
+  double _calculateTotalPowerRate(BuildContext context) {
+    GameData gameData = _gameData;
+    GameState gameState = _gameState;
+    if (context != null) {
+      gameData = Provider.of<GameData>(context);
+      gameState = Provider.of<GameState>(context);
     }
 
-    return rate;
+    double totalRate = 0.0;
+    for (ItemData data in gameData.itemDatas.values) {
+      ItemState state = gameState.itemStates[data.id];
+      double bonus = PowerService.calculateUpgradeBonus(
+          gameData, gameState, data.upgradeId);
+      double rate = data.calculatePowerRate(bonus) * state.amount;
+      if (data.id == 'press') {
+        // TODO: Critical press
+      }
+
+      totalRate += rate;
+    }
+
+    return totalRate;
   }
 }

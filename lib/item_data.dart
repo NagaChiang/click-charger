@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:click_charger/utils/icondata_json_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,6 +17,7 @@ class ItemData {
   final double initialPrice;
   final double initialPriceGrowth;
   final double priceGrowthPerAmount;
+  final String upgradeId;
 
   const ItemData({
     this.id,
@@ -24,15 +27,27 @@ class ItemData {
     this.initialPrice,
     this.initialPriceGrowth,
     this.priceGrowthPerAmount,
+    this.upgradeId,
   });
+
+  static Future<List<ItemData>> loadFromAssets(
+    BuildContext context,
+    String path,
+  ) async {
+    String jsonString = await DefaultAssetBundle.of(context).loadString(path);
+    List<ItemData> dataList = List<ItemData>.from(
+        json.decode(jsonString).map((j) => ItemData.fromJson(j)));
+
+    return dataList;
+  }
 
   factory ItemData.fromJson(Map<String, dynamic> json) =>
       _$ItemDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemDataToJson(this);
 
-  double calculatePowerRate() {
-    return initialPowerPerSec; // TODO: Upgraded
+  double calculatePowerRate(double bonus) {
+    return initialPowerPerSec * (1 + bonus);
   }
 
   double calculatePrice(int amount) {

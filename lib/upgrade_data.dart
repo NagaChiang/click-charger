@@ -1,5 +1,14 @@
-import 'package:flutter/widgets.dart';
+import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import 'utils/icondata_json_converter.dart';
+
+part 'upgrade_data.g.dart';
+
+@JsonSerializable()
+@IconDataJsonConverter()
 class UpgradeData {
   final String id;
   final String name;
@@ -20,6 +29,26 @@ class UpgradeData {
     this.initialPriceGrowth,
     this.priceGrowthPerAmount,
   });
+
+  static Future<List<UpgradeData>> loadFromAssets(
+    BuildContext context,
+    String path,
+  ) async {
+    String jsonString = await DefaultAssetBundle.of(context).loadString(path);
+    List<UpgradeData> dataList = List<UpgradeData>.from(
+        json.decode(jsonString).map((j) => UpgradeData.fromJson(j)));
+
+    return dataList;
+  }
+
+  factory UpgradeData.fromJson(Map<String, dynamic> json) =>
+      _$UpgradeDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UpgradeDataToJson(this);
+
+  double calculateBonus(int level) {
+    return valuePerLevel * level;
+  }
 
   double calculatePrice(int level) {
     return initialPrice +

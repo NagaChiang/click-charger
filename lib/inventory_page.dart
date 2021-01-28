@@ -7,6 +7,7 @@ import 'item_data.dart';
 import 'item_state.dart';
 import 'game_data.dart';
 import 'game_state.dart';
+import 'power_service.dart';
 
 class InventoryPage extends StatelessWidget {
   final Function(String) onItemTapped;
@@ -33,9 +34,13 @@ class InventoryPage extends StatelessWidget {
     List<Widget> itemWidgets = [];
     for (ItemData data in gameData.itemDatas.values) {
       ItemState state = gameState.itemStates[data.id];
+      double bonus = PowerService.calculateUpgradeBonus(
+          gameData, gameState, data.upgradeId);
+
       itemWidgets.add(InventoryListItem(
         data: data,
         state: state,
+        rate: data.initialPowerPerSec * (1 + bonus),
         onItemTapped: onItemTapped,
         enabled: gameState.totalPower >= data.calculatePrice(state.amount),
       ));

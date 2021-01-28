@@ -1,5 +1,5 @@
 name: click_charger
-description: A new Flutter project.
+description: Clicker game made with Flutter.
 
 publish_to: 'none'
 
@@ -26,4 +26,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/data/item_data.json
+    - assets/data/

@@ -1,29 +1,32 @@
 [
   {
-    "id": "item_01",
+    "id": "press",
     "name": "Auto Presser",
     "icon": "pan_tool",
-    "initialPowerPerSec": 0.1,
+    "initialPowerPerSec": 1,
     "initialPrice": 10,
     "initialPriceGrowth": 1,
-    "priceGrowthPerAmount": 1
+    "priceGrowthPerAmount": 1,
+    "upgradeId": "press"
+  },
+  {
+    "id": "item_01",
+    "name": "Hamster Wheel",
+    "icon": "pest_control_rodent",
+    "initialPowerPerSec": 4,
+    "initialPrice": 100,
+    "initialPriceGrowth": 10,
+    "priceGrowthPerAmount": 5,
+    "upgradeId": "upgrade_01"
   },
   {
     "id": "item_02",
-    "name": "Hamster Wheel",
-    "icon": "pest_control_rodent",
-    "initialPowerPerSec": 2,
-    "initialPrice": 100,
-    "initialPriceGrowth": 10,
-    "priceGrowthPerAmount": 5
-  },
-  {
-    "id": "item_03",
     "name": "Solar Panel",
     "icon": "brightness_5",
-    "initialPowerPerSec": 10,
+    "initialPowerPerSec": 20,
     "initialPrice": 800,
     "initialPriceGrowth": 100,
-    "priceGrowthPerAmount": 20
+    "priceGrowthPerAmount": 20,
+    "upgradeId": "upgrade_02"
   }
 ]
