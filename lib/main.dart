@@ -14,6 +14,7 @@ import 'upgrade_data.dart';
 import 'upgrade_page.dart';
 import 'upgrade_state.dart';
 import 'widgets/animated_number_text.dart';
+import 'widgets/charge_button.dart';
 
 void main() {
   runApp(ClickChargerApp());
@@ -178,8 +179,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
-                floatingActionButton: FloatingActionButton(
-                  child: Icon(Icons.flash_on),
+                floatingActionButton: ChargeButton(
                   onPressed: _onChargeButtonPressed,
                 ),
               ),
