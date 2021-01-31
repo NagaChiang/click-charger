@@ -6,6 +6,7 @@ import 'item_data.dart';
 import 'upgrade_data.dart';
 
 class GameState with ChangeNotifier {
+  bool isDebugMode = false;
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};
   double totalPower = 0;
@@ -24,7 +25,6 @@ class GameState with ChangeNotifier {
 
   void addPower(double power) {
     totalPower += power;
-
     notifyListeners();
   }
 
@@ -39,6 +39,11 @@ class GameState with ChangeNotifier {
     assert(upgradeStates.containsKey(upgradeId));
 
     upgradeStates[upgradeId].level += level;
+    notifyListeners();
+  }
+
+  void setDebugMode(bool isEnabled) {
+    isDebugMode = isEnabled;
     notifyListeners();
   }
 }

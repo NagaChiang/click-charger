@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -102,6 +103,9 @@ class _MainScreenState extends State<MainScreen> {
               aspectRatio: 9 / 16,
               child: Scaffold(
                 appBar: AppBar(
+                  leading: Builder(
+                      builder: (context) =>
+                          kReleaseMode ? null : _buildDebugWidget(context)),
                   title: Builder(
                     builder: (context) {
                       return Column(
@@ -190,6 +194,19 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  Widget _buildDebugWidget(BuildContext context) {
+    assert(!kReleaseMode);
+
+    GameState gameState = Provider.of<GameState>(context);
+
+    return Switch(
+      value: gameState.isDebugMode,
+      onChanged: (bool value) {
+        gameState.setDebugMode(value);
+      },
+    );
+  }
+
   void _onTimerUpdate(Timer timer) {
     _gameState.addPower(_calculateTotalPowerRate(null));
   }
@@ -199,6 +216,10 @@ class _MainScreenState extends State<MainScreen> {
     double bonus = PowerService.calculateUpgradeBonus(
         _gameData, _gameState, pressData.upgradeId);
     double power = pressData.initialPowerPerSec * (1 + bonus);
+
+    if (!kReleaseMode && _gameState.isDebugMode) {
+      power = 1000000;
+    }
 
     _gameState.addPower(power);
   }
