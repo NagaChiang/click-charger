@@ -14,6 +14,7 @@ import 'power_service.dart';
 import 'upgrade_data.dart';
 import 'upgrade_page.dart';
 import 'upgrade_state.dart';
+import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
 import 'widgets/charge_button.dart';
 
@@ -118,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
                             postString: ' w',
                           ),
                           Text(
-                            '${_calculateTotalPowerRate(context).toStringAsFixed(1)} w/s',
+                            '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} w/s',
                             style: Theme.of(context).accentTextTheme.caption,
                           ),
                         ],

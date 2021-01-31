@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'item_data.dart';
 import 'item_state.dart';
+import 'utils/utils.dart';
 
 class InventoryListItem extends StatelessWidget {
   final ItemData data;
@@ -34,13 +35,15 @@ class InventoryListItem extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(data.id == 'press' ? '1 time/s' : '$rate w/s'),
-          Text('\$$price'),
+          Text(data.id == 'press'
+              ? '1 time/s'
+              : '${Utils.toFormattedNumber(rate)} w/s'),
+          Text('\$${Utils.toFormattedNumber(price)}'),
         ],
       ),
       trailing: Container(
-        width: 30,
-        child: Text('x ${state.amount}'),
+        width: 40,
+        child: Text('x ${Utils.toFormattedNumber(state.amount)}'),
       ),
       enabled: enabled ?? false,
       onTap: () => onItemTapped?.call(data.id),

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'upgrade_data.dart';
 import 'upgrade_state.dart';
+import 'utils/utils.dart';
 
 class UpgradeListItem extends StatelessWidget {
   final UpgradeData data;
@@ -52,12 +53,12 @@ class UpgradeListItem extends StatelessWidget {
           Text(data.id == 'press'
               ? '+${data.valuePerLevel}'
               : '+${data.valuePerLevel * 100}%'),
-          Text('\$$price'),
+          Text('\$${Utils.toFormattedNumber(price)}'),
         ],
       ),
       trailing: Container(
-        width: 30,
-        child: Text('Lv ${state.level}'),
+        width: 40,
+        child: Text('Lv ${Utils.toFormattedNumber(state.level)}'),
       ),
       enabled: enabled ?? false,
       onTap: () => onItemTapped?.call(data.id),

@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../utils/utils.dart';
+
 class AnimatedNumberText extends StatefulWidget {
   final int number;
   final Duration duration;
@@ -29,7 +31,8 @@ class _AnimatedNumberTextState extends State<AnimatedNumberText> {
       builder: (context, value, child) {
         _currentValue = value;
         return Text(
-          _currentValue.floor().toString() + (widget.postString ?? ''),
+          Utils.toFormattedNumber(_currentValue.floor()) +
+              (widget.postString ?? ''),
           style: widget.style ?? DefaultTextStyle.of(context).style,
         );
       },
