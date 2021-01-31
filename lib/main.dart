@@ -99,7 +99,9 @@ class _MainScreenState extends State<MainScreen> {
             Provider.value(value: _gameData),
             ChangeNotifierProvider.value(value: _gameState)
           ],
-          child: Center(
+          child: Container(
+            color: Colors.black,
+            alignment: Alignment.center,
             child: AspectRatio(
               aspectRatio: 9 / 16,
               child: Scaffold(
