@@ -221,7 +221,7 @@ class _MainScreenState extends State<MainScreen> {
     double power = pressData.initialPowerPerSec * (1 + bonus);
 
     if (!kReleaseMode && _gameState.isDebugMode) {
-      power = 1000000;
+      power = 100000000;
     }
 
     _gameState.addPower(power);

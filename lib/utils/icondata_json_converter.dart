@@ -6,7 +6,14 @@ class IconDataJsonConverter implements JsonConverter<IconData, String> {
   static const Map<String, IconData> _stringToIconData = {
     'pan_tool': Icons.pan_tool,
     'pest_control_rodent': Icons.pest_control_rodent,
+    'eco': Icons.eco,
     'brightness_5': Icons.brightness_5,
+    'settings_input_antenna': Icons.settings_input_antenna,
+    'waves': Icons.waves,
+    'local_fire_department': Icons.local_fire_department,
+    'animation': Icons.animation,
+    'blur_on': Icons.blur_on,
+    'airline_seat_flat_angled': Icons.airline_seat_flat_angled,
   };
 
   const IconDataJsonConverter();

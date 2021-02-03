@@ -14,7 +14,6 @@ class UpgradeData {
   final String name;
   final IconData icon;
   final double valuePerLevel;
-  final int maxLevel;
   final double initialPrice;
   final double initialPriceGrowth;
   final double priceGrowthPerAmount;
@@ -24,7 +23,6 @@ class UpgradeData {
     this.name,
     this.icon,
     this.valuePerLevel,
-    this.maxLevel,
     this.initialPrice,
     this.initialPriceGrowth,
     this.priceGrowthPerAmount,
