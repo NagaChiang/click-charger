@@ -17,7 +17,11 @@ class ConsolePage extends StatefulWidget {
   _ConsolePageState createState() => _ConsolePageState();
 }
 
-class _ConsolePageState extends State<ConsolePage> {
+class _ConsolePageState extends State<ConsolePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return Column(
