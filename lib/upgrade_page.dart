@@ -1,3 +1,4 @@
+import 'package:click_charger/item_state.dart';
 import 'package:click_charger/upgrade_data.dart';
 import 'package:click_charger/upgrade_list_item.dart';
 import 'package:click_charger/upgrade_state.dart';
@@ -5,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'constants.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 
-class UpgradePage extends StatelessWidget {
+class UpgradePage extends StatefulWidget {
   final Function(String) onItemTapped;
 
   const UpgradePage({Key key, this.onItemTapped})
@@ -16,31 +18,59 @@ class UpgradePage extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(8.0),
-      children: ListTile.divideTiles(
-        context: context,
-        tiles: _buildListItems(context),
-      ).toList(),
-    );
-  }
+  _UpgradePageState createState() => _UpgradePageState();
+}
 
-  List<Widget> _buildListItems(BuildContext context) {
+class _UpgradePageState extends State<UpgradePage> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+
+  int _unlockedItemCount = 0;
+
+  @override
+  Widget build(BuildContext context) {
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 
-    List<Widget> itemWidgets = [];
-    for (UpgradeData data in gameData.upgradeDatas.values) {
-      UpgradeState state = gameState.upgradeStates[data.id];
-      itemWidgets.add(UpgradeListItem(
-        data: data,
-        state: state,
-        onItemTapped: onItemTapped,
-        enabled: gameState.totalPower >= data.calculatePrice(state.level),
-      ));
+    _updateUnlockedItemCount(gameState);
+
+    return AnimatedList(
+      key: _listKey,
+      padding: const EdgeInsets.all(8.0),
+      initialItemCount: _unlockedItemCount,
+      itemBuilder: (context, index, animation) {
+        UpgradeData data = gameData.upgradeDatas.values.elementAt(index);
+        UpgradeState state = gameState.upgradeStates[data.id];
+
+        return UpgradeListItem(
+          data: data,
+          state: state,
+          onItemTapped: widget.onItemTapped,
+          enabled: gameState.totalPower >= data.calculatePrice(state.level),
+        );
+      },
+    );
+  }
+
+  void _updateUnlockedItemCount(GameState gameState) {
+    int newCount = _getUnlockedItemCount(gameState);
+    for (int i = _unlockedItemCount; i < newCount; i++) {
+      if (_listKey.currentState != null) {
+        _listKey.currentState
+            .insertItem(i, duration: Duration(milliseconds: 200));
+      }
     }
 
-    return itemWidgets;
+    _unlockedItemCount = newCount;
+  }
+
+  int _getUnlockedItemCount(GameState gameState) {
+    for (int i = gameState.itemStates.length - 1; i >= 0; i--) {
+      ItemState itemState = gameState.itemStates.values.elementAt(i);
+      if (itemState.amount >= Constants.upgradeUnlockItemAmountThreshold) {
+        return i + 1;
+      }
+    }
+
+    return 0;
   }
 }
