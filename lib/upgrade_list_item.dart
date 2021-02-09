@@ -51,8 +51,8 @@ class UpgradeListItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(data.id == 'press'
-              ? '+${data.valuePerLevel}'
-              : '+${data.valuePerLevel * 100}%'),
+              ? '+${data.valuePerLevel}/Lv'
+              : '+${data.valuePerLevel * 100}%/Lv'),
           Text('\$${Utils.toFormattedNumber(price)}'),
         ],
       ),

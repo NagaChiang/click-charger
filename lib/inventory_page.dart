@@ -9,43 +9,87 @@ import 'game_data.dart';
 import 'game_state.dart';
 import 'power_service.dart';
 
-class InventoryPage extends StatelessWidget {
+class InventoryPage extends StatefulWidget {
   final Function(String) onItemTapped;
 
-  const InventoryPage({Key key, this.onItemTapped})
+  InventoryPage({Key key, this.onItemTapped})
       : assert(onItemTapped != null),
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(8.0),
-      children: ListTile.divideTiles(
-        context: context,
-        tiles: _buildListItems(context),
-      ).toList(),
-    );
-  }
+  _InventoryPageState createState() => _InventoryPageState();
+}
 
-  List<Widget> _buildListItems(BuildContext context) {
+class _InventoryPageState extends State<InventoryPage> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+
+  int _unlockedItemCount = 0;
+
+  @override
+  Widget build(BuildContext context) {
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 
-    List<Widget> itemWidgets = [];
-    for (ItemData data in gameData.itemDatas.values) {
-      ItemState state = gameState.itemStates[data.id];
-      double bonus = PowerService.calculateUpgradeBonus(
-          gameData, gameState, data.upgradeId);
+    _updateUnlockedItemCount(gameState);
 
-      itemWidgets.add(InventoryListItem(
-        data: data,
-        state: state,
-        rate: data.initialPowerPerSec * (1 + bonus),
-        onItemTapped: onItemTapped,
-        enabled: gameState.totalPower >= data.calculatePrice(state.amount),
-      ));
+    return AnimatedList(
+      key: _listKey,
+      padding: const EdgeInsets.all(8.0),
+      initialItemCount: _unlockedItemCount,
+      itemBuilder: (context, index, animation) {
+        ItemData data = gameData.itemDatas.values.elementAt(index);
+        ItemState state = gameState.itemStates[data.id];
+        double bonus = PowerService.calculateUpgradeBonus(
+            gameData, gameState, data.upgradeId);
+
+        return SizeTransition(
+          sizeFactor: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+          ),
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+            child: InventoryListItem(
+              data: data,
+              state: state,
+              rate: data.initialPowerPerSec * (1 + bonus),
+              onItemTapped: widget.onItemTapped,
+              enabled:
+                  gameState.totalPower >= data.calculatePrice(state.amount),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateUnlockedItemCount(GameState gameState) {
+    int newUnlockedItemCount = _getUnlockedItemCount(gameState);
+    for (int index = _unlockedItemCount;
+        index < newUnlockedItemCount;
+        index++) {
+      if (_listKey.currentState != null) {
+        _listKey.currentState
+            .insertItem(index, duration: Duration(milliseconds: 200));
+      }
     }
 
-    return itemWidgets;
+    _unlockedItemCount = newUnlockedItemCount;
+  }
+
+  int _getUnlockedItemCount(GameState gameState) {
+    int count = 1;
+    for (ItemState state in gameState.itemStates.values) {
+      if (state.amount == 0) {
+        break;
+      }
+
+      count++;
+    }
+
+    return count;
   }
 }
