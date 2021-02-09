@@ -25,28 +25,31 @@ class InventoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double price = data.calculatePrice(state.amount);
-    return ListTile(
-      leading: Container(
-        width: 30,
-        alignment: Alignment.center,
-        child: Icon(data.icon),
+    return Card(
+      elevation: enabled ? null : 0.2,
+      child: ListTile(
+        leading: Container(
+          width: 30,
+          alignment: Alignment.center,
+          child: Icon(data.icon),
+        ),
+        title: Text(data.name),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(data.id == 'press'
+                ? '1 time/s'
+                : '${Utils.toFormattedNumber(rate)} w/s'),
+            Text('\$${Utils.toFormattedNumber(price)}'),
+          ],
+        ),
+        trailing: Container(
+          width: 40,
+          child: Text('x ${Utils.toFormattedNumber(state.amount)}'),
+        ),
+        enabled: enabled ?? false,
+        onTap: () => onItemTapped?.call(data.id),
       ),
-      title: Text(data.name),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(data.id == 'press'
-              ? '1 time/s'
-              : '${Utils.toFormattedNumber(rate)} w/s'),
-          Text('\$${Utils.toFormattedNumber(price)}'),
-        ],
-      ),
-      trailing: Container(
-        width: 40,
-        child: Text('x ${Utils.toFormattedNumber(state.amount)}'),
-      ),
-      enabled: enabled ?? false,
-      onTap: () => onItemTapped?.call(data.id),
     );
   }
 }
