@@ -24,6 +24,8 @@ class _ConsolePageState extends State<ConsolePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [

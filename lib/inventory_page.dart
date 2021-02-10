@@ -1,7 +1,9 @@
+import 'package:click_charger/upgrade_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'constants.dart';
 import 'inventory_list_item.dart';
 import 'item_data.dart';
 import 'item_state.dart';
@@ -24,17 +26,17 @@ class _InventoryPageState extends State<InventoryPage>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  int _unlockedItemCount = 0;
+  int _unlockedItemCount = 1;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
-
-    _updateUnlockedItemCount(gameState);
 
     return AnimatedList(
       key: _listKey,
@@ -60,7 +62,11 @@ class _InventoryPageState extends State<InventoryPage>
               data: data,
               state: state,
               rate: data.initialPowerPerSec * (1 + bonus),
-              onItemTapped: widget.onItemTapped,
+              onItemTapped: (String itemId) {
+                widget.onItemTapped.call(itemId);
+                _checkUnlockedItem(context, gameState);
+                _checkUnlockedUpgrade(context, gameState, itemId);
+              },
               enabled:
                   gameState.totalPower >= data.calculatePrice(state.amount),
             ),
@@ -70,7 +76,7 @@ class _InventoryPageState extends State<InventoryPage>
     );
   }
 
-  void _updateUnlockedItemCount(GameState gameState) {
+  void _checkUnlockedItem(BuildContext context, GameState gameState) {
     int newUnlockedItemCount = _getUnlockedItemCount(gameState);
     for (int index = _unlockedItemCount;
         index < newUnlockedItemCount;
@@ -79,9 +85,20 @@ class _InventoryPageState extends State<InventoryPage>
         _listKey.currentState
             .insertItem(index, duration: Duration(milliseconds: 200));
       }
+
+      String itemId = gameState.itemStates.keys.elementAt(index);
+      _showItemUnlockedSnackBar(context, itemId);
     }
 
     _unlockedItemCount = newUnlockedItemCount;
+  }
+
+  void _checkUnlockedUpgrade(
+      BuildContext context, GameState gameState, String itemId) {
+    ItemState itemState = gameState.itemStates[itemId];
+    if (itemState.amount == Constants.upgradeUnlockItemAmountThreshold) {
+      _showUpgradeUnlockedSnackBar(context, itemId);
+    }
   }
 
   int _getUnlockedItemCount(GameState gameState) {
@@ -95,5 +112,92 @@ class _InventoryPageState extends State<InventoryPage>
     }
 
     return count;
+  }
+
+  void _showItemUnlockedSnackBar(BuildContext context, String itemId) {
+    GameData gameData = Provider.of<GameData>(context, listen: false);
+    ItemData data = gameData.itemDatas[itemId];
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: ListTile(
+        leading: Container(
+          width: 40,
+          alignment: Alignment.center,
+          child: Icon(
+            data.icon,
+            color: Colors.white,
+          ),
+        ),
+        title: Text(
+          data.name,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Colors.white),
+        ),
+        subtitle: Text(
+          'Item',
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2
+              .copyWith(color: Colors.white70, fontSize: 11),
+        ),
+        trailing: const Text('Unlocked!'),
+      ),
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
+  void _showUpgradeUnlockedSnackBar(BuildContext context, String itemId) {
+    GameData gameData = Provider.of<GameData>(context, listen: false);
+    ItemData itemData = gameData.itemDatas[itemId];
+    UpgradeData upgradeData = gameData.upgradeDatas[itemData.upgradeId];
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: ListTile(
+        leading: Container(
+          width: 30,
+          height: 30,
+          alignment: Alignment.center,
+          child: Container(
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Icon(
+                    upgradeData.icon,
+                    color: Colors.white,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(
+                    Icons.add,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        title: Text(
+          upgradeData.name,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Colors.white),
+        ),
+        subtitle: Text(
+          'Upgrade',
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2
+              .copyWith(color: Colors.white70, fontSize: 11),
+        ),
+        trailing: const Text('Unlocked!'),
+      ),
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 }

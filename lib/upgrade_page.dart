@@ -32,6 +32,8 @@ class _UpgradePageState extends State<UpgradePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 
