@@ -1,0 +1,48 @@
+name: Flutter
+on: 
+  push:
+    branches:
+      - '**'
+      - '!github-pages'
+jobs:
+  github-pages:
+    name: Build and Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    container: cirrusci/flutter:beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: 'master'
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ github.ref }}-
+          path: |
+            .dart_tool
+            build
+
+      - name: Build for Web
+        working-directory: 'master'
+        run: |
+          flutter pub get
+          flutter build web --release
+
+      - name: Checkout github-pages
+        uses: actions/checkout@v2
+        with:
+          path: 'github-pages'
+          ref: 'github-pages'
+
+      - name: Deploy to GitHub Pages
+        run: |
+          cp -a 'master/build/web/.' 'github-pages'
+          cd 'github-pages'
+          git config user.name 'GitHub Actions'
+          git config user.email 'nagachiangdev@gmail.com'
+          git add .
+          git commit -m "Auto deploy ($GITHUB_SHA)"
+          git push
