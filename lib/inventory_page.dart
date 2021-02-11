@@ -95,6 +95,10 @@ class _InventoryPageState extends State<InventoryPage>
 
   void _checkUnlockedUpgrade(
       BuildContext context, GameState gameState, String itemId) {
+    if (itemId == 'press') {
+      return;
+    }
+
     ItemState itemState = gameState.itemStates[itemId];
     if (itemState.amount == Constants.upgradeUnlockItemAmountThreshold) {
       _showUpgradeUnlockedSnackBar(context, itemId);
