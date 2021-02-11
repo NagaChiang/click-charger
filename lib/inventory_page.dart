@@ -142,7 +142,13 @@ class _InventoryPageState extends State<InventoryPage>
               .subtitle2
               .copyWith(color: Colors.white70, fontSize: 11),
         ),
-        trailing: const Text('Unlocked!'),
+        trailing: Text(
+          'Unlocked!',
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Colors.white),
+        ),
       ),
       behavior: SnackBarBehavior.floating,
     ));
@@ -195,7 +201,13 @@ class _InventoryPageState extends State<InventoryPage>
               .subtitle2
               .copyWith(color: Colors.white70, fontSize: 11),
         ),
-        trailing: const Text('Unlocked!'),
+        trailing: Text(
+          'Unlocked!',
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Colors.white),
+        ),
       ),
       behavior: SnackBarBehavior.floating,
     ));
