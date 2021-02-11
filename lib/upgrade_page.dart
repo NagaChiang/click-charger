@@ -77,6 +77,6 @@ class _UpgradePageState extends State<UpgradePage>
       }
     }
 
-    return 0;
+    return 1;
   }
 }
