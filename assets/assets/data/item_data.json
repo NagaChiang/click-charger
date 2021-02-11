@@ -21,12 +21,82 @@
   },
   {
     "id": "item_02",
+    "name": "Biomass",
+    "icon": "eco",
+    "initialPowerPerSec": 10,
+    "initialPrice": 1200,
+    "initialPriceGrowth": 100,
+    "priceGrowthPerAmount": 50,
+    "upgradeId": "upgrade_02"
+  },
+  {
+    "id": "item_03",
+    "name": "Wind Turbine",
+    "icon": "settings_input_antenna",
+    "initialPowerPerSec": 24,
+    "initialPrice": 15000,
+    "initialPriceGrowth": 1000,
+    "priceGrowthPerAmount": 250,
+    "upgradeId": "upgrade_03"
+  },
+  {
+    "id": "item_04",
     "name": "Solar Panel",
     "icon": "brightness_5",
-    "initialPowerPerSec": 20,
-    "initialPrice": 800,
-    "initialPriceGrowth": 100,
-    "priceGrowthPerAmount": 20,
-    "upgradeId": "upgrade_02"
+    "initialPowerPerSec": 150,
+    "initialPrice": 300000,
+    "initialPriceGrowth": 40000,
+    "priceGrowthPerAmount": 10000,
+    "upgradeId": "upgrade_04"
+  },
+  {
+    "id": "item_05",
+    "name": "Hydropower",
+    "icon": "waves",
+    "initialPowerPerSec": 600,
+    "initialPrice": 5500000,
+    "initialPriceGrowth": 200000,
+    "priceGrowthPerAmount": 80000,
+    "upgradeId": "upgrade_05"
+  },
+  {
+    "id": "item_06",
+    "name": "Fossil Fuel Power",
+    "icon": "local_fire_department",
+    "initialPowerPerSec": 1500,
+    "initialPrice": 80000000,
+    "initialPriceGrowth": 800000,
+    "priceGrowthPerAmount": 100000,
+    "upgradeId": "upgrade_06"
+  },
+  {
+    "id": "item_07",
+    "name": "Nuclear Fission",
+    "icon": "animation",
+    "initialPowerPerSec": 4000,
+    "initialPrice": 1000000000,
+    "initialPriceGrowth": 20000000,
+    "priceGrowthPerAmount": 5000000,
+    "upgradeId": "upgrade_07"
+  },
+  {
+    "id": "item_08",
+    "name": "Nuclear Fusion",
+    "icon": "blur_on",
+    "initialPowerPerSec": 10000,
+    "initialPrice": 50000000000,
+    "initialPriceGrowth": 800000000,
+    "priceGrowthPerAmount": 20000000,
+    "upgradeId": "upgrade_08"
+  },
+  {
+    "id": "item_09",
+    "name": "The Battery",
+    "icon": "airline_seat_flat_angled",
+    "initialPowerPerSec": 25000,
+    "initialPrice": 2000000000000,
+    "initialPriceGrowth": 900000000000,
+    "priceGrowthPerAmount": 10000000000,
+    "upgradeId": "upgrade_09"
   }
 ]

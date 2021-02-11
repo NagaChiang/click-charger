@@ -3,21 +3,21 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "5179e1157cc37791fbfc4ff75dd4c63d",
-"assets/assets/data/item_data.json": "0e2a4ae8a17d1641020313d246a47f03",
-"assets/assets/data/upgrade_data.json": "3d497d0cb63cdee27a25e82e4cfcacd6",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+  "assets/assets/data/item_data.json": "0105a16f7ae9d51bb596dfa7618e0bbf",
+"assets/assets/data/upgrade_data.json": "e6e5bcc93806ed995e6b59ade7dee70b",
+"assets/NOTICES": "e484e2b8493c0510bf901ffbbe0dbf7a",
+"assets/AssetManifest.json": "5179e1157cc37791fbfc4ff75dd4c63d",
 "assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/NOTICES": "4ee8fc5ed1395bf152b61b7d8641e810",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"version.json": "b3216e9796adb4abc769fa77bbf19949",
+"manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
+"index.html": "3c9207f113dd6fc42f8e73e7eeb2bfd9",
+"/": "3c9207f113dd6fc42f8e73e7eeb2bfd9",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
+"main.dart.js": "5cb2031c5b5c1c3e09e9c4ced7b7d831",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"index.html": "e6adc5591ca8650d391bbe10c2a95761",
-"/": "e6adc5591ca8650d391bbe10c2a95761",
-"main.dart.js": "34c1f7f77f440ba515337610486c336c",
-"manifest.json": "c58b89e4c979752636b552f5b83b107e",
-"version.json": "b3216e9796adb4abc769fa77bbf19949"
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -161,7 +161,7 @@ async function downloadOffline() {
     }
     currentContent[key] = true;
   }
-  for (var resourceKey in Object.keys(RESOURCES)) {
+  for (var resourceKey of Object.keys(RESOURCES)) {
     if (!currentContent[resourceKey]) {
       resources.push(resourceKey);
     }

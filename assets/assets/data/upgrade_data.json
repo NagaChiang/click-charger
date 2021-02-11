@@ -4,29 +4,89 @@
     "name": "Strength Training",
     "icon": "pan_tool",
     "valuePerLevel": 1,
-    "maxLevel": 20,
     "initialPrice": 100,
-    "initialPriceGrowth": 200,
-    "priceGrowthPerAmount": 250 
+    "initialPriceGrowth": 100,
+    "priceGrowthPerAmount": 100 
   },
   {
     "id": "upgrade_01",
     "name": "Genetic Engineering",
     "icon": "pest_control_rodent",
     "valuePerLevel": 0.5,
-    "maxLevel": 20,
     "initialPrice": 400,
-    "initialPriceGrowth": 250,
-    "priceGrowthPerAmount": 400
+    "initialPriceGrowth": 300,
+    "priceGrowthPerAmount": 200
   },
   {
     "id": "upgrade_02",
-    "name": "High Efficiency Material",
+    "name": "Biochemical Conversion",
+    "icon": "eco",
+    "valuePerLevel": 0.5,
+    "initialPrice": 6500,
+    "initialPriceGrowth": 4000,
+    "priceGrowthPerAmount": 2000
+  },
+  {
+    "id": "upgrade_03",
+    "name": "Nano-engineered Polymers",
+    "icon": "settings_input_antenna",
+    "valuePerLevel": 0.5,
+    "initialPrice": 50000,
+    "initialPriceGrowth": 35000,
+    "priceGrowthPerAmount": 20000
+  },
+  {
+    "id": "upgrade_04",
+    "name": "N-type Heterojunction Cells",
     "icon": "brightness_5",
     "valuePerLevel": 0.5,
-    "maxLevel": 20,
-    "initialPrice": 5000,
-    "initialPriceGrowth": 2000,
-    "priceGrowthPerAmount": 2000
+    "initialPrice": 1200000,
+    "initialPriceGrowth": 800000,
+    "priceGrowthPerAmount": 600000
+  },
+  {
+    "id": "upgrade_05",
+    "name": "Pumped Storage",
+    "icon": "waves",
+    "valuePerLevel": 0.5,
+    "initialPrice": 80000000,
+    "initialPriceGrowth": 50000000,
+    "priceGrowthPerAmount": 20000000 
+  },
+  {
+    "id": "upgrade_06",
+    "name": "Ultra Critical Design",
+    "icon": "local_fire_department",
+    "valuePerLevel": 0.2,
+    "initialPrice": 1000000000,
+    "initialPriceGrowth": 600000000,
+    "priceGrowthPerAmount": 250000000
+  },
+  {
+    "id": "upgrade_07",
+    "name": "Fast Reactor",
+    "icon": "animation",
+    "valuePerLevel": 0.2,
+    "initialPrice": 30000000000,
+    "initialPriceGrowth": 10000000000,
+    "priceGrowthPerAmount": 8000000000
+  },
+  {
+    "id": "upgrade_08",
+    "name": "High Temperature Reactor",
+    "icon": "blur_on",
+    "valuePerLevel": 0.2,
+    "initialPrice": 800000000000,
+    "initialPriceGrowth": 300000000000,
+    "priceGrowthPerAmount": 100000000000
+  },
+  {
+    "id": "upgrade_09",
+    "name": "Wonderful Dreams",
+    "icon": "airline_seat_flat_angled",
+    "valuePerLevel": 0.2,
+    "initialPrice": 50000000000000,
+    "initialPriceGrowth": 20000000000000,
+    "priceGrowthPerAmount": 8000000000000
   }
 ]
