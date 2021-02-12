@@ -21,19 +21,13 @@ class UpgradePage extends StatefulWidget {
   _UpgradePageState createState() => _UpgradePageState();
 }
 
-class _UpgradePageState extends State<UpgradePage>
-    with AutomaticKeepAliveClientMixin {
+class _UpgradePageState extends State<UpgradePage> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   int _unlockedItemCount = 0;
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 

@@ -10,6 +10,7 @@ import 'game_state.dart';
 import 'inventory_page.dart';
 import 'item_data.dart';
 import 'item_state.dart';
+import 'main_screen_page_state.dart';
 import 'power_service.dart';
 import 'upgrade_data.dart';
 import 'upgrade_page.dart';
@@ -41,12 +42,6 @@ class ClickChargerApp extends StatelessWidget {
   }
 }
 
-enum MainScreenPage {
-  Build,
-  Charge,
-  Upgrade,
-}
-
 class MainScreen extends StatefulWidget {
   MainScreen({Key key}) : super(key: key);
 
@@ -61,14 +56,14 @@ class _MainScreenState extends State<MainScreen> {
   GameData _gameData = GameData();
   GameState _gameState;
   PageController _pageController;
-  MainScreenPage _currentPage = MainScreenPage.Charge;
+  MainScreenPageState _pageState = MainScreenPageState();
   Timer _updateTimer;
 
   @override
   void initState() {
     super.initState();
 
-    _pageController = PageController(initialPage: _currentPage.index);
+    _pageController = PageController(initialPage: _pageState.page.index);
     _initFuture = _initialize();
   }
 
@@ -97,7 +92,8 @@ class _MainScreenState extends State<MainScreen> {
         return MultiProvider(
           providers: [
             Provider.value(value: _gameData),
-            ChangeNotifierProvider.value(value: _gameState)
+            ChangeNotifierProvider.value(value: _gameState),
+            ChangeNotifierProvider.value(value: _pageState)
           ],
           child: Container(
             color: Colors.black,
@@ -134,9 +130,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: PageView(
                     controller: _pageController,
                     onPageChanged: (int index) {
-                      setState(() {
-                        _currentPage = MainScreenPage.values[index];
-                      });
+                      _pageState.setPage(MainScreenPage.values[index]);
                     },
                     children: [
                       InventoryPage(
@@ -157,33 +151,34 @@ class _MainScreenState extends State<MainScreen> {
                     ],
                   ),
                 ),
-                bottomNavigationBar: BottomNavigationBar(
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.build),
-                      label: 'Inventory',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.analytics),
-                      label: 'Console',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.arrow_circle_up),
-                      label: 'Upgrade',
-                    ),
-                  ],
-                  currentIndex: _currentPage.index,
-                  onTap: (int index) {
-                    setState(() {
-                      _currentPage = MainScreenPage.values[index];
+                bottomNavigationBar: Builder(builder: (context) {
+                  return BottomNavigationBar(
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.build),
+                        label: 'Inventory',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.analytics),
+                        label: 'Console',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.arrow_circle_up),
+                        label: 'Upgrade',
+                      ),
+                    ],
+                    currentIndex:
+                        Provider.of<MainScreenPageState>(context).page.index,
+                    onTap: (int index) {
+                      _pageState.setPage(MainScreenPage.values[index]);
                       _pageController.animateToPage(
                         index,
                         duration: Duration(milliseconds: 250),
                         curve: Curves.easeInOut,
                       );
-                    });
-                  },
-                ),
+                    },
+                  );
+                }),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 floatingActionButton: ChargeButton(

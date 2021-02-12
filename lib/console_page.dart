@@ -17,15 +17,9 @@ class ConsolePage extends StatefulWidget {
   _ConsolePageState createState() => _ConsolePageState();
 }
 
-class _ConsolePageState extends State<ConsolePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _ConsolePageState extends State<ConsolePage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [

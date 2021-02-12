@@ -22,19 +22,13 @@ class InventoryPage extends StatefulWidget {
   _InventoryPageState createState() => _InventoryPageState();
 }
 
-class _InventoryPageState extends State<InventoryPage>
-    with AutomaticKeepAliveClientMixin {
+class _InventoryPageState extends State<InventoryPage> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   int _unlockedItemCount = 1;
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 
