@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'console_page.dart';
+import 'dashboard_page.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'inventory_page.dart';
@@ -17,7 +17,6 @@ import 'upgrade_page.dart';
 import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
-import 'widgets/charge_button.dart';
 
 void main() {
   runApp(ClickChargerApp());
@@ -138,10 +137,11 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       Builder(
                         builder: (context) {
-                          return ConsolePage(
-                            totalPower:
-                                Provider.of<GameState>(context).totalPower,
-                            powerRate: _calculateTotalPowerRate(context),
+                          return DashboardPage(
+                            gameData:
+                                Provider.of<GameData>(context, listen: false),
+                            gameState: Provider.of<GameState>(context),
+                            onChargeButtonPressed: _onChargeButtonPressed,
                           );
                         },
                       ),
@@ -179,11 +179,6 @@ class _MainScreenState extends State<MainScreen> {
                     },
                   );
                 }),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
-                floatingActionButton: ChargeButton(
-                  onPressed: _onChargeButtonPressed,
-                ),
               ),
             ),
           ),
@@ -216,7 +211,7 @@ class _MainScreenState extends State<MainScreen> {
     double power = pressData.initialPowerPerSec * (1 + bonus);
 
     if (!kReleaseMode && _gameState.isDebugMode) {
-      power = 100000000;
+      power = 10000000000;
     }
 
     _gameState.addPower(power);

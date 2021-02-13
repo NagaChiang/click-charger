@@ -61,7 +61,7 @@
   },
   {
     "id": "item_06",
-    "name": "Fossil Fuel Power",
+    "name": "Fossil Fuel",
     "icon": "local_fire_department",
     "initialPowerPerSec": 1500,
     "initialPrice": 80000000,

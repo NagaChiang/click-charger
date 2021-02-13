@@ -10,6 +10,7 @@ import 'item_state.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'power_service.dart';
+import 'utils/utils.dart';
 
 class InventoryPage extends StatefulWidget {
   final Function(String) onItemTapped;
@@ -22,13 +23,19 @@ class InventoryPage extends StatefulWidget {
   _InventoryPageState createState() => _InventoryPageState();
 }
 
-class _InventoryPageState extends State<InventoryPage> {
+class _InventoryPageState extends State<InventoryPage>
+    with AutomaticKeepAliveClientMixin {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   int _unlockedItemCount = 1;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     GameData gameData = Provider.of(context, listen: false);
     GameState gameState = Provider.of(context);
 
@@ -71,7 +78,7 @@ class _InventoryPageState extends State<InventoryPage> {
   }
 
   void _checkUnlockedItem(BuildContext context, GameState gameState) {
-    int newUnlockedItemCount = _getUnlockedItemCount(gameState);
+    int newUnlockedItemCount = Utils.getUnlockedItemCount(gameState);
     for (int index = _unlockedItemCount;
         index < newUnlockedItemCount;
         index++) {
@@ -99,24 +106,12 @@ class _InventoryPageState extends State<InventoryPage> {
     }
   }
 
-  int _getUnlockedItemCount(GameState gameState) {
-    int count = 1;
-    for (ItemState state in gameState.itemStates.values) {
-      if (state.amount == 0) {
-        break;
-      }
-
-      count++;
-    }
-
-    return count;
-  }
-
   void _showItemUnlockedSnackBar(BuildContext context, String itemId) {
     GameData gameData = Provider.of<GameData>(context, listen: false);
     ItemData data = gameData.itemDatas[itemId];
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 2000),
       content: ListTile(
         leading: Container(
           width: 40,
@@ -148,7 +143,6 @@ class _InventoryPageState extends State<InventoryPage> {
               .copyWith(color: Colors.white),
         ),
       ),
-      behavior: SnackBarBehavior.floating,
     ));
   }
 
@@ -158,6 +152,7 @@ class _InventoryPageState extends State<InventoryPage> {
     UpgradeData upgradeData = gameData.upgradeDatas[itemData.upgradeId];
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 2000),
       content: ListTile(
         leading: Container(
           width: 30,
@@ -207,7 +202,6 @@ class _InventoryPageState extends State<InventoryPage> {
               .copyWith(color: Colors.white),
         ),
       ),
-      behavior: SnackBarBehavior.floating,
     ));
   }
 }
