@@ -13,7 +13,7 @@ class Utils {
   static int getUnlockedItemCount(GameState gameState) {
     int count = 1;
     for (ItemState state in gameState.itemStates.values) {
-      if (state.amount == 0) {
+      if (state.amount == 0 || count == gameState.itemStates.length) {
         break;
       }
 

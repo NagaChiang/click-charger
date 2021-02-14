@@ -25,7 +25,9 @@ class PowerService {
     UpgradeState upgradeState = gameState.upgradeStates[itemData.upgradeId];
 
     double bonus = upgradeData.calculateBonus(upgradeState.level);
-    double rate = itemData.calculatePowerRate(bonus) * itemState.amount;
+    double rate =
+        (itemData.calculatePowerRate(bonus) + gameState.getAntimatterBonus()) *
+            itemState.amount;
 
     return rate;
   }
@@ -41,13 +43,15 @@ class PowerService {
     UpgradeData data = gameData.upgradeDatas[upgradeId];
     UpgradeState state = gameState.upgradeStates[upgradeId];
 
-    return data.calculateBonus(state.level);
+    return data.calculateBonus(state.level) + gameState.getAntimatterBonus();
   }
 
   static double getPowerPerPress(GameData gameData, GameState gameState) {
     UpgradeData upgradeData = gameData.upgradeDatas['press'];
     UpgradeState upgradeState = gameState.upgradeStates['press'];
 
-    return 1 + upgradeData.calculateBonus(upgradeState.level);
+    return 1 +
+        upgradeData.calculateBonus(upgradeState.level) +
+        gameState.getAntimatterBonus();
   }
 }

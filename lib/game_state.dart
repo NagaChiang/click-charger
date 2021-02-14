@@ -10,6 +10,7 @@ class GameState with ChangeNotifier {
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};
   double totalPower = 0;
+  int antiMatterCount = 0;
 
   GameState({
     @required GameData gameData,
@@ -21,6 +22,10 @@ class GameState with ChangeNotifier {
     for (UpgradeData data in gameData.upgradeDatas.values) {
       upgradeStates[data.id] = UpgradeState();
     }
+  }
+
+  double getAntimatterBonus() {
+    return 0.01 * antiMatterCount;
   }
 
   void addPower(double power) {
@@ -39,6 +44,16 @@ class GameState with ChangeNotifier {
     assert(upgradeStates.containsKey(upgradeId));
 
     upgradeStates[upgradeId].level += level;
+    notifyListeners();
+  }
+
+  void ascend(int antimatter) {
+    antiMatterCount += antimatter;
+
+    totalPower = 0;
+    itemStates.updateAll((key, value) => ItemState());
+    upgradeStates.updateAll((key, value) => UpgradeState());
+
     notifyListeners();
   }
 

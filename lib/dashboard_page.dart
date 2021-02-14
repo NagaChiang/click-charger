@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
+import 'constants.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'item_data.dart';
@@ -14,15 +15,18 @@ import 'widgets/charge_button.dart';
 class DashboardPage extends StatelessWidget {
   final GameData gameData;
   final GameState gameState;
-  final VoidCallback onChargeButtonPressed;
+  final Function onChargeButtonPressed;
+  final Function(Function) onAscensionButtonPressed;
 
   DashboardPage({
     @required this.gameData,
     @required this.gameState,
     @required this.onChargeButtonPressed,
+    @required this.onAscensionButtonPressed,
   })  : assert(gameData != null),
         assert(gameState != null),
-        assert(onChargeButtonPressed != null);
+        assert(onChargeButtonPressed != null),
+        assert(onAscensionButtonPressed != null);
 
   @override
   Widget build(BuildContext context) {
@@ -51,32 +55,40 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Flexible(
-                child: Card(
-                  child: SizedBox.expand(
-                    child: Center(
-                      child: ListTile(
-                        dense: true,
-                        leading: Container(
-                          width: 30,
-                          alignment: Alignment.center,
-                          child: Icon(Icons.api),
-                        ),
-                        title: Text('Antimatter'),
-                        subtitle: Row(
-                          children: [
-                            Text('x 0'),
-                            Spacer(),
-                            Text('(+0%)'),
-                          ],
+              gameState.antiMatterCount > 0
+                  ? Flexible(
+                      child: Card(
+                        child: SizedBox.expand(
+                          child: Center(
+                            child: ListTile(
+                              dense: true,
+                              leading: Container(
+                                width: 30,
+                                alignment: Alignment.center,
+                                child: Icon(Icons.api),
+                              ),
+                              title: Text('Antimatter'),
+                              subtitle: Row(
+                                children: [
+                                  Text(
+                                      'x ${Utils.toFormattedNumber(gameState.antiMatterCount)}'),
+                                  Spacer(),
+                                  Text(
+                                      '(+${Utils.toFormattedNumber(gameState.antiMatterCount)}%)'),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : Spacer(),
             ],
           ),
+        ),
+        Divider(
+          indent: 40,
+          endIndent: 40,
         ),
         Flexible(
           flex: 7,
@@ -94,54 +106,133 @@ class DashboardPage extends StatelessWidget {
                   gameState.upgradeStates.values.elementAt(index);
 
               return Card(
-                child: Center(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        dense: true,
-                        leading: Container(
-                          alignment: Alignment.center,
-                          width: 15,
-                          child: Icon(itemData.icon),
-                        ),
-                        title: Text(
-                          itemData.name,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Text(
-                              'Lv ${Utils.toFormattedNumber(upgradeState.level)}',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                            Spacer(),
-                            Text(
-                              'x ${Utils.toFormattedNumber(itemState.amount)}',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
-                        ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ListTile(
+                      dense: true,
+                      leading: Container(
+                        alignment: Alignment.center,
+                        width: 15,
+                        child: Icon(itemData.icon),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                              '${Utils.toFormattedNumber(PowerService.getPowerRate(gameData, gameState, itemData.id))} w/s'),
-                        ),
+                      title: Text(
+                        itemData.name,
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
-                    ],
-                  ),
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            'Lv ${Utils.toFormattedNumber(upgradeState.level)}',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                          Spacer(),
+                          Text(
+                            'x ${Utils.toFormattedNumber(itemState.amount)}',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                            '${Utils.toFormattedNumber(PowerService.getPowerRate(gameData, gameState, itemData.id))} w/s'),
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
           ),
         ),
+        Divider(
+          indent: 40,
+          endIndent: 40,
+        ),
         Flexible(
           flex: 1,
-          child: ChargeButton(onPressed: onChargeButtonPressed),
+          child: Row(
+            children: [
+              Spacer(),
+              Flexible(
+                fit: FlexFit.tight,
+                child: ChargeButton(onPressed: onChargeButtonPressed),
+              ),
+              _isAscensionAvailable()
+                  ? Flexible(
+                      fit: FlexFit.tight,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showAscensionDialog(context);
+                          },
+                          child: Text('Ascend'),
+                        ),
+                      ),
+                    )
+                  : Spacer(),
+            ],
+          ),
         ),
       ],
     );
+  }
+
+  bool _isAscensionAvailable() {
+    return gameState.upgradeStates.values.last.level > 0;
+  }
+
+  Future<void> _showAscensionDialog(BuildContext context) async {
+    int convertedAntimatterCount = _getConvertedAntimatterCount();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Ascension',
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text(
+                    'Ascending will reset your game and convert your current power into antimatters, which provide permanent universal bonus.'),
+                Text(''),
+                Text(
+                    'You will obtain $convertedAntimatterCount antimatter(s) (+$convertedAntimatterCount%)'),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Ascend'),
+              onPressed: convertedAntimatterCount > 0
+                  ? () {
+                      Navigator.of(context).pop();
+                      onAscensionButtonPressed?.call(() {
+                        gameState.ascend(convertedAntimatterCount);
+                      });
+                    }
+                  : null,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  int _getConvertedAntimatterCount() {
+    return (gameState.totalPower / Constants.antimatterPrice).floor();
   }
 }

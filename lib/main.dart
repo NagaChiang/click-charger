@@ -30,7 +30,7 @@ class ClickChargerApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.orange,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
@@ -57,6 +57,8 @@ class _MainScreenState extends State<MainScreen> {
   PageController _pageController;
   MainScreenPageState _pageState = MainScreenPageState();
   Timer _updateTimer;
+  bool _isFadingOut = false;
+  Function _onFadedOut;
 
   @override
   void initState() {
@@ -99,92 +101,132 @@ class _MainScreenState extends State<MainScreen> {
             alignment: Alignment.center,
             child: AspectRatio(
               aspectRatio: 9 / 16,
-              child: Scaffold(
-                appBar: AppBar(
-                  leading: Builder(
-                      builder: (context) =>
-                          kReleaseMode ? null : _buildDebugWidget(context)),
-                  title: Builder(
-                    builder: (context) {
-                      return Column(
-                        children: [
-                          AnimatedNumberText(
-                            number: Provider.of<GameState>(context)
-                                .totalPower
-                                .floor(),
-                            duration: Duration(milliseconds: 200),
-                            postString: ' w',
-                          ),
-                          Text(
-                            '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} w/s',
-                            style: Theme.of(context).accentTextTheme.caption,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  centerTitle: true,
-                ),
-                body: SizedBox.expand(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (int index) {
-                      _pageState.setPage(MainScreenPage.values[index]);
-                    },
-                    children: [
-                      InventoryPage(
-                        onItemTapped: _onBuildItemTapped,
-                      ),
-                      Builder(
-                        builder: (context) {
-                          return DashboardPage(
-                            gameData:
-                                Provider.of<GameData>(context, listen: false),
-                            gameState: Provider.of<GameState>(context),
-                            onChargeButtonPressed: _onChargeButtonPressed,
-                          );
-                        },
-                      ),
-                      UpgradePage(
-                        onItemTapped: _onUpgradeItemTapped,
-                      ),
-                    ],
-                  ),
-                ),
-                bottomNavigationBar: Builder(builder: (context) {
-                  return BottomNavigationBar(
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.build),
-                        label: 'Inventory',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.analytics),
-                        label: 'Console',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.arrow_circle_up),
-                        label: 'Upgrade',
-                      ),
-                    ],
-                    currentIndex:
-                        Provider.of<MainScreenPageState>(context).page.index,
-                    onTap: (int index) {
-                      _pageState.setPage(MainScreenPage.values[index]);
-                      _pageController.animateToPage(
-                        index,
-                        duration: Duration(milliseconds: 250),
-                        curve: Curves.easeInOut,
-                      );
-                    },
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 1000),
+                transitionBuilder: (child, animation) {
+                  animation.addStatusListener((status) {
+                    if (_isFadingOut && status == AnimationStatus.completed) {
+                      setState(() {
+                        _isFadingOut = false;
+                      });
+
+                      _onFadedOut?.call();
+                    }
+                  });
+
+                  return FadeTransition(
+                    child: child,
+                    opacity: animation,
                   );
-                }),
+                },
+                child: _isFadingOut
+                    ? Container(
+                        color: Colors.black,
+                      )
+                    : Scaffold(
+                        appBar: AppBar(
+                          leading: Builder(
+                              builder: (context) => kReleaseMode
+                                  ? null
+                                  : _buildDebugWidget(context)),
+                          title: Builder(
+                            builder: (context) {
+                              return Column(
+                                children: [
+                                  AnimatedNumberText(
+                                    number: Provider.of<GameState>(context)
+                                        .totalPower
+                                        .floor(),
+                                    duration: Duration(milliseconds: 200),
+                                    postString: ' w',
+                                  ),
+                                  Text(
+                                    '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} w/s',
+                                    style: Theme.of(context)
+                                        .accentTextTheme
+                                        .caption,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          centerTitle: true,
+                        ),
+                        body: SizedBox.expand(
+                          child: PageView(
+                            controller: _pageController,
+                            onPageChanged: (int index) {
+                              _pageState.setPage(MainScreenPage.values[index]);
+                            },
+                            children: [
+                              InventoryPage(
+                                onItemTapped: _onBuildItemTapped,
+                              ),
+                              Builder(
+                                builder: (context) {
+                                  return DashboardPage(
+                                    gameData: Provider.of<GameData>(context,
+                                        listen: false),
+                                    gameState: Provider.of<GameState>(context),
+                                    onChargeButtonPressed:
+                                        _onChargeButtonPressed,
+                                    onAscensionButtonPressed: (onFadedOut) {
+                                      fadeOut(onFadedOut);
+                                    },
+                                  );
+                                },
+                              ),
+                              UpgradePage(
+                                onItemTapped: _onUpgradeItemTapped,
+                              ),
+                            ],
+                          ),
+                        ),
+                        bottomNavigationBar: Builder(builder: (context) {
+                          return BottomNavigationBar(
+                            items: [
+                              BottomNavigationBarItem(
+                                icon: Icon(Icons.build),
+                                label: 'Build',
+                              ),
+                              BottomNavigationBarItem(
+                                icon: Icon(Icons.analytics),
+                                label: 'Dashboard',
+                              ),
+                              BottomNavigationBarItem(
+                                icon: Icon(Icons.arrow_circle_up),
+                                label: 'Upgrade',
+                              ),
+                            ],
+                            currentIndex:
+                                Provider.of<MainScreenPageState>(context)
+                                    .page
+                                    .index,
+                            onTap: (int index) {
+                              _pageState.setPage(MainScreenPage.values[index]);
+                              _pageController.animateToPage(
+                                index,
+                                duration: Duration(milliseconds: 250),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                          );
+                        }),
+                      ),
               ),
             ),
           ),
         );
       },
     );
+  }
+
+  void fadeOut(VoidCallback onFadedOut) {
+    setState(() {
+      _isFadingOut = true;
+    });
+
+    _onFadedOut = onFadedOut;
   }
 
   Widget _buildDebugWidget(BuildContext context) {
@@ -211,7 +253,7 @@ class _MainScreenState extends State<MainScreen> {
     double power = pressData.initialPowerPerSec * (1 + bonus);
 
     if (!kReleaseMode && _gameState.isDebugMode) {
-      power = 10000000000;
+      power = 100000000000000;
     }
 
     _gameState.addPower(power);

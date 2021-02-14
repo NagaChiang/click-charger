@@ -52,12 +52,13 @@ class _ChargeButtonState extends State<ChargeButton>
             widget.onPressed?.call();
           },
           child: Container(
-            width: 60,
-            height: 60,
+            width: 55,
+            height: 55,
             alignment: Alignment.center,
             child: Icon(
               Icons.flash_on,
               size: 45,
+              color: Colors.yellow,
             ),
           ),
         ),
