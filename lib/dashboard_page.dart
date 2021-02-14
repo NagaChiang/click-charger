@@ -1,6 +1,3 @@
-import 'package:click_charger/item_state.dart';
-import 'package:click_charger/upgrade_data.dart';
-import 'package:click_charger/upgrade_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -8,7 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'item_data.dart';
+import 'item_state.dart';
 import 'power_service.dart';
+import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/charge_button.dart';
 
@@ -29,6 +28,56 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Flexible(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                child: Card(
+                  child: SizedBox.expand(
+                    child: Center(
+                      child: ListTile(
+                        dense: true,
+                        leading: Container(
+                          width: 30,
+                          alignment: Alignment.center,
+                          child: Icon(Icons.flash_on),
+                        ),
+                        title: Text(
+                            '${Utils.toFormattedNumber(PowerService.getPowerPerPress(gameData, gameState))} w/press'),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Card(
+                  child: SizedBox.expand(
+                    child: Center(
+                      child: ListTile(
+                        dense: true,
+                        leading: Container(
+                          width: 30,
+                          alignment: Alignment.center,
+                          child: Icon(Icons.api),
+                        ),
+                        title: Text('Antimatter'),
+                        subtitle: Row(
+                          children: [
+                            Text('x 0'),
+                            Spacer(),
+                            Text('(+0%)'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         Flexible(
           flex: 7,
           child: GridView.builder(

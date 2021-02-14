@@ -43,4 +43,11 @@ class PowerService {
 
     return data.calculateBonus(state.level);
   }
+
+  static double getPowerPerPress(GameData gameData, GameState gameState) {
+    UpgradeData upgradeData = gameData.upgradeDatas['press'];
+    UpgradeState upgradeState = gameState.upgradeStates['press'];
+
+    return 1 + upgradeData.calculateBonus(upgradeState.level);
+  }
 }
