@@ -204,7 +204,7 @@ class DashboardPage extends StatelessWidget {
                     'Ascending will reset your game and convert your current power into antimatters, which provide permanent universal bonus.'),
                 Text(''),
                 Text(
-                    'You will obtain $convertedAntimatterCount antimatter(s) (+$convertedAntimatterCount%)'),
+                    'You will obtain $convertedAntimatterCount antimatter(s) (+$convertedAntimatterCount%).'),
               ],
             ),
           ),

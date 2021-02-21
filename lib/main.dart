@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'dashboard_page.dart';
@@ -19,6 +20,13 @@ import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(ClickChargerApp());
 }
 
@@ -302,10 +310,6 @@ class _MainScreenState extends State<MainScreen> {
       double bonus = PowerService.calculateUpgradeBonus(
           gameData, gameState, data.upgradeId);
       double rate = data.calculatePowerRate(bonus) * state.amount;
-      if (data.id == 'press') {
-        // TODO: Critical press
-      }
-
       totalRate += rate;
     }
 
