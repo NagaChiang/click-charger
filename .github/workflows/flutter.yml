@@ -18,18 +18,17 @@ jobs:
       - name: Cache
         uses: actions/cache@v2
         with:
-          key: ${{ github.ref }}-${{ github.sha }}
+          key: ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            ${{ github.ref }}-
+            ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
+            ${{ github.job }}-${{ github.ref }}-
           path: |
             .dart_tool
             build
 
       - name: Build for Web
         working-directory: 'master'
-        run: |
-          flutter pub get
-          flutter build web --release
+        run: flutter build web --release
 
       - name: Checkout github-pages
         uses: actions/checkout@v2
@@ -46,3 +45,77 @@ jobs:
           git add .
           git commit -m "Auto deploy ($GITHUB_SHA)"
           git push
+
+  apk:
+    name: Build apk
+    runs-on: Ubuntu-latest
+    container: cirrusci/flutter:beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
+            ${{ github.job }}-${{ github.ref }}-
+          path: |
+            .dart_tool
+            build
+      
+      - name: Prepare Signing
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+        run: | 
+          echo -n "$KEY_JKS" | openssl base64 -d > android/key.jks
+          echo -n "$KEY_PROPERTIES" > android/key.properties
+
+      - name: Build apk
+        run: flutter build apk --release
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk-release
+          path: build/app/outputs/apk/release/app-release.apk
+
+  app-bundle:
+    name: Build App Bundle
+    runs-on: Ubuntu-latest
+    container: cirrusci/flutter:beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ github.job }}-${{ github.ref }}-${{ github.sha }}
+            ${{ github.job }}-${{ github.ref }}-
+          path: |
+            .dart_tool
+            build
+
+      - name: Prepare Signing
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+        run: | 
+          echo -n "$KEY_JKS" | openssl base64 -d > android/key.jks
+          echo -n "$KEY_PROPERTIES" > android/key.properties
+          
+      - name: Build App Bundle
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/bundle/release/debug-info
+
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-bundle-release
+          path: build/app/outputs/bundle/release/
+
+      
