@@ -36,8 +36,8 @@ class _InventoryPageState extends State<InventoryPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    GameData gameData = Provider.of(context, listen: false);
-    GameState gameState = Provider.of(context);
+    GameData gameData = context.read<GameData>();
+    GameState gameState = context.watch<GameState>();
 
     return AnimatedList(
       key: _listKey,
@@ -107,7 +107,7 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   void _showItemUnlockedSnackBar(BuildContext context, String itemId) {
-    GameData gameData = Provider.of<GameData>(context, listen: false);
+    GameData gameData = context.read<GameData>();
     ItemData data = gameData.itemDatas[itemId];
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -147,7 +147,7 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   void _showUpgradeUnlockedSnackBar(BuildContext context, String itemId) {
-    GameData gameData = Provider.of<GameData>(context, listen: false);
+    GameData gameData = context.read<GameData>();
     ItemData itemData = gameData.itemDatas[itemId];
     UpgradeData upgradeData = gameData.upgradeDatas[itemData.upgradeId];
 

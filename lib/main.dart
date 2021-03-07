@@ -142,8 +142,9 @@ class _MainScreenState extends State<MainScreen> {
                               return Column(
                                 children: [
                                   AnimatedNumberText(
-                                    number: Provider.of<GameState>(context)
-                                        .totalPower
+                                    number: context
+                                        .select<GameState, double>(
+                                            (state) => state.totalPower)
                                         .floor(),
                                     duration: Duration(milliseconds: 200),
                                     postString: ' w',
@@ -173,9 +174,8 @@ class _MainScreenState extends State<MainScreen> {
                               Builder(
                                 builder: (context) {
                                   return DashboardPage(
-                                    gameData: Provider.of<GameData>(context,
-                                        listen: false),
-                                    gameState: Provider.of<GameState>(context),
+                                    gameData: context.read<GameData>(),
+                                    gameState: context.watch<GameState>(),
                                     onChargeButtonPressed:
                                         _onChargeButtonPressed,
                                     onAscensionButtonPressed: (onFadedOut) {
@@ -207,9 +207,7 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ],
                             currentIndex:
-                                Provider.of<MainScreenPageState>(context)
-                                    .page
-                                    .index,
+                                context.watch<MainScreenPageState>().page.index,
                             onTap: (int index) {
                               _pageState.setPage(MainScreenPage.values[index]);
                               _pageController.animateToPage(
@@ -240,10 +238,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildDebugWidget(BuildContext context) {
     assert(!kReleaseMode);
 
-    GameState gameState = Provider.of<GameState>(context);
+    GameState gameState = context.read<GameState>();
 
     return Switch(
-      value: gameState.isDebugMode,
+      value: context.select<GameState, bool>((state) => state.isDebugMode),
       onChanged: (bool value) {
         gameState.setDebugMode(value);
       },
@@ -300,8 +298,8 @@ class _MainScreenState extends State<MainScreen> {
     GameData gameData = _gameData;
     GameState gameState = _gameState;
     if (context != null) {
-      gameData = Provider.of<GameData>(context);
-      gameState = Provider.of<GameState>(context);
+      gameData = context.read<GameData>();
+      gameState = context.watch<GameState>();
     }
 
     double totalRate = 0.0;
