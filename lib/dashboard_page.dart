@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -49,7 +50,7 @@ class DashboardPage extends StatelessWidget {
                           child: Icon(Icons.flash_on),
                         ),
                         title: Text(
-                            '${Utils.toFormattedNumber(PowerService.getPowerPerPress(gameData, gameState))} w/press'),
+                            '${Utils.toFormattedNumber(PowerService.getPowerPerPress(gameData, gameState))} ${'watt'.tr()}/${'press'.tr()}'),
                       ),
                     ),
                   ),
@@ -67,7 +68,7 @@ class DashboardPage extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Icon(Icons.api),
                               ),
-                              title: Text('Antimatter'),
+                              title: Text('antimatter'.tr()),
                               subtitle: Row(
                                 children: [
                                   Text(
@@ -117,13 +118,13 @@ class DashboardPage extends StatelessWidget {
                         child: Icon(itemData.icon),
                       ),
                       title: Text(
-                        itemData.name,
+                        itemData.name.tr(),
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       subtitle: Row(
                         children: [
                           Text(
-                            'Lv ${Utils.toFormattedNumber(upgradeState.level)}',
+                            '${'level'.tr()} ${Utils.toFormattedNumber(upgradeState.level)}',
                             style: Theme.of(context).textTheme.caption,
                           ),
                           Spacer(),
@@ -139,7 +140,7 @@ class DashboardPage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                            '${Utils.toFormattedNumber(PowerService.getPowerRate(gameData, gameState, itemData.id))} w/s'),
+                            '${Utils.toFormattedNumber(PowerService.getPowerRate(gameData, gameState, itemData.id))} ${'watt'.tr()}/${'second'.tr()}'),
                       ),
                     ),
                   ],
@@ -170,7 +171,7 @@ class DashboardPage extends StatelessWidget {
                           onPressed: () {
                             _showAscensionDialog(context);
                           },
-                          child: Text('Ascend'),
+                          child: Text('ascend'.tr()),
                         ),
                       ),
                     )
@@ -194,29 +195,29 @@ class DashboardPage extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Ascension',
+            'ascension'.tr(),
             style: Theme.of(context).textTheme.headline5,
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(
-                    'Ascending will reset your game and convert your current power into antimatters, which provide permanent universal bonus.'),
+                Text('ascensionDescription'.tr()),
                 Text(''),
-                Text(
-                    'You will obtain $convertedAntimatterCount antimatter(s) (+$convertedAntimatterCount%).'),
+                Text('ascensionHint'.tr(namedArgs: {
+                  'count': convertedAntimatterCount.toString(),
+                })),
               ],
             ),
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: Text('cancel'.tr()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: Text('Ascend'),
+              child: Text('ascend'.tr()),
               onPressed: convertedAntimatterCount > 0
                   ? () {
                       Navigator.of(context).pop();

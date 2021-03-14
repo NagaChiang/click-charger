@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -48,19 +49,20 @@ class UpgradeListItem extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(data.name),
+        title: Text(data.name.tr()),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(data.id == 'press'
-                ? '+${data.valuePerLevel}/Lv'
-                : '+${data.valuePerLevel * 100}%/Lv'),
-            Text('\$${Utils.toFormattedNumber(price)}'),
+                ? '+${data.valuePerLevel}/${'level'.tr()}'
+                : '+${data.valuePerLevel * 100}%/${'level'.tr()}'),
+            Text('${Utils.toFormattedNumber(price)} ${'watt'.tr()}'),
           ],
         ),
         trailing: Container(
           width: 40,
-          child: Text('Lv ${Utils.toFormattedNumber(state.level)}'),
+          child:
+              Text('${'level'.tr()} ${Utils.toFormattedNumber(state.level)}'),
         ),
         enabled: enabled ?? false,
         onTap: () => onItemTapped?.call(data.id),

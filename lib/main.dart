@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,12 @@ import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
 
-void main() {
+const Locale simplifiedChineseLocale =
+    const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans');
+const Locale traditionalChineseLocale =
+    const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
   SystemChrome.setPreferredOrientations([
@@ -27,14 +33,25 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(ClickChargerApp());
+  await EasyLocalization.ensureInitialized();
+
+  runApp(EasyLocalization(
+    path: 'assets/translations',
+    supportedLocales: [
+      const Locale('en'),
+      traditionalChineseLocale,
+      simplifiedChineseLocale,
+    ],
+    fallbackLocale: const Locale('en'),
+    child: ClickChargerApp(),
+  ));
 }
 
 class ClickChargerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Click Charger',
+      onGenerateTitle: (context) => 'clickCharger'.tr(),
       themeMode: ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
@@ -43,8 +60,30 @@ class ClickChargerApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: MainScreen(),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      localeResolutionCallback: (locale, supports) {
+        if (locale.languageCode != 'zh') {
+          return null;
+        }
+
+        if (locale.scriptCode == 'Hant') {
+          return traditionalChineseLocale;
+        }
+
+        if (locale.scriptCode == 'Hans') {
+          return simplifiedChineseLocale;
+        }
+
+        if (locale.countryCode == 'HK' || locale.countryCode == 'TW') {
+          return traditionalChineseLocale;
+        }
+
+        return simplifiedChineseLocale;
+      },
+      home: MainScreen(),
     );
   }
 }
@@ -147,10 +186,10 @@ class _MainScreenState extends State<MainScreen> {
                                             (state) => state.totalPower)
                                         .floor(),
                                     duration: Duration(milliseconds: 200),
-                                    postString: ' w',
+                                    postString: ' ${'watt'.tr()}',
                                   ),
                                   Text(
-                                    '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} w/s',
+                                    '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} ${'watt'.tr()}/${'second'.tr()}',
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .caption,
@@ -195,15 +234,15 @@ class _MainScreenState extends State<MainScreen> {
                             items: [
                               BottomNavigationBarItem(
                                 icon: Icon(Icons.build),
-                                label: 'Build',
+                                label: 'bottomNavBarLabel.build'.tr(),
                               ),
                               BottomNavigationBarItem(
                                 icon: Icon(Icons.analytics),
-                                label: 'Dashboard',
+                                label: 'bottomNavBarLabel.dashboard'.tr(),
                               ),
                               BottomNavigationBarItem(
                                 icon: Icon(Icons.arrow_circle_up),
-                                label: 'Upgrade',
+                                label: 'bottomNavBarLabel.upgrade'.tr(),
                               ),
                             ],
                             currentIndex:

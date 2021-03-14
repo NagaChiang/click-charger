@@ -1,4 +1,4 @@
-import 'package:click_charger/upgrade_data.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +9,7 @@ import 'item_data.dart';
 import 'item_state.dart';
 import 'game_data.dart';
 import 'game_state.dart';
+import 'upgrade_data.dart';
 import 'power_service.dart';
 import 'utils/utils.dart';
 
@@ -122,21 +123,21 @@ class _InventoryPageState extends State<InventoryPage>
           ),
         ),
         title: Text(
-          data.name,
+          data.name.tr(),
           style: Theme.of(context)
               .textTheme
               .bodyText1
               .copyWith(color: Colors.white),
         ),
         subtitle: Text(
-          'Item',
+          'item'.tr(),
           style: Theme.of(context)
               .textTheme
               .subtitle2
               .copyWith(color: Colors.white70, fontSize: 11),
         ),
         trailing: Text(
-          'Unlocked!',
+          'unlockedMessage'.tr(),
           style: Theme.of(context)
               .textTheme
               .bodyText1
@@ -181,21 +182,21 @@ class _InventoryPageState extends State<InventoryPage>
           ),
         ),
         title: Text(
-          upgradeData.name,
+          upgradeData.name.tr(),
           style: Theme.of(context)
               .textTheme
               .bodyText1
               .copyWith(color: Colors.white),
         ),
         subtitle: Text(
-          'Upgrade',
+          'upgrade'.tr(),
           style: Theme.of(context)
               .textTheme
               .subtitle2
               .copyWith(color: Colors.white70, fontSize: 11),
         ),
         trailing: Text(
-          'Unlocked!',
+          'unlockedMessage'.tr(),
           style: Theme.of(context)
               .textTheme
               .bodyText1

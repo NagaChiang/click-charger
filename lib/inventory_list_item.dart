@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,14 +34,14 @@ class InventoryListItem extends StatelessWidget {
           alignment: Alignment.center,
           child: Icon(data.icon),
         ),
-        title: Text(data.name),
+        title: Text(data.name.tr()),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(data.id == 'press'
-                ? '1 time/s'
-                : '${Utils.toFormattedNumber(rate)} w/s'),
-            Text('\$${Utils.toFormattedNumber(price)}'),
+                ? '1 ${'time'.tr()}/${'second'.tr()}'
+                : '${Utils.toFormattedNumber(rate)} ${'watt'.tr()}/${'second'.tr()}'),
+            Text('${Utils.toFormattedNumber(price)} ${'watt'.tr()}'),
           ],
         ),
         trailing: Container(

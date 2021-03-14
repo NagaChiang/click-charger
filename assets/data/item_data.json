@@ -1,7 +1,7 @@
 [
   {
     "id": "press",
-    "name": "Auto Presser",
+    "name": "pressItemName",
     "icon": "pan_tool",
     "initialPowerPerSec": 1,
     "initialPrice": 10,
@@ -11,7 +11,7 @@
   },
   {
     "id": "item_01",
-    "name": "Hamster Wheel",
+    "name": "itemName_01",
     "icon": "pest_control_rodent",
     "initialPowerPerSec": 4,
     "initialPrice": 100,
@@ -21,7 +21,7 @@
   },
   {
     "id": "item_02",
-    "name": "Biomass",
+    "name": "itemName_02",
     "icon": "eco",
     "initialPowerPerSec": 10,
     "initialPrice": 1200,
@@ -31,7 +31,7 @@
   },
   {
     "id": "item_03",
-    "name": "Wind Turbine",
+    "name": "itemName_03",
     "icon": "settings_input_antenna",
     "initialPowerPerSec": 24,
     "initialPrice": 15000,
@@ -41,7 +41,7 @@
   },
   {
     "id": "item_04",
-    "name": "Solar Panel",
+    "name": "itemName_04",
     "icon": "brightness_5",
     "initialPowerPerSec": 150,
     "initialPrice": 300000,
@@ -51,7 +51,7 @@
   },
   {
     "id": "item_05",
-    "name": "Hydropower",
+    "name": "itemName_05",
     "icon": "waves",
     "initialPowerPerSec": 600,
     "initialPrice": 5500000,
@@ -61,7 +61,7 @@
   },
   {
     "id": "item_06",
-    "name": "Fossil Fuel",
+    "name": "itemName_06",
     "icon": "local_fire_department",
     "initialPowerPerSec": 1500,
     "initialPrice": 80000000,
@@ -71,7 +71,7 @@
   },
   {
     "id": "item_07",
-    "name": "Nuclear Fission",
+    "name": "itemName_07",
     "icon": "animation",
     "initialPowerPerSec": 4000,
     "initialPrice": 1000000000,
@@ -81,7 +81,7 @@
   },
   {
     "id": "item_08",
-    "name": "Nuclear Fusion",
+    "name": "itemName_08",
     "icon": "blur_on",
     "initialPowerPerSec": 10000,
     "initialPrice": 50000000000,
@@ -91,7 +91,7 @@
   },
   {
     "id": "item_09",
-    "name": "The Battery",
+    "name": "itemName_09",
     "icon": "airline_seat_flat_angled",
     "initialPowerPerSec": 25000,
     "initialPrice": 2000000000000,

@@ -1,7 +1,7 @@
 [
   {
     "id": "press",
-    "name": "Strength Training",
+    "name": "pressUpgradeName",
     "icon": "pan_tool",
     "valuePerLevel": 1,
     "initialPrice": 100,
@@ -10,7 +10,7 @@
   },
   {
     "id": "upgrade_01",
-    "name": "Genetic Engineering",
+    "name": "upgradeName_01",
     "icon": "pest_control_rodent",
     "valuePerLevel": 0.5,
     "initialPrice": 400,
@@ -19,7 +19,7 @@
   },
   {
     "id": "upgrade_02",
-    "name": "Biochemical Conversion",
+    "name": "upgradeName_02",
     "icon": "eco",
     "valuePerLevel": 0.5,
     "initialPrice": 6500,
@@ -28,7 +28,7 @@
   },
   {
     "id": "upgrade_03",
-    "name": "Nano-engineered Polymers",
+    "name": "upgradeName_03",
     "icon": "settings_input_antenna",
     "valuePerLevel": 0.5,
     "initialPrice": 50000,
@@ -37,7 +37,7 @@
   },
   {
     "id": "upgrade_04",
-    "name": "N-type Heterojunction Cells",
+    "name": "upgradeName_04",
     "icon": "brightness_5",
     "valuePerLevel": 0.5,
     "initialPrice": 1200000,
@@ -46,7 +46,7 @@
   },
   {
     "id": "upgrade_05",
-    "name": "Pumped Storage",
+    "name": "upgradeName_05",
     "icon": "waves",
     "valuePerLevel": 0.5,
     "initialPrice": 80000000,
@@ -55,7 +55,7 @@
   },
   {
     "id": "upgrade_06",
-    "name": "Ultra Critical Design",
+    "name": "upgradeName_06",
     "icon": "local_fire_department",
     "valuePerLevel": 0.2,
     "initialPrice": 1000000000,
@@ -64,7 +64,7 @@
   },
   {
     "id": "upgrade_07",
-    "name": "Fast Reactor",
+    "name": "upgradeName_07",
     "icon": "animation",
     "valuePerLevel": 0.2,
     "initialPrice": 30000000000,
@@ -73,7 +73,7 @@
   },
   {
     "id": "upgrade_08",
-    "name": "High Temperature Reactor",
+    "name": "upgradeName_08",
     "icon": "blur_on",
     "valuePerLevel": 0.2,
     "initialPrice": 800000000000,
@@ -82,7 +82,7 @@
   },
   {
     "id": "upgrade_09",
-    "name": "Wonderful Dreams",
+    "name": "upgradeName_09",
     "icon": "airline_seat_flat_angled",
     "valuePerLevel": 0.2,
     "initialPrice": 50000000000000,

@@ -1,7 +1,3 @@
-import 'package:click_charger/item_state.dart';
-import 'package:click_charger/upgrade_data.dart';
-import 'package:click_charger/upgrade_list_item.dart';
-import 'package:click_charger/upgrade_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +5,10 @@ import 'package:provider/provider.dart';
 import 'constants.dart';
 import 'game_data.dart';
 import 'game_state.dart';
+import 'item_state.dart';
+import 'upgrade_data.dart';
+import 'upgrade_list_item.dart';
+import 'upgrade_state.dart';
 
 class UpgradePage extends StatefulWidget {
   final Function(String) onItemTapped;
