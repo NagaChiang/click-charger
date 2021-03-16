@@ -21,8 +21,8 @@ const RESOURCES = {
 "assets/packages/easy_localization/i18n/ar.json": "acc0a8eebb2fcee312764600f7cc41ec",
 "assets/packages/easy_localization/i18n/en-US.json": "5bd908341879a431441c8208ae30e4fd",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"index.html": "4c00847d8232500f182f8043abf38f21",
-"/": "4c00847d8232500f182f8043abf38f21",
+"index.html": "fa41d65fe6da7a5c1473d0a8ccbd3e58",
+"/": "fa41d65fe6da7a5c1473d0a8ccbd3e58",
 "main.dart.js": "511e3a7a348c64618a90bcb8a73678e3",
 "version.json": "24c33ef95c7c31c645dea88685e570bd",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796"
