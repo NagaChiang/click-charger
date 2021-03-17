@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dashboard_page.dart';
 import 'game_data.dart';
@@ -25,6 +27,9 @@ const Locale simplifiedChineseLocale =
 const Locale traditionalChineseLocale =
     const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
 
+SharedPreferences pref;
+const String gameStatePrefKey = 'gameState';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
@@ -34,6 +39,7 @@ void main() async {
   ]);
 
   await EasyLocalization.ensureInitialized();
+  pref = await SharedPreferences.getInstance();
 
   runApp(EasyLocalization(
     path: 'assets/translations',
@@ -289,6 +295,8 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onTimerUpdate(Timer timer) {
     _gameState.addPower(_calculateTotalPowerRate(null));
+
+    _saveGameStateToPref();
   }
 
   void _onChargeButtonPressed() {
@@ -328,7 +336,14 @@ class _MainScreenState extends State<MainScreen> {
 
   Future _initialize() async {
     _gameData = await GameData.loadFromAssets(context);
-    _gameState = GameState(gameData: _gameData);
+
+    String gameStateJsonString = pref.getString(gameStatePrefKey);
+    if (gameStateJsonString != null) {
+      _gameState = GameState.fromJson(json.decode(gameStateJsonString));
+    } else {
+      _gameState = GameState(gameData: _gameData);
+    }
+
     _updateTimer = Timer.periodic(
         Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
   }
@@ -351,5 +366,10 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return totalRate;
+  }
+
+  void _saveGameStateToPref() {
+    String jsonString = json.encode(_gameState.toJson());
+    pref.setString(gameStatePrefKey, jsonString);
   }
 }

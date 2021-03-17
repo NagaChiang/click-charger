@@ -1,20 +1,29 @@
 import 'package:click_charger/upgrade_state.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
+
 import 'game_data.dart';
 import 'item_state.dart';
 import 'item_data.dart';
 import 'upgrade_data.dart';
 
+part 'game_state.g.dart';
+
+@JsonSerializable()
 class GameState with ChangeNotifier {
+  @JsonKey(ignore: true)
   bool isDebugMode = false;
+
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};
   double totalPower = 0;
   int antiMatterCount = 0;
 
-  GameState({
-    @required GameData gameData,
-  }) : assert(gameData != null) {
+  GameState({GameData gameData}) {
+    if (gameData == null) {
+      return;
+    }
+
     for (ItemData data in gameData.itemDatas.values) {
       itemStates[data.id] = ItemState();
     }
@@ -23,6 +32,11 @@ class GameState with ChangeNotifier {
       upgradeStates[data.id] = UpgradeState();
     }
   }
+
+  factory GameState.fromJson(Map<String, dynamic> json) =>
+      _$GameStateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GameStateToJson(this);
 
   double getAntimatterBonus() {
     return 0.01 * antiMatterCount;
