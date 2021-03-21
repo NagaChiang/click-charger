@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +31,24 @@ const Locale traditionalChineseLocale =
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
 
+final notificationPlugin = FlutterLocalNotificationsPlugin();
+const NotificationDetails powerNotificationDetails = NotificationDetails(
+  android: AndroidNotificationDetails(
+    'charge_clicker_current_power',
+    'Current Power',
+    'Show current power of the game.',
+    playSound: false,
+    enableVibration: false,
+    autoCancel: false,
+    ongoing: true,
+    color: Colors.orange,
+    showWhen: false,
+    showProgress: true,
+    indeterminate: true,
+    category: 'Status',
+  ),
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
@@ -41,6 +60,10 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   pref = await SharedPreferences.getInstance();
 
+  if (!kIsWeb) {
+    await initializeNotificationPlugin();
+  }
+
   runApp(EasyLocalization(
     path: 'assets/translations',
     supportedLocales: [
@@ -51,6 +74,16 @@ void main() async {
     fallbackLocale: const Locale('en'),
     child: ClickChargerApp(),
   ));
+}
+
+Future<bool> initializeNotificationPlugin() async {
+  final settings = InitializationSettings(
+    android: AndroidInitializationSettings('splash'),
+    iOS: IOSInitializationSettings(),
+    macOS: MacOSInitializationSettings(),
+  );
+
+  return notificationPlugin.initialize(settings);
 }
 
 class ClickChargerApp extends StatelessWidget {
@@ -101,7 +134,7 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   static const int _updateIntervalSeconds = 1;
 
   Future _initFuture;
@@ -117,16 +150,27 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
     _pageController = PageController(initialPage: _pageState.page.index);
     _initFuture = _initialize();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
     _pageController.dispose();
     _updateTimer.cancel();
 
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      notificationPlugin.cancelAll();
+    }
   }
 
   @override
@@ -297,6 +341,10 @@ class _MainScreenState extends State<MainScreen> {
     _gameState.addPower(_calculateTotalPowerRate(null));
 
     _saveGameStateToPref();
+
+    if (!kIsWeb) {
+      _showPowerNotification(_gameState.totalPower);
+    }
   }
 
   void _onChargeButtonPressed() {
@@ -371,5 +419,19 @@ class _MainScreenState extends State<MainScreen> {
   void _saveGameStateToPref() {
     String jsonString = json.encode(_gameState.toJson());
     pref.setString(gameStatePrefKey, jsonString);
+  }
+
+  void _showPowerNotification(double power) {
+    String powerString =
+        '${Utils.toFormattedNumber(power.floor())} ${'watt'.tr()}';
+    String rateString =
+        '${Utils.toFormattedNumber(_calculateTotalPowerRate(null))} ${'watt'.tr()}/${'second'.tr()}';
+
+    notificationPlugin.show(
+      0,
+      powerString,
+      rateString,
+      powerNotificationDetails,
+    );
   }
 }
