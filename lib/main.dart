@@ -40,7 +40,7 @@ const NotificationDetails powerNotificationDetails = NotificationDetails(
     playSound: false,
     enableVibration: false,
     autoCancel: false,
-    ongoing: true,
+    ongoing: false,
     color: Colors.orange,
     showWhen: false,
     showProgress: true,
