@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:click_charger/settings_dialog.dart';
+import 'package:click_charger/utils/enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'constants.dart';
 import 'dashboard_page.dart';
 import 'game_data.dart';
 import 'game_state.dart';
@@ -22,11 +25,6 @@ import 'upgrade_page.dart';
 import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
-
-const Locale simplifiedChineseLocale =
-    const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans');
-const Locale traditionalChineseLocale =
-    const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
@@ -49,6 +47,35 @@ const NotificationDetails powerNotificationDetails = NotificationDetails(
   ),
 );
 
+Locale resolveLocale(Iterable<Locale> locales, Iterable<Locale> supports) {
+  Locale resolvedLocale;
+  for (Locale locale in locales) {
+    if (locale.languageCode == 'en') {
+      resolvedLocale = Locale('en');
+    } else if (locale.languageCode == 'zh') {
+      if (locale.scriptCode == 'Hant') {
+        resolvedLocale = Constants.traditionalChineseLocale;
+      } else if (locale.scriptCode == 'Hans') {
+        resolvedLocale = Constants.simplifiedChineseLocale;
+      } else if (locale.countryCode == 'HK' || locale.countryCode == 'TW') {
+        resolvedLocale = Constants.traditionalChineseLocale;
+      } else {
+        resolvedLocale = Constants.simplifiedChineseLocale;
+      }
+    }
+
+    if (resolvedLocale != null) {
+      break;
+    }
+  }
+
+  resolvedLocale = resolvedLocale ?? Locale('en');
+
+  print('Resolve locale: $locales -> $resolvedLocale');
+
+  return resolvedLocale;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
@@ -68,10 +95,11 @@ void main() async {
     path: 'assets/translations',
     supportedLocales: [
       const Locale('en'),
-      traditionalChineseLocale,
-      simplifiedChineseLocale,
+      Constants.traditionalChineseLocale,
+      Constants.simplifiedChineseLocale,
     ],
     fallbackLocale: const Locale('en'),
+    useFallbackTranslations: true,
     child: ClickChargerApp(),
   ));
 }
@@ -103,25 +131,7 @@ class ClickChargerApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      localeResolutionCallback: (locale, supports) {
-        if (locale.languageCode != 'zh') {
-          return null;
-        }
-
-        if (locale.scriptCode == 'Hant') {
-          return traditionalChineseLocale;
-        }
-
-        if (locale.scriptCode == 'Hans') {
-          return simplifiedChineseLocale;
-        }
-
-        if (locale.countryCode == 'HK' || locale.countryCode == 'TW') {
-          return traditionalChineseLocale;
-        }
-
-        return simplifiedChineseLocale;
-      },
+      localeListResolutionCallback: resolveLocale,
       home: MainScreen(),
     );
   }
@@ -174,6 +184,23 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   @override
+  void didChangeLocales(List<Locale> locales) {
+    if (locales == null || locales.isEmpty) {
+      return;
+    }
+
+    if (_gameState.language != Language.systemDefault) {
+      print(
+          'didChangeLocales(): Not using system locale (${_gameState.language}), skip.');
+      return;
+    }
+
+    print('didChangeLocales(): Reflecting changed system locale...');
+    context.setLocale(resolveLocale(locales, context.supportedLocales));
+    context.deleteSaveLocale();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _initFuture,
@@ -222,6 +249,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       )
                     : Scaffold(
                         appBar: AppBar(
+                          centerTitle: true,
                           leading: Builder(
                               builder: (context) => kReleaseMode
                                   ? null
@@ -248,7 +276,35 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                               );
                             },
                           ),
-                          centerTitle: true,
+                          actions: [
+                            IconButton(
+                              icon: Icon(Icons.settings),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => SettingsDialog(
+                                    language: _gameState.language,
+                                    onChanged: (value) {
+                                      _gameState
+                                          .setLanguage(Language.values[value]);
+                                      _saveGameStateToPref();
+
+                                      if (_gameState.language ==
+                                          Language.systemDefault) {
+                                        context.setLocale(resolveLocale(
+                                            [context.deviceLocale],
+                                            context.supportedLocales));
+                                        context.deleteSaveLocale();
+                                      } else {
+                                        context.setLocale(languageLocaleMap[
+                                            _gameState.language]);
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                         body: SizedBox.expand(
                           child: PageView(

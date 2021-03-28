@@ -1,4 +1,4 @@
-import 'package:click_charger/upgrade_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,6 +6,8 @@ import 'game_data.dart';
 import 'item_state.dart';
 import 'item_data.dart';
 import 'upgrade_data.dart';
+import 'upgrade_state.dart';
+import 'utils/enums.dart';
 
 part 'game_state.g.dart';
 
@@ -13,6 +15,9 @@ part 'game_state.g.dart';
 class GameState with ChangeNotifier {
   @JsonKey(ignore: true)
   bool isDebugMode = false;
+
+  @JsonKey(defaultValue: Language.systemDefault)
+  Language language;
 
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};
@@ -68,6 +73,15 @@ class GameState with ChangeNotifier {
     itemStates.updateAll((key, value) => ItemState());
     upgradeStates.updateAll((key, value) => UpgradeState());
 
+    notifyListeners();
+  }
+
+  void setLanguage(Language newLanguage) {
+    if (language == newLanguage) {
+      return;
+    }
+
+    language = newLanguage;
     notifyListeners();
   }
 
