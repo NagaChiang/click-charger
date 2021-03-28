@@ -3,30 +3,30 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
-"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"assets/NOTICES": "fb2f0b09d21d0c4533610a12bed8a4b4",
-"assets/assets/data/item_data.json": "ddb5304ab9a463e1e637e1cf87ab8b20",
+  "assets/assets/translations/en.json": "90bce1ca8375a5ae80440ee522665a9e",
+"assets/assets/translations/zh-Hant.json": "0ac77d4591cb123b2cfa6adef9507e36",
+"assets/assets/translations/zh-Hans.json": "27c1f690fabf3eed3dc7815b7ade4ed0",
 "assets/assets/data/upgrade_data.json": "4e4d949367e2a49820db9ddd8cbec7bd",
+"assets/assets/data/item_data.json": "ddb5304ab9a463e1e637e1cf87ab8b20",
 "assets/assets/images/icon_no_background.png": "8530ba05a75aa7db61809c00c9cf6dde",
 "assets/assets/images/icon.png": "7b4a75ef3b28f18086616e3a7e6ad94e",
-"assets/assets/translations/zh-Hant.json": "a7f336f9a9932f138b62b427e65cc9f9",
-"assets/assets/translations/en.json": "2cb958f78b71d56b46cb6e54dc819e15",
-"assets/assets/translations/zh-Hans.json": "f48b45be40fd9c92574f852df9bd1ecf",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
 "assets/AssetManifest.json": "a517b0191d6caa3b2311942751d3c1f5",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/packages/easy_localization/i18n/ar-DZ.json": "acc0a8eebb2fcee312764600f7cc41ec",
-"assets/packages/easy_localization/i18n/en.json": "5bd908341879a431441c8208ae30e4fd",
-"assets/packages/easy_localization/i18n/ar.json": "acc0a8eebb2fcee312764600f7cc41ec",
 "assets/packages/easy_localization/i18n/en-US.json": "5bd908341879a431441c8208ae30e4fd",
+"assets/packages/easy_localization/i18n/ar.json": "acc0a8eebb2fcee312764600f7cc41ec",
+"assets/packages/easy_localization/i18n/en.json": "5bd908341879a431441c8208ae30e4fd",
+"assets/packages/easy_localization/i18n/ar-DZ.json": "acc0a8eebb2fcee312764600f7cc41ec",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"index.html": "2e610cca965dae891efdd5b6843edff4",
-"/": "2e610cca965dae891efdd5b6843edff4",
-"main.dart.js": "168e717fdd29aa43d1ca35fcaa00ad5a",
-"version.json": "24c33ef95c7c31c645dea88685e570bd",
-"favicon.png": "5dcef449791fa27946b3d35ad8803796"
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
+"assets/NOTICES": "fb2f0b09d21d0c4533610a12bed8a4b4",
+"favicon.png": "5dcef449791fa27946b3d35ad8803796",
+"main.dart.js": "b8a7e4df8fbd233d545a0f610830c05e",
+"index.html": "59b55277a55a03c9bbc584dc0bdf47e5",
+"/": "59b55277a55a03c9bbc584dc0bdf47e5",
+"manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
+"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+"version.json": "24c33ef95c7c31c645dea88685e570bd"
 };
 
 // The application shell files that are downloaded before a service worker can
