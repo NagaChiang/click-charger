@@ -12,6 +12,7 @@ import 'power_service.dart';
 import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/charge_button.dart';
+import 'widgets/fancy_button.dart';
 
 class DashboardPage extends StatelessWidget {
   final GameData gameData;
@@ -155,12 +156,19 @@ class DashboardPage extends StatelessWidget {
         ),
         Flexible(
           flex: 1,
+          fit: FlexFit.tight,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Spacer(),
               Flexible(
                 fit: FlexFit.tight,
-                child: ChargeButton(onPressed: onChargeButtonPressed),
+                child: FancyButton(
+                  child: Center(child: Icon(Icons.flash_on)),
+                  color: Colors.orange,
+                  size: 20,
+                  onPressed: onChargeButtonPressed,
+                ),
               ),
               _isAscensionAvailable()
                   ? Flexible(
