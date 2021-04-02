@@ -21,6 +21,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
   void initState() {
     super.initState();
     _language = widget.language ?? Language.systemDefault;
+    if (widget.language == null) {
+      widget.onChanged?.call(_language.index);
+    }
   }
 
   @override

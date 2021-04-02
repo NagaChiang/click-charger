@@ -17,7 +17,7 @@ class GameState with ChangeNotifier {
   bool isDebugMode = false;
 
   @JsonKey(defaultValue: Language.systemDefault)
-  Language language;
+  Language language = Language.systemDefault;
 
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};

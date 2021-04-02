@@ -52,6 +52,8 @@ Locale resolveLocale(Iterable<Locale> locales, Iterable<Locale> supports) {
   for (Locale locale in locales) {
     if (locale.languageCode == 'en') {
       resolvedLocale = Locale('en');
+    } else if (locale.languageCode == 'ja') {
+      resolvedLocale = Locale('ja');
     } else if (locale.languageCode == 'zh') {
       if (locale.scriptCode == 'Hant') {
         resolvedLocale = Constants.traditionalChineseLocale;
@@ -95,6 +97,7 @@ void main() async {
     path: 'assets/translations',
     supportedLocales: [
       const Locale('en'),
+      const Locale('ja'),
       Constants.traditionalChineseLocale,
       Constants.simplifiedChineseLocale,
     ],
