@@ -34,6 +34,13 @@ class _InventoryPageState extends State<InventoryPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+
+    _unlockedItemCount = Utils.getUnlockedItemCount(context.read<GameState>());
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 

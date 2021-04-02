@@ -19,7 +19,10 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
           e == null ? null : UpgradeState.fromJson(e as Map<String, dynamic>)),
     )
     ..totalPower = (json['totalPower'] as num)?.toDouble()
-    ..antiMatterCount = json['antiMatterCount'] as int;
+    ..antiMatterCount = json['antiMatterCount'] as int
+    ..boostEndTime = json['boostEndTime'] == null
+        ? null
+        : DateTime.parse(json['boostEndTime'] as String);
 }
 
 Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
@@ -28,6 +31,7 @@ Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'upgradeStates': instance.upgradeStates,
       'totalPower': instance.totalPower,
       'antiMatterCount': instance.antiMatterCount,
+      'boostEndTime': instance.boostEndTime?.toIso8601String(),
     };
 
 T _$enumDecode<T>(
@@ -67,4 +71,5 @@ const _$LanguageEnumMap = {
   Language.english: 'english',
   Language.traditionalChinese: 'traditionalChinese',
   Language.simplifiedChinese: 'simplifiedChinese',
+  Language.japanese: 'japanese',
 };

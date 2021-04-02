@@ -11,4 +11,7 @@ class Constants {
       const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans');
   static const Locale traditionalChineseLocale =
       const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
+
+  static const double boostBonus = 0.25;
+  static const Duration durationPerBoost = Duration(hours: 4);
 }

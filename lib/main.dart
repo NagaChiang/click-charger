@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:click_charger/settings_dialog.dart';
-import 'package:click_charger/utils/enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'boost_dialog.dart';
 import 'constants.dart';
 import 'dashboard_page.dart';
 import 'game_data.dart';
@@ -25,6 +24,9 @@ import 'upgrade_page.dart';
 import 'upgrade_state.dart';
 import 'utils/utils.dart';
 import 'widgets/animated_number_text.dart';
+import 'settings_dialog.dart';
+import 'utils/enums.dart';
+import 'widgets/boost_button.dart';
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
@@ -32,7 +34,7 @@ const String gameStatePrefKey = 'gameState';
 final notificationPlugin = FlutterLocalNotificationsPlugin();
 const NotificationDetails powerNotificationDetails = NotificationDetails(
   android: AndroidNotificationDetails(
-    'charge_clicker_current_power',
+    'ChargeClicker_CurrentPower',
     'Current Power',
     'Show current power of the game.',
     playSound: false,
@@ -44,6 +46,16 @@ const NotificationDetails powerNotificationDetails = NotificationDetails(
     showProgress: true,
     indeterminate: true,
     category: 'Status',
+  ),
+);
+
+const NotificationDetails boostExpireNotificationDetails = NotificationDetails(
+  android: AndroidNotificationDetails(
+    'ChargeClicker_BoostExpired',
+    'Boost Expired',
+    'Boost effect has been expired.',
+    color: Colors.orange,
+    category: 'Event',
   ),
 );
 
@@ -89,10 +101,6 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   pref = await SharedPreferences.getInstance();
 
-  if (!kIsWeb) {
-    await initializeNotificationPlugin();
-  }
-
   runApp(EasyLocalization(
     path: 'assets/translations',
     supportedLocales: [
@@ -105,16 +113,6 @@ void main() async {
     useFallbackTranslations: true,
     child: ClickChargerApp(),
   ));
-}
-
-Future<bool> initializeNotificationPlugin() async {
-  final settings = InitializationSettings(
-    android: AndroidInitializationSettings('splash'),
-    iOS: IOSInitializationSettings(),
-    macOS: MacOSInitializationSettings(),
-  );
-
-  return notificationPlugin.initialize(settings);
 }
 
 class ClickChargerApp extends StatelessWidget {
@@ -158,6 +156,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Timer _updateTimer;
   bool _isFadingOut = false;
   Function _onFadedOut;
+  bool _wasBoostActive = false;
 
   @override
   void initState() {
@@ -221,7 +220,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           providers: [
             Provider.value(value: _gameData),
             ChangeNotifierProvider.value(value: _gameState),
-            ChangeNotifierProvider.value(value: _pageState)
+            ChangeNotifierProvider.value(value: _pageState),
           ],
           child: Container(
             color: Colors.black,
@@ -253,10 +252,33 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                     : Scaffold(
                         appBar: AppBar(
                           centerTitle: true,
-                          leading: Builder(
-                              builder: (context) => kReleaseMode
-                                  ? null
-                                  : _buildDebugWidget(context)),
+                          leading: IconButton(
+                            icon: Icon(Icons.settings),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => SettingsDialog(
+                                  language: _gameState.language,
+                                  onChanged: (value) {
+                                    _gameState
+                                        .setLanguage(Language.values[value]);
+                                    _saveGameStateToPref();
+
+                                    if (_gameState.language ==
+                                        Language.systemDefault) {
+                                      context.setLocale(resolveLocale(
+                                          [context.deviceLocale],
+                                          context.supportedLocales));
+                                      context.deleteSaveLocale();
+                                    } else {
+                                      context.setLocale(languageLocaleMap[
+                                          _gameState.language]);
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                           title: Builder(
                             builder: (context) {
                               return Column(
@@ -280,32 +302,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                             },
                           ),
                           actions: [
-                            IconButton(
-                              icon: Icon(Icons.settings),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => SettingsDialog(
-                                    language: _gameState.language,
-                                    onChanged: (value) {
-                                      _gameState
-                                          .setLanguage(Language.values[value]);
-                                      _saveGameStateToPref();
-
-                                      if (_gameState.language ==
-                                          Language.systemDefault) {
-                                        context.setLocale(resolveLocale(
-                                            [context.deviceLocale],
-                                            context.supportedLocales));
-                                        context.deleteSaveLocale();
-                                      } else {
-                                        context.setLocale(languageLocaleMap[
-                                            _gameState.language]);
-                                      }
-                                    },
-                                  ),
-                                );
-                              },
+                            Builder(
+                                builder: (context) => kReleaseMode
+                                    ? null
+                                    : _buildDebugWidget(context)),
+                            Builder(
+                              builder: (context) => BoostButton(
+                                endTime: context.select(
+                                    (GameState state) => state.boostEndTime),
+                                boostCount: context.select(
+                                    (GameState state) => state.boostCount),
+                                onPressed: _showBoostDialog,
+                              ),
                             ),
                           ],
                         ),
@@ -385,6 +393,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   Widget _buildDebugWidget(BuildContext context) {
     assert(!kReleaseMode);
+    if (kReleaseMode) {
+      return Container();
+    }
 
     GameState gameState = context.read<GameState>();
 
@@ -404,12 +415,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     if (!kIsWeb) {
       _showPowerNotification(_gameState.totalPower);
     }
+
+    // Boost expire check
+    bool isBoostActive = _gameState.isBoostActive();
+    if (!kIsWeb && _wasBoostActive && !isBoostActive) {
+      _showBoostExpireNotification();
+    }
+    _wasBoostActive = isBoostActive;
   }
 
   void _onChargeButtonPressed() {
     ItemData pressData = _gameData.itemDatas['press'];
     double bonus = PowerService.calculateUpgradeBonus(
         _gameData, _gameState, pressData.upgradeId);
+
+    if (_gameState.isBoostActive()) {
+      bonus += Constants.boostBonus;
+    }
+
     double power = pressData.initialPowerPerSec * (1 + bonus);
 
     if (!kReleaseMode && _gameState.isDebugMode) {
@@ -442,6 +465,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   Future _initialize() async {
+    if (!kIsWeb) {
+      await _initializeNotificationPlugin();
+    }
+
     _gameData = await GameData.loadFromAssets(context);
 
     String gameStateJsonString = pref.getString(gameStatePrefKey);
@@ -472,6 +499,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       totalRate += rate;
     }
 
+    if (gameState.isBoostActive()) {
+      totalRate += Constants.boostBonus;
+    }
+
     return totalRate;
   }
 
@@ -480,7 +511,28 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     pref.setString(gameStatePrefKey, jsonString);
   }
 
+  Future<bool> _initializeNotificationPlugin() async {
+    final settings = InitializationSettings(
+      android: AndroidInitializationSettings('splash'),
+      iOS: IOSInitializationSettings(),
+      macOS: MacOSInitializationSettings(),
+    );
+
+    return notificationPlugin.initialize(
+      settings,
+      onSelectNotification: _onSelectNotification,
+    );
+  }
+
+  Future _onSelectNotification(String payload) async {
+    if (payload == 'boost') {
+      _showBoostDialog();
+    }
+  }
+
   void _showPowerNotification(double power) {
+    assert(notificationPlugin != null);
+
     String powerString =
         '${Utils.toFormattedNumber(power.floor())} ${'watt'.tr()}';
     String rateString =
@@ -492,5 +544,50 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       rateString,
       powerNotificationDetails,
     );
+  }
+
+  void _showBoostExpireNotification() {
+    assert(notificationPlugin != null);
+
+    notificationPlugin.show(
+      1,
+      'boostExpiredNotification.title'.tr(),
+      'boostExpiredNotification.description'.tr(),
+      boostExpireNotificationDetails,
+      payload: 'boost',
+    );
+  }
+
+  void _showBoostDialog() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    showDialog(
+      context: context,
+      builder: (context) => BoostDialog(
+        endTime: _gameState.boostEndTime,
+        boostCount: _gameState.boostCount,
+        onBuyButtonPressed: () {
+          _showBoostStoreDialog();
+          return _gameState.boostCount;
+        },
+        onUseButtonPressed: () {
+          _useBoost();
+          return _gameState.boostEndTime;
+        },
+      ),
+    );
+  }
+
+  void _showBoostStoreDialog() {
+    _gameState.addBoostCount(1);
+    // TODO: Boost store
+  }
+
+  void _useBoost() {
+    assert(_gameState.boostCount > 0);
+    if (_gameState.boostCount <= 0) {
+      return;
+    }
+
+    _gameState.useBoost(1);
   }
 }

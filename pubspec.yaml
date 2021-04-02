@@ -11,9 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  badges: ^1.2.0
   cupertino_icons: ^1.0.1
   easy_localization: ^3.0.0
   flutter_local_notifications: ^4.0.1+2
+  font_awesome_flutter: ^9.0.0
   intl: ^0.17.0
   json_annotation: ^3.1.1
   provider: ^5.0.0

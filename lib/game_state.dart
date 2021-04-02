@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'constants.dart';
 import 'game_data.dart';
 import 'item_state.dart';
 import 'item_data.dart';
@@ -23,6 +24,8 @@ class GameState with ChangeNotifier {
   Map<String, UpgradeState> upgradeStates = {};
   double totalPower = 0;
   int antiMatterCount = 0;
+  int boostCount = 0;
+  DateTime boostEndTime = DateTime.now();
 
   GameState({GameData gameData}) {
     if (gameData == null) {
@@ -83,6 +86,34 @@ class GameState with ChangeNotifier {
 
     language = newLanguage;
     notifyListeners();
+  }
+
+  void addBoostCount(int count) {
+    boostCount += count;
+    notifyListeners();
+  }
+
+  void useBoost(int count) {
+    assert(boostCount >= count);
+    if (boostCount < count) {
+      print('Trying to use $count boosts when you only have $boostCount.');
+      return;
+    }
+
+    boostCount -= count;
+
+    Duration boostDuration = Constants.durationPerBoost * count;
+    if (boostEndTime.isAfter(DateTime.now())) {
+      boostEndTime = boostEndTime.add(boostDuration);
+    } else {
+      boostEndTime = DateTime.now().add(boostDuration);
+    }
+
+    notifyListeners();
+  }
+
+  bool isBoostActive() {
+    return boostEndTime.isAfter(DateTime.now());
   }
 
   void setDebugMode(bool isEnabled) {

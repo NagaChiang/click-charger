@@ -11,7 +11,6 @@ import 'item_state.dart';
 import 'power_service.dart';
 import 'upgrade_state.dart';
 import 'utils/utils.dart';
-import 'widgets/charge_button.dart';
 import 'widgets/fancy_button.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -202,9 +201,11 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
-            'ascension'.tr(),
-            style: Theme.of(context).textTheme.headline5,
+          title: Center(
+            child: Text(
+              'ascension'.tr(),
+              style: Theme.of(context).textTheme.headline5,
+            ),
           ),
           content: SingleChildScrollView(
             child: ListBody(

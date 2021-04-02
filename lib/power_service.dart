@@ -1,6 +1,7 @@
 import 'package:click_charger/item_data.dart';
 import 'package:click_charger/item_state.dart';
 
+import 'constants.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'upgrade_data.dart';
@@ -24,10 +25,14 @@ class PowerService {
     UpgradeData upgradeData = gameData.upgradeDatas[itemData.upgradeId];
     UpgradeState upgradeState = gameState.upgradeStates[itemData.upgradeId];
 
-    double bonus = upgradeData.calculateBonus(upgradeState.level);
-    double rate =
-        (itemData.calculatePowerRate(bonus) + gameState.getAntimatterBonus()) *
-            itemState.amount;
+    double bonus = upgradeData.calculateBonus(upgradeState.level) +
+        gameState.getAntimatterBonus();
+
+    if (gameState.isBoostActive()) {
+      bonus += Constants.boostBonus;
+    }
+
+    double rate = itemData.calculatePowerRate(bonus) * itemState.amount;
 
     return rate;
   }
@@ -49,9 +54,13 @@ class PowerService {
   static double getPowerPerPress(GameData gameData, GameState gameState) {
     UpgradeData upgradeData = gameData.upgradeDatas['press'];
     UpgradeState upgradeState = gameState.upgradeStates['press'];
-
-    return 1 +
-        upgradeData.calculateBonus(upgradeState.level) +
+    double bonus = upgradeData.calculateBonus(upgradeState.level) +
         gameState.getAntimatterBonus();
+
+    if (gameState.isBoostActive()) {
+      bonus += Constants.boostBonus;
+    }
+
+    return 1 + bonus;
   }
 }
