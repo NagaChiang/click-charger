@@ -425,15 +425,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   void _onChargeButtonPressed() {
-    ItemData pressData = _gameData.itemDatas['press'];
-    double bonus = PowerService.calculateUpgradeBonus(
-        _gameData, _gameState, pressData.upgradeId);
-
-    if (_gameState.isBoostActive()) {
-      bonus += Constants.boostBonus;
-    }
-
-    double power = pressData.initialPowerPerSec * (1 + bonus);
+    double power = PowerService.getPowerPerPress(_gameData, _gameState);
 
     if (!kReleaseMode && _gameState.isDebugMode) {
       power = 100000000000000;
@@ -499,9 +491,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       totalRate += rate;
     }
 
+    double globalBonus = gameState.getAntimatterBonus();
     if (gameState.isBoostActive()) {
-      totalRate += Constants.boostBonus;
+      globalBonus += Constants.boostBonus;
     }
+
+    totalRate *= 1 + globalBonus;
 
     return totalRate;
   }
