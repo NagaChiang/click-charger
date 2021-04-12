@@ -17,6 +17,14 @@
   "settings": "設定",
   "language": "語言",
   "systemDefaultLanguage": "系統預設",
+  "boost": "能量增幅",
+  "boostDialogDescription": "能量增幅效果持續期間，可以產生{bonus}%的全域加成。一個單位的能量增幅，可以持續{duration}個小時。",
+  "buy": "購買",
+  "useButton": "使用 ({count})",
+  "boostExpiredNotification": {
+    "title": "能量增幅結束",
+    "description": "能量增幅效果持續時間結束！"
+  },
   "pressItemName": "自動點擊器",
   "itemName_01": "倉鼠滾輪",
   "itemName_02": "生質能",

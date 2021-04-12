@@ -17,6 +17,14 @@
   "settings": "Settings",
   "language": "Language",
   "systemDefaultLanguage": "System Default",
+  "boost": "Boost",
+  "boostDialogDescription": "Boost can provide {bonus}% global power generation bonus. 1 boost can last for {duration} hours.",
+  "buy": "Buy",
+  "useButton": "Use ({count})",
+  "boostExpiredNotification": {
+    "title": "Boost Expired",
+    "description": "Boost effect has been expired!"
+  },
   "pressItemName": "Auto Presser",
   "itemName_01": "Hamster Wheel",
   "itemName_02": "Biomass",

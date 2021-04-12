@@ -7,8 +7,8 @@ const RESOURCES = {
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
-"index.html": "b223383e148d8e7248e67859c6b2cf5f",
-"/": "b223383e148d8e7248e67859c6b2cf5f",
+"index.html": "92b6bc99606285b640159802509a55c4",
+"/": "92b6bc99606285b640159802509a55c4",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "dffd9504fcb1894620fa41c700172994",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "4b6a9b7c20913279a3ad3dd9c96e155b",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "00bb2b684be61e89d1bc7d75dee30b58",
@@ -23,13 +23,13 @@ const RESOURCES = {
 "assets/assets/data/upgrade_data.json": "4e4d949367e2a49820db9ddd8cbec7bd",
 "assets/assets/data/item_data.json": "ddb5304ab9a463e1e637e1cf87ab8b20",
 "assets/assets/translations/ja.json": "6a09e2c44de031a258ce18a4e4bab9f9",
-"assets/assets/translations/en.json": "90bce1ca8375a5ae80440ee522665a9e",
-"assets/assets/translations/zh-Hant.json": "0ac77d4591cb123b2cfa6adef9507e36",
-"assets/assets/translations/zh-Hans.json": "27c1f690fabf3eed3dc7815b7ade4ed0",
+"assets/assets/translations/en.json": "e98e067b99f20ac13e32fc8f5d8d4472",
+"assets/assets/translations/zh-Hant.json": "53bfa4466787f74d183e373c2b533467",
+"assets/assets/translations/zh-Hans.json": "d14386887ad875cb3a94ff5110167ba9",
 "assets/assets/images/icon_no_background.png": "8530ba05a75aa7db61809c00c9cf6dde",
 "assets/assets/images/icon.png": "7b4a75ef3b28f18086616e3a7e6ad94e",
 "assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
-"main.dart.js": "596275026955ba18fda8e63ef1b27974",
+"main.dart.js": "ab57207a8e2f33a2130a2dfe154bb98e",
 "version.json": "24c33ef95c7c31c645dea88685e570bd"
 };
 
