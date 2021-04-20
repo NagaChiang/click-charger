@@ -7,8 +7,8 @@ const RESOURCES = {
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
-"index.html": "8078f7ce2e59c102a6830a1253d13f1f",
-"/": "8078f7ce2e59c102a6830a1253d13f1f",
+"index.html": "1c3683751b67b58524933dadf3157eea",
+"/": "1c3683751b67b58524933dadf3157eea",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "dffd9504fcb1894620fa41c700172994",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "4b6a9b7c20913279a3ad3dd9c96e155b",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "00bb2b684be61e89d1bc7d75dee30b58",
@@ -26,10 +26,10 @@ const RESOURCES = {
 "assets/assets/translations/en.json": "e98e067b99f20ac13e32fc8f5d8d4472",
 "assets/assets/translations/zh-Hant.json": "53bfa4466787f74d183e373c2b533467",
 "assets/assets/translations/zh-Hans.json": "d14386887ad875cb3a94ff5110167ba9",
-"assets/assets/images/icon_no_background.png": "8530ba05a75aa7db61809c00c9cf6dde",
-"assets/assets/images/icon.png": "7b4a75ef3b28f18086616e3a7e6ad94e",
+"assets/assets/images/icon_no_background.png": "f85b22be2cd5b4b7971b3b6f9596c87a",
+"assets/assets/images/icon.png": "11831ae0e06fd240d916b382750a446e",
 "assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
-"main.dart.js": "0465cb61f956b94792dcc8ed27bd1e58",
+"main.dart.js": "7112513101bd48fcaa9e13db5760d7db",
 "version.json": "24c33ef95c7c31c645dea88685e570bd"
 };
 
