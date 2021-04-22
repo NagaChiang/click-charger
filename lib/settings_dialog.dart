@@ -5,10 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'utils/enums.dart';
 
 class SettingsDialog extends StatefulWidget {
-  SettingsDialog({this.language, this.onChanged});
+  SettingsDialog({this.language, this.onChanged, this.version});
 
   final Language language;
   final Function(int) onChanged;
+  final String version;
 
   @override
   _SettingsDialogState createState() => _SettingsDialogState();
@@ -29,6 +30,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 8.0,
+        vertical: 12.0,
+      ),
       title: Center(
         child: Text(
           'settings'.tr(),
@@ -59,7 +64,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
               widget.onChanged?.call(value);
             },
           ),
-        )
+        ),
+        if (widget.version != null)
+          Center(
+            child: Text(
+              'v${widget.version}',
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
       ],
     );
   }

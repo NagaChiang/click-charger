@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -157,6 +158,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   bool _isFadingOut = false;
   Function _onFadedOut;
   bool _wasBoostActive = false;
+  PackageInfo _packageInfo;
 
   @override
   void initState() {
@@ -259,6 +261,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                 context: context,
                                 builder: (context) => SettingsDialog(
                                   language: _gameState.language,
+                                  version: _packageInfo.version,
                                   onChanged: (value) {
                                     _gameState
                                         .setLanguage(Language.values[value]);
@@ -459,6 +462,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Future _initialize() async {
     if (!kIsWeb) {
       await _initializeNotificationPlugin();
+      _packageInfo = await PackageInfo.fromPlatform();
     }
 
     _gameData = await GameData.loadFromAssets(context);
