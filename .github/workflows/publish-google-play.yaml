@@ -1,0 +1,39 @@
+name: Publish to Google Play (Internal)
+on: 
+  push:
+    tags:
+      - v*
+jobs:
+  google-play:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    container: cirrusci/flutter:stable
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Signing
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+        run: | 
+          echo -n "$KEY_JKS" | openssl base64 -d > android/key.jks
+          echo -n "$KEY_PROPERTIES" > android/key.properties
+          
+      - name: Build App Bundle
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/bundle/release/debug-info
+
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-bundle-release
+          path: build/app/outputs/bundle/release/
+      
+      - name: Publish to Google Play (Internal)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.timespawn.click_charger
+          track: internal
+          releaseFiles: build/app/outputs/bundle/release/*.aab
+
