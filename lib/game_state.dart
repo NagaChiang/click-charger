@@ -22,7 +22,7 @@ class GameState with ChangeNotifier {
 
   Map<String, ItemState> itemStates = {};
   Map<String, UpgradeState> upgradeStates = {};
-  double totalPower = 0;
+  BigInt totalPower = BigInt.zero;
   int antiMatterCount = 0;
   int boostCount = 0;
   DateTime boostEndTime = DateTime.now();
@@ -50,7 +50,7 @@ class GameState with ChangeNotifier {
     return 0.01 * antiMatterCount;
   }
 
-  void addPower(double power) {
+  void addPower(BigInt power) {
     totalPower += power;
     notifyListeners();
   }
@@ -72,7 +72,7 @@ class GameState with ChangeNotifier {
   void ascend(int antimatter) {
     antiMatterCount += antimatter;
 
-    totalPower = 0;
+    totalPower = BigInt.zero;
     itemStates.updateAll((key, value) => ItemState());
     upgradeStates.updateAll((key, value) => UpgradeState());
 

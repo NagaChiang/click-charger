@@ -22,7 +22,7 @@ class UpgradeListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double price = data.calculatePrice(state.level);
+    BigInt price = data.calculatePrice(state.level);
 
     return Card(
       elevation: enabled ? null : 0.2,
@@ -61,8 +61,8 @@ class UpgradeListItem extends StatelessWidget {
         ),
         trailing: Container(
           width: 40,
-          child:
-              Text('${'level'.tr()} ${Utils.toFormattedNumber(state.level)}'),
+          child: Text(
+              '${'level'.tr()} ${Utils.toFormattedNumber(BigInt.from(state.level))}'),
         ),
         enabled: enabled ?? false,
         onTap: () => onItemTapped?.call(data.id),

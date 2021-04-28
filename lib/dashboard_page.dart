@@ -50,7 +50,7 @@ class DashboardPage extends StatelessWidget {
                           child: Icon(Icons.flash_on),
                         ),
                         title: Text(
-                            '${Utils.toFormattedNumber(PowerService.getPowerPerPress(gameData, gameState))} ${'watt'.tr()}/${'press'.tr()}'),
+                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerPerPress(gameData, gameState)))} ${'watt'.tr()}/${'press'.tr()}'),
                       ),
                     ),
                   ),
@@ -72,10 +72,10 @@ class DashboardPage extends StatelessWidget {
                               subtitle: Row(
                                 children: [
                                   Text(
-                                      'x ${Utils.toFormattedNumber(gameState.antiMatterCount)}'),
+                                      'x ${Utils.toFormattedNumber(BigInt.from(gameState.antiMatterCount))}'),
                                   Spacer(),
                                   Text(
-                                      '(+${Utils.toFormattedNumber(gameState.antiMatterCount)}%)'),
+                                      '(+${Utils.toFormattedNumber(BigInt.from(gameState.antiMatterCount))}%)'),
                                 ],
                               ),
                             ),
@@ -124,12 +124,12 @@ class DashboardPage extends StatelessWidget {
                       subtitle: Row(
                         children: [
                           Text(
-                            '${'level'.tr()} ${Utils.toFormattedNumber(upgradeState.level)}',
+                            '${'level'.tr()} ${Utils.toFormattedNumber(BigInt.from(upgradeState.level))}',
                             style: Theme.of(context).textTheme.caption,
                           ),
                           Spacer(),
                           Text(
-                            'x ${Utils.toFormattedNumber(itemState.amount)}',
+                            'x ${Utils.toFormattedNumber(BigInt.from(itemState.amount))}',
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -140,7 +140,7 @@ class DashboardPage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                            '${Utils.toFormattedNumber(PowerService.getPowerRate(gameData, gameState, itemData.id))} ${'watt'.tr()}/${'second'.tr()}'),
+                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerRate(gameData, gameState, itemData.id)))} ${'watt'.tr()}/${'second'.tr()}'),
                       ),
                     ),
                   ],
@@ -243,6 +243,6 @@ class DashboardPage extends StatelessWidget {
   }
 
   int _getConvertedAntimatterCount() {
-    return (gameState.totalPower / Constants.antimatterPrice).floor();
+    return (gameState.totalPower ~/ Constants.antimatterPrice).toInt();
   }
 }

@@ -18,8 +18,11 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(k,
           e == null ? null : UpgradeState.fromJson(e as Map<String, dynamic>)),
     )
-    ..totalPower = (json['totalPower'] as num)?.toDouble()
+    ..totalPower = json['totalPower'] == null
+        ? null
+        : BigInt.parse(json['totalPower'] as String)
     ..antiMatterCount = json['antiMatterCount'] as int
+    ..boostCount = json['boostCount'] as int
     ..boostEndTime = json['boostEndTime'] == null
         ? null
         : DateTime.parse(json['boostEndTime'] as String);
@@ -29,8 +32,9 @@ Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'language': _$LanguageEnumMap[instance.language],
       'itemStates': instance.itemStates,
       'upgradeStates': instance.upgradeStates,
-      'totalPower': instance.totalPower,
+      'totalPower': instance.totalPower?.toString(),
       'antiMatterCount': instance.antiMatterCount,
+      'boostCount': instance.boostCount,
       'boostEndTime': instance.boostEndTime?.toIso8601String(),
     };
 

@@ -11,10 +11,11 @@ ItemData _$ItemDataFromJson(Map<String, dynamic> json) {
     id: json['id'] as String,
     name: json['name'] as String,
     icon: const IconDataJsonConverter().fromJson(json['icon'] as String),
-    initialPowerPerSec: (json['initialPowerPerSec'] as num)?.toDouble(),
-    initialPrice: (json['initialPrice'] as num)?.toDouble(),
-    initialPriceGrowth: (json['initialPriceGrowth'] as num)?.toDouble(),
-    priceGrowthPerAmount: (json['priceGrowthPerAmount'] as num)?.toDouble(),
+    baseProduction: (json['baseProduction'] as num)?.toDouble(),
+    basePrice: json['basePrice'] == null
+        ? null
+        : BigInt.parse(json['basePrice'] as String),
+    priceGrowthCoef: (json['priceGrowthCoef'] as num)?.toDouble(),
     upgradeId: json['upgradeId'] as String,
   );
 }
@@ -23,9 +24,8 @@ Map<String, dynamic> _$ItemDataToJson(ItemData instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'icon': const IconDataJsonConverter().toJson(instance.icon),
-      'initialPowerPerSec': instance.initialPowerPerSec,
-      'initialPrice': instance.initialPrice,
-      'initialPriceGrowth': instance.initialPriceGrowth,
-      'priceGrowthPerAmount': instance.priceGrowthPerAmount,
+      'baseProduction': instance.baseProduction,
+      'basePrice': instance.basePrice?.toString(),
+      'priceGrowthCoef': instance.priceGrowthCoef,
       'upgradeId': instance.upgradeId,
     };

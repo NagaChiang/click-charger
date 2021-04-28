@@ -261,7 +261,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                 context: context,
                                 builder: (context) => SettingsDialog(
                                   language: _gameState.language,
-                                  version: _packageInfo.version,
+                                  version: _packageInfo?.version,
                                   onChanged: (value) {
                                     _gameState
                                         .setLanguage(Language.values[value]);
@@ -287,15 +287,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                               return Column(
                                 children: [
                                   AnimatedNumberText(
-                                    number: context
-                                        .select<GameState, double>(
-                                            (state) => state.totalPower)
-                                        .floor(),
+                                    number: context.select<GameState, BigInt>(
+                                        (state) => state.totalPower),
                                     duration: Duration(milliseconds: 200),
                                     postString: ' ${'watt'.tr()}',
                                   ),
                                   Text(
-                                    '${Utils.toFormattedNumber(_calculateTotalPowerRate(context))} ${'watt'.tr()}/${'second'.tr()}',
+                                    '${Utils.toFormattedNumber(BigInt.from(_calculateTotalPowerRate(context)))} ${'watt'.tr()}/${'second'.tr()}',
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .caption,
@@ -411,7 +409,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   void _onTimerUpdate(Timer timer) {
-    _gameState.addPower(_calculateTotalPowerRate(null));
+    _gameState.addPower(BigInt.from(_calculateTotalPowerRate(null)));
 
     _saveGameStateToPref();
 
@@ -428,10 +426,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   void _onChargeButtonPressed() {
-    double power = PowerService.getPowerPerPress(_gameData, _gameState);
+    BigInt power =
+        BigInt.from(PowerService.getPowerPerPress(_gameData, _gameState));
 
     if (!kReleaseMode && _gameState.isDebugMode) {
-      power = 100000000000000;
+      power = BigInt.parse('1000000000000000000000');
     }
 
     _gameState.addPower(power);
@@ -440,7 +439,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _onBuildItemTapped(String itemId) {
     ItemData data = _gameData.itemDatas[itemId];
     ItemState state = _gameState.itemStates[itemId];
-    double price = data.calculatePrice(state.amount);
+    BigInt price = data.calculatePrice(state.amount);
 
     assert(_gameState.totalPower >= price);
 
@@ -451,7 +450,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _onUpgradeItemTapped(String upgradeId) {
     UpgradeData data = _gameData.upgradeDatas[upgradeId];
     UpgradeState state = _gameState.upgradeStates[upgradeId];
-    double price = data.calculatePrice(state.level);
+    BigInt price = data.calculatePrice(state.level);
 
     assert(_gameState.totalPower >= price);
 
@@ -529,13 +528,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
-  void _showPowerNotification(double power) {
+  void _showPowerNotification(BigInt power) {
     assert(notificationPlugin != null);
 
-    String powerString =
-        '${Utils.toFormattedNumber(power.floor())} ${'watt'.tr()}';
+    String powerString = '${Utils.toFormattedNumber(power)} ${'watt'.tr()}';
     String rateString =
-        '${Utils.toFormattedNumber(_calculateTotalPowerRate(null))} ${'watt'.tr()}/${'second'.tr()}';
+        '${Utils.toFormattedNumber(BigInt.from(_calculateTotalPowerRate(null)))} ${'watt'.tr()}/${'second'.tr()}';
 
     notificationPlugin.show(
       0,

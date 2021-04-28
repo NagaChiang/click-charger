@@ -70,7 +70,7 @@ class _InventoryPageState extends State<InventoryPage>
             child: InventoryListItem(
               data: data,
               state: state,
-              rate: data.initialPowerPerSec * (1 + bonus),
+              rate: data.baseProduction * (1 + bonus),
               onItemTapped: (String itemId) {
                 widget.onItemTapped.call(itemId);
                 _checkUnlockedItem(context, gameState);

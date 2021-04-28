@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import '../constants.dart';
 import '../utils/utils.dart';
 
 class AnimatedNumberText extends StatefulWidget {
-  final int number;
+  final BigInt number;
   final Duration duration;
   final TextStyle style;
   final String postString;
@@ -20,26 +21,52 @@ class AnimatedNumberText extends StatefulWidget {
   _AnimatedNumberTextState createState() => _AnimatedNumberTextState();
 }
 
-class _AnimatedNumberTextState extends State<AnimatedNumberText> {
+class _AnimatedNumberTextState extends State<AnimatedNumberText>
+    with TickerProviderStateMixin {
   static const int _threshold = 1;
 
-  double _currentValue = 0;
+  AnimationController _controller;
+  BigInt _currentValue = BigInt.zero;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: widget.duration,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimatedNumberText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _controller.reset();
+    _controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: _currentValue, end: widget.number.toDouble()),
-      duration: widget.duration,
-      builder: (context, value, child) {
-        if (widget.number.toDouble() - _currentValue <= _threshold) {
-          _currentValue = widget.number.toDouble();
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        if ((widget.number - _currentValue).abs() <= BigInt.from(_threshold)) {
+          _currentValue = widget.number;
         } else {
-          _currentValue = value;
+          _currentValue = _currentValue +
+              Utils.multiply(widget.number - _currentValue, _controller.value);
         }
 
         return Text(
-          Utils.toFormattedNumber(_currentValue.floor()) +
-              (widget.postString ?? ''),
+          Utils.toFormattedNumber(_currentValue) + (widget.postString ?? ''),
           style: widget.style ?? DefaultTextStyle.of(context).style,
         );
       },

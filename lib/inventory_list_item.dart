@@ -25,7 +25,7 @@ class InventoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double price = data.calculatePrice(state.amount);
+    BigInt price = data.calculatePrice(state.amount);
     return Card(
       elevation: enabled ? null : 0.2,
       child: ListTile(
@@ -40,13 +40,14 @@ class InventoryListItem extends StatelessWidget {
           children: [
             Text(data.id == 'press'
                 ? '1 ${'time'.tr()}/${'second'.tr()}'
-                : '${Utils.toFormattedNumber(rate)} ${'watt'.tr()}/${'second'.tr()}'),
+                : '${Utils.toFormattedNumber(BigInt.from(rate))} ${'watt'.tr()}/${'second'.tr()}'),
             Text('${Utils.toFormattedNumber(price)} ${'watt'.tr()}'),
           ],
         ),
         trailing: Container(
           width: 40,
-          child: Text('x ${Utils.toFormattedNumber(state.amount)}'),
+          child:
+              Text('x ${Utils.toFormattedNumber(BigInt.from(state.amount))}'),
         ),
         enabled: enabled ?? false,
         onTap: () => onItemTapped?.call(data.id),

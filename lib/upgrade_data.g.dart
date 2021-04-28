@@ -12,9 +12,10 @@ UpgradeData _$UpgradeDataFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     icon: const IconDataJsonConverter().fromJson(json['icon'] as String),
     valuePerLevel: (json['valuePerLevel'] as num)?.toDouble(),
-    initialPrice: (json['initialPrice'] as num)?.toDouble(),
-    initialPriceGrowth: (json['initialPriceGrowth'] as num)?.toDouble(),
-    priceGrowthPerAmount: (json['priceGrowthPerAmount'] as num)?.toDouble(),
+    basePrice: json['basePrice'] == null
+        ? null
+        : BigInt.parse(json['basePrice'] as String),
+    priceGrowthCoef: (json['priceGrowthCoef'] as num)?.toDouble(),
   );
 }
 
@@ -24,7 +25,6 @@ Map<String, dynamic> _$UpgradeDataToJson(UpgradeData instance) =>
       'name': instance.name,
       'icon': const IconDataJsonConverter().toJson(instance.icon),
       'valuePerLevel': instance.valuePerLevel,
-      'initialPrice': instance.initialPrice,
-      'initialPriceGrowth': instance.initialPriceGrowth,
-      'priceGrowthPerAmount': instance.priceGrowthPerAmount,
+      'basePrice': instance.basePrice?.toString(),
+      'priceGrowthCoef': instance.priceGrowthCoef,
     };

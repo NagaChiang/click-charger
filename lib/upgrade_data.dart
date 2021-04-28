@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'utils/icondata_json_converter.dart';
+import 'utils/utils.dart';
 
 part 'upgrade_data.g.dart';
 
@@ -14,18 +16,16 @@ class UpgradeData {
   final String name;
   final IconData icon;
   final double valuePerLevel;
-  final double initialPrice;
-  final double initialPriceGrowth;
-  final double priceGrowthPerAmount;
+  final BigInt basePrice;
+  final double priceGrowthCoef;
 
   const UpgradeData({
     this.id,
     this.name,
     this.icon,
     this.valuePerLevel,
-    this.initialPrice,
-    this.initialPriceGrowth,
-    this.priceGrowthPerAmount,
+    this.basePrice,
+    this.priceGrowthCoef,
   });
 
   static Future<List<UpgradeData>> loadFromAssets(
@@ -48,11 +48,7 @@ class UpgradeData {
     return valuePerLevel * level;
   }
 
-  double calculatePrice(int level) {
-    return initialPrice +
-        ((initialPriceGrowth +
-                (initialPriceGrowth + priceGrowthPerAmount * (level - 1))) *
-            level /
-            2);
+  BigInt calculatePrice(int owned) {
+    return Utils.multiply(basePrice, pow(priceGrowthCoef, owned));
   }
 }
