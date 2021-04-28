@@ -8,7 +8,7 @@ const RESOURCES = {
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
-"main.dart.js": "9378893a56fa418937e186ac8d80bc1c",
+"main.dart.js": "7c0b064bc60e061f5e4efc4d6d09fd34",
 "assets/NOTICES": "3da111049f9361c9b8a320767eff6e22",
 "assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
 "assets/AssetManifest.json": "45d8815ca1fbf11e37559bd51b11bbae",
@@ -22,15 +22,15 @@ const RESOURCES = {
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "4b6a9b7c20913279a3ad3dd9c96e155b",
 "assets/assets/images/icon_no_background.png": "f85b22be2cd5b4b7971b3b6f9596c87a",
 "assets/assets/images/icon.png": "11831ae0e06fd240d916b382750a446e",
-"assets/assets/data/item_data.json": "ddb5304ab9a463e1e637e1cf87ab8b20",
-"assets/assets/data/upgrade_data.json": "4e4d949367e2a49820db9ddd8cbec7bd",
+"assets/assets/data/item_data.json": "5152ce4012e0ed3a49708ccb0b0b0d06",
+"assets/assets/data/upgrade_data.json": "6855f48a2ffa01c081b35d8458336c9f",
 "assets/assets/translations/zh-Hans.json": "d14386887ad875cb3a94ff5110167ba9",
 "assets/assets/translations/ja.json": "6a09e2c44de031a258ce18a4e4bab9f9",
 "assets/assets/translations/en.json": "e98e067b99f20ac13e32fc8f5d8d4472",
 "assets/assets/translations/zh-Hant.json": "53bfa4466787f74d183e373c2b533467",
 "assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
-"index.html": "8dfed9b4e6bf2e9a4b0cacfa002c83ee",
-"/": "8dfed9b4e6bf2e9a4b0cacfa002c83ee"
+"index.html": "20bf759b58fd9d6cdb469e3bc5f74a1d",
+"/": "20bf759b58fd9d6cdb469e3bc5f74a1d"
 };
 
 // The application shell files that are downloaded before a service worker can
