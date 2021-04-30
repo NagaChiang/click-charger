@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../constants.dart';
 import '../utils/utils.dart';
 
 class AnimatedNumberText extends StatefulWidget {

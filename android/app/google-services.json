@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "593718523769",
+    "project_id": "click-charger-game",
+    "storage_bucket": "click-charger-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593718523769:android:9e10583fdd0671fd1da1a8",
+        "android_client_info": {
+          "package_name": "com.timespawn.click_charger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "593718523769-b0oh925bhrch980roh7qf5i17ffll0tc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.timespawn.click_charger",
+            "certificate_hash": "b8b894b5afa75eef03cf84352315b037d11df14f"
+          }
+        },
+        {
+          "client_id": "593718523769-chm6qfvbbr47d7if2ko12hbm96fmth0i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXzUBYAkXp0k8gqfsy5Zqr8eTEBpCdm-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "593718523769-chm6qfvbbr47d7if2ko12hbm96fmth0i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

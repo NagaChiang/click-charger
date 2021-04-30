@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'boost_dialog.dart';
 import 'constants.dart';
@@ -459,9 +463,17 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   Future _initialize() async {
-    if (!kIsWeb) {
+    if (Platform.isAndroid) {
       await _initializeNotificationPlugin();
       _packageInfo = await PackageInfo.fromPlatform();
+
+      await Firebase.initializeApp();
+      FirebaseAuth.instance.authStateChanges().listen(_onAuthStateChanged);
+
+      if (FirebaseAuth.instance.currentUser == null) {
+        print('First time opening the game. Trying to sign in...');
+        await _signIn();
+      }
     }
 
     _gameData = await GameData.loadFromAssets(context);
@@ -475,6 +487,68 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     _updateTimer = Timer.periodic(
         Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
+  }
+
+  void _onAuthStateChanged(User user) {
+    if (user != null) {
+      print('User signed in: $user');
+      // TODO: Fetch game state
+    } else {
+      print('User signed out.');
+    }
+  }
+
+  Future _signIn() async {
+    final AuthCredential googleCredential = await _createGoogleCredential();
+    if (googleCredential != null) {
+      await FirebaseAuth.instance.signInWithCredential(googleCredential);
+    } else {
+      await FirebaseAuth.instance.signInAnonymously();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'noGooglePlayGamesDialog.title'.tr(),
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            content: Text('noGooglePlayGamesDialog.description'.tr()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ok'.tr()),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<AuthCredential> _createGoogleCredential() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      signInOption: SignInOption.games,
+      scopes: ['email'],
+    );
+
+    final GoogleSignInAccount googleUser =
+        await googleSignIn.signIn().catchError((error) {
+      print('Failed to sign in with Google Play Games: $error');
+    });
+
+    if (googleUser == null) {
+      print('Failed to sign in with Google Play Games.');
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return credential;
   }
 
   double _calculateTotalPowerRate(BuildContext context) {

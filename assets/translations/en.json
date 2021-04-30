@@ -25,6 +25,11 @@
     "title": "Boost Expired",
     "description": "Boost effect has been expired!"
   },
+  "noGooglePlayGamesDialog": {
+    "title": "Google Play Games Not Linked",
+    "description": "Your progress will be lost if you uninstall the game or clear app data.\n\nEnable cloud sync by linking your Google Play Games in the settings later."
+  },
+  "ok": "OK",
   "pressItemName": "Auto Presser",
   "itemName_01": "Hamster Wheel",
   "itemName_02": "Biomass",
