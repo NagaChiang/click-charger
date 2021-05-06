@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import '../constants.dart';
 import '../game_state.dart';
 import '../item_state.dart';
@@ -76,5 +79,43 @@ class Utils {
     return bigInt *
         BigInt.from(mul * Constants.bigIntPrecision) ~/
         BigInt.from(Constants.bigIntPrecision);
+  }
+
+  static Future linkWithGooglePlayGames() async {
+    User user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    AuthCredential credential = await createGoogleCredential();
+    if (credential != null) {
+      await user.linkWithCredential(credential);
+    }
+  }
+
+  static Future<AuthCredential> createGoogleCredential() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      signInOption: SignInOption.games,
+      scopes: ['email'],
+    );
+
+    final GoogleSignInAccount googleUser =
+        await googleSignIn.signIn().catchError((error) {
+      print('Failed to sign in with Google Play Games: $error');
+    });
+
+    if (googleUser == null) {
+      print('Failed to sign in with Google Play Games.');
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return credential;
   }
 }

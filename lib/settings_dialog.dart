@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'utils/utils.dart';
 import 'utils/enums.dart';
 
 class SettingsDialog extends StatefulWidget {
@@ -29,6 +31,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isPlayGamesLinked =
+        !FirebaseAuth.instance.currentUser.isAnonymous;
+
     return SimpleDialog(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 8.0,
@@ -64,6 +69,31 @@ class _SettingsDialogState extends State<SettingsDialog> {
               widget.onChanged?.call(value);
             },
           ),
+        ),
+        ListTile(
+          title: Text('googlePlayGamesSetting.title'.tr()),
+          trailing: Text(
+            isPlayGamesLinked
+                ? 'googlePlayGamesSetting.linked'.tr()
+                : 'googlePlayGamesSetting.unlinked'.tr(),
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  color: isPlayGamesLinked ? Colors.green : Colors.red,
+                ),
+          ),
+          onTap: isPlayGamesLinked
+              ? null
+              : () {
+                  showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => Container(),
+                    barrierDismissible: false,
+                  );
+
+                  Utils.linkWithGooglePlayGames().then((_) {
+                    Navigator.of(context).pop();
+                    setState(() {});
+                  });
+                },
         ),
         if (widget.version != null)
           Center(

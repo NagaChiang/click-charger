@@ -499,7 +499,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   Future _signIn() async {
-    final AuthCredential googleCredential = await _createGoogleCredential();
+    final AuthCredential googleCredential =
+        await Utils.createGoogleCredential();
     if (googleCredential != null) {
       await FirebaseAuth.instance.signInWithCredential(googleCredential);
     } else {
@@ -523,32 +524,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         },
       );
     }
-  }
-
-  Future<AuthCredential> _createGoogleCredential() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      signInOption: SignInOption.games,
-      scopes: ['email'],
-    );
-
-    final GoogleSignInAccount googleUser =
-        await googleSignIn.signIn().catchError((error) {
-      print('Failed to sign in with Google Play Games: $error');
-    });
-
-    if (googleUser == null) {
-      print('Failed to sign in with Google Play Games.');
-      return null;
-    }
-
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return credential;
   }
 
   double _calculateTotalPowerRate(BuildContext context) {
