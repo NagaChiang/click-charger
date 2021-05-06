@@ -30,6 +30,11 @@
     "description": "Your progress will be lost if you uninstall the game or clear app data.\n\nEnable cloud sync by linking your Google Play Games in the settings later."
   },
   "ok": "OK",
+  "googlePlayGamesSetting": {
+    "title": "Google Play Games",
+    "linked": "Linked",
+    "unlinked": "Unlinked"
+  },
   "pressItemName": "Auto Presser",
   "itemName_01": "Hamster Wheel",
   "itemName_02": "Biomass",
