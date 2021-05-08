@@ -17,24 +17,6 @@
   "settings": "Settings",
   "language": "Language",
   "systemDefaultLanguage": "System Default",
-  "boost": "Boost",
-  "boostDialogDescription": "Boost can provide {bonus}% global power generation bonus. 1 boost can last for {duration} hours.",
-  "buy": "Buy",
-  "useButton": "Use ({count})",
-  "boostExpiredNotification": {
-    "title": "Boost Expired",
-    "description": "Boost effect has been expired!"
-  },
-  "noGooglePlayGamesDialog": {
-    "title": "Google Play Games Not Linked",
-    "description": "Your progress will be lost if you uninstall the game or clear app data.\n\nEnable cloud sync by linking your Google Play Games in the settings later."
-  },
-  "ok": "OK",
-  "googlePlayGamesSetting": {
-    "title": "Google Play Games",
-    "linked": "Linked",
-    "unlinked": "Unlinked"
-  },
   "pressItemName": "Auto Presser",
   "itemName_01": "Hamster Wheel",
   "itemName_02": "Biomass",
@@ -59,5 +41,23 @@
     "build": "Build",
     "dashboard": "Dashboard",
     "upgrade": "Upgrade"
+  },
+  "boost": "Boost",
+  "boostDialogDescription": "Boost can provide {bonus}% global power generation bonus. 1 boost can last for {duration} hours.",
+  "buy": "Buy",
+  "useButton": "Use ({count})",
+  "boostExpiredNotification": {
+    "title": "Boost Expired",
+    "description": "Boost effect has been expired!"
+  },
+  "noGooglePlayGamesDialog": {
+    "title": "Google Play Games Not Linked",
+    "description": "Your progress will be lost if you uninstall the game or clear app data.\n\nEnable cloud sync by linking your Google Play Games in the settings later."
+  },
+  "ok": "OK",
+  "googlePlayGamesSetting": {
+    "title": "Google Play Games",
+    "linked": "Linked",
+    "unlinked": "Unlinked"
   }
 }

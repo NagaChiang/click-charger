@@ -17,14 +17,6 @@
   "settings": "设置",
   "language": "语言",
   "systemDefaultLanguage": "系统默认",
-  "boost": "能量增幅",
-  "boostDialogDescription": "能量增幅效果持续期间，可以产生{bonus}%的全域加成。一个单位的能量增幅，可以持续{duration}个小时。",
-  "buy": "购买",
-  "useButton": "使用 ({count})",
-  "boostExpiredNotification": {
-    "title": "能量增幅结束",
-    "description": "能量增幅效果持续时间结束！"
-  },
   "pressItemName": "自动点击器",
   "itemName_01": "仓鼠滚轮",
   "itemName_02": "生质能",
@@ -49,5 +41,23 @@
     "build": "建造",
     "dashboard": "控制中心",
     "upgrade": "升级"
+  },
+  "boost": "能量增幅",
+  "boostDialogDescription": "能量增幅效果持续期间，可以产生{bonus}%的全域加成。一个单位的能量增幅，可以持续{duration}个小时。",
+  "buy": "购买",
+  "useButton": "使用 ({count})",
+  "boostExpiredNotification": {
+    "title": "能量增幅结束",
+    "description": "能量增幅效果持续时间结束！"
+  },
+  "noGooglePlayGamesDialog": {
+    "title": "未连接Google Play Games",
+    "description": "一旦卸载游戏或者清除游戏资料，你将失去所有游戏纪录。\n\n你可以在设定页面连接Google Play Games来启用云端存档。"
+  },
+  "ok": "确认",
+  "googlePlayGamesSetting": {
+    "title": "Google Play Games",
+    "linked": "已连接",
+    "unlinked": "未连接"
   }
 }
