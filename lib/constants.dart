@@ -5,13 +5,6 @@ class Constants {
   static const String upgradeDataPath = 'assets/data/upgrade_data.json';
 
   static const int upgradeUnlockItemAmountThreshold = 3;
-  static BigInt get antimatterPrice {
-    if (_antimatterPrice == null) {
-      _antimatterPrice = BigInt.parse('10000000000000000000000');
-    }
-
-    return _antimatterPrice;
-  }
 
   static const Locale simplifiedChineseLocale =
       const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans');
@@ -22,6 +15,16 @@ class Constants {
   static const Duration durationPerBoost = Duration(hours: 4);
 
   static const int bigIntPrecision = 100;
+
+  static Duration saveCloudGameInterval = Duration(minutes: 30);
+
+  static BigInt get antimatterPrice {
+    if (_antimatterPrice == null) {
+      _antimatterPrice = BigInt.parse('10000000000000000000000');
+    }
+
+    return _antimatterPrice;
+  }
 
   static BigInt _antimatterPrice;
 }

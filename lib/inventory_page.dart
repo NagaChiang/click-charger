@@ -53,7 +53,7 @@ class _InventoryPageState extends State<InventoryPage>
       initialItemCount: _unlockedItemCount,
       itemBuilder: (context, index, animation) {
         ItemData data = gameData.itemDatas.values.elementAt(index);
-        ItemState state = gameState.itemStates[data.id];
+        ItemState state = gameState.itemStates[index];
         double bonus = PowerService.calculateUpgradeBonus(
             gameData, gameState, data.upgradeId);
 
@@ -95,8 +95,7 @@ class _InventoryPageState extends State<InventoryPage>
             .insertItem(index, duration: Duration(milliseconds: 200));
       }
 
-      String itemId = gameState.itemStates.keys.elementAt(index);
-      _showItemUnlockedSnackBar(context, itemId);
+      _showItemUnlockedSnackBar(context, index);
     }
 
     _unlockedItemCount = newUnlockedItemCount;
@@ -108,15 +107,15 @@ class _InventoryPageState extends State<InventoryPage>
       return;
     }
 
-    ItemState itemState = gameState.itemStates[itemId];
+    ItemState itemState = gameState.itemStates[Utils.itemIdToIndex(itemId)];
     if (itemState.amount == Constants.upgradeUnlockItemAmountThreshold) {
       _showUpgradeUnlockedSnackBar(context, itemId);
     }
   }
 
-  void _showItemUnlockedSnackBar(BuildContext context, String itemId) {
+  void _showItemUnlockedSnackBar(BuildContext context, int itemIndex) {
     GameData gameData = context.read<GameData>();
-    ItemData data = gameData.itemDatas[itemId];
+    ItemData data = gameData.itemDatas.values.elementAt(itemIndex);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: Duration(milliseconds: 2000),

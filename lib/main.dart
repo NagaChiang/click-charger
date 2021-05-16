@@ -12,11 +12,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'boost_dialog.dart';
 import 'constants.dart';
 import 'dashboard_page.dart';
+import 'firestore_model.dart';
 import 'game_data.dart';
 import 'game_state.dart';
 import 'inventory_page.dart';
@@ -159,6 +159,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   PageController _pageController;
   MainScreenPageState _pageState = MainScreenPageState();
   Timer _updateTimer;
+  Timer _saveCloudGameTimer;
   bool _isFadingOut = false;
   Function _onFadedOut;
   bool _wasBoostActive = false;
@@ -185,10 +186,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
-      notificationPlugin.cancelAll();
-    }
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused) {}
   }
 
   @override
@@ -269,7 +268,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                   onChanged: (value) {
                                     _gameState
                                         .setLanguage(Language.values[value]);
-                                    _saveGameStateToPref();
 
                                     if (_gameState.language ==
                                         Language.systemDefault) {
@@ -414,8 +412,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _onTimerUpdate(Timer timer) {
     _gameState.addPower(BigInt.from(_calculateTotalPowerRate(null)));
-
-    _saveGameStateToPref();
+    _saveLocalGame();
 
     if (!kIsWeb) {
       _showPowerNotification(_gameState.totalPower);
@@ -429,9 +426,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _wasBoostActive = isBoostActive;
   }
 
+  void _onSaveCloudGameTimerUpdate(Timer timer) {
+    _saveCloudGame(_gameState);
+  }
+
   void _onChargeButtonPressed() {
-    BigInt power =
-        BigInt.from(PowerService.getPowerPerPress(_gameData, _gameState));
+    BigInt power = BigInt.from(PowerService.getPowerPerPress(
+      _gameData,
+      _gameState,
+    ));
 
     if (!kReleaseMode && _gameState.isDebugMode) {
       power = BigInt.parse('1000000000000000000000');
@@ -442,7 +445,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _onBuildItemTapped(String itemId) {
     ItemData data = _gameData.itemDatas[itemId];
-    ItemState state = _gameState.itemStates[itemId];
+    ItemState state = _gameState.itemStates[Utils.itemIdToIndex(itemId)];
     BigInt price = data.calculatePrice(state.amount);
 
     assert(_gameState.totalPower >= price);
@@ -453,7 +456,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _onUpgradeItemTapped(String upgradeId) {
     UpgradeData data = _gameData.upgradeDatas[upgradeId];
-    UpgradeState state = _gameState.upgradeStates[upgradeId];
+    UpgradeState state =
+        _gameState.upgradeStates[Utils.upgradeIdToIndex(upgradeId)];
     BigInt price = data.calculatePrice(state.level);
 
     assert(_gameState.totalPower >= price);
@@ -462,7 +466,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _gameState.addUpgradeLevel(upgradeId, 1);
   }
 
-  Future _initialize() async {
+  Future<void> _initialize() async {
     if (Platform.isAndroid) {
       await _initializeNotificationPlugin();
       _packageInfo = await PackageInfo.fromPlatform();
@@ -477,22 +481,67 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
 
     _gameData = await GameData.loadFromAssets(context);
-
-    String gameStateJsonString = pref.getString(gameStatePrefKey);
-    if (gameStateJsonString != null) {
-      _gameState = GameState.fromJson(json.decode(gameStateJsonString));
-    } else {
-      _gameState = GameState(gameData: _gameData);
-    }
+    _gameState = await _loadGame();
 
     _updateTimer = Timer.periodic(
-        Duration(seconds: _updateIntervalSeconds), _onTimerUpdate);
+      Duration(seconds: _updateIntervalSeconds),
+      _onTimerUpdate,
+    );
+
+    _saveCloudGameTimer = Timer.periodic(
+      Constants.saveCloudGameInterval,
+      _onSaveCloudGameTimerUpdate,
+    );
+  }
+
+  Future<GameState> _loadGame() async {
+    // Local save
+    GameState localGame;
+    String jsonString = pref.getString(gameStatePrefKey);
+    if (jsonString != null) {
+      localGame = GameState.fromJson(json.decode(jsonString));
+    }
+
+    // Cloud save
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    GameState cloudGame;
+    if (FirebaseAuth.instance.currentUser != null) {
+      cloudGame = await FirestoreModel.getOrCreateGameState(uid);
+    } else {
+      print('Error: User doesn\'t even login anonymously.');
+    }
+
+    // Create cloud save
+    if (cloudGame == null) {
+      await FirestoreModel.createGameState(uid, _gameData);
+    }
+
+    // Choose which save to load
+    if (localGame != null && cloudGame != null) {
+      if (localGame.updatedTime.isAfter(cloudGame.updatedTime)) {
+        await _saveCloudGame(localGame);
+        print('Find both save. Use local save. Sync with cloud save.');
+        return localGame;
+      } else {
+        print('Find both save. Use cloud save.');
+        return cloudGame;
+      }
+    } else if (cloudGame != null) {
+      print('Find cloud save only.');
+      return cloudGame;
+    } else if (localGame != null) {
+      await _saveCloudGame(localGame);
+      print('Find local save only. Sync with cloud save.');
+      return localGame;
+    } else {
+      print('Create a new game.');
+      return GameState(gameData: _gameData);
+    }
   }
 
   void _onAuthStateChanged(User user) {
     if (user != null) {
       print('User signed in: $user');
-      // TODO: Fetch game state
     } else {
       print('User signed out.');
     }
@@ -536,7 +585,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     double totalRate = 0.0;
     for (ItemData data in gameData.itemDatas.values) {
-      ItemState state = gameState.itemStates[data.id];
+      ItemState state = gameState.itemStates[Utils.itemIdToIndex(data.id)];
       double bonus = PowerService.calculateUpgradeBonus(
           gameData, gameState, data.upgradeId);
       double rate = data.calculatePowerRate(bonus) * state.amount;
@@ -553,9 +602,16 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     return totalRate;
   }
 
-  void _saveGameStateToPref() {
+  void _saveLocalGame() {
     String jsonString = json.encode(_gameState.toJson());
     pref.setString(gameStatePrefKey, jsonString);
+  }
+
+  Future<void> _saveCloudGame(GameState state) async {
+    await FirestoreModel.updateGameState(
+      FirebaseAuth.instance.currentUser.uid,
+      state,
+    );
   }
 
   Future<bool> _initializeNotificationPlugin() async {
@@ -625,7 +681,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _showBoostStoreDialog() {
     _gameState.addBoostCount(1);
-    // TODO: Boost store
+    // TODO: IAP
   }
 
   void _useBoost() {

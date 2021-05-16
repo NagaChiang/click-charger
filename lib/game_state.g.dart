@@ -10,19 +10,25 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
   return GameState()
     ..language = _$enumDecodeNullable(_$LanguageEnumMap, json['language']) ??
         Language.systemDefault
-    ..itemStates = (json['itemStates'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : ItemState.fromJson(e as Map<String, dynamic>)),
-    )
-    ..upgradeStates = (json['upgradeStates'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k,
-          e == null ? null : UpgradeState.fromJson(e as Map<String, dynamic>)),
-    )
+    ..itemStates = (json['itemStates'] as List)
+        ?.map((e) =>
+            e == null ? null : ItemState.fromJson(e as Map<String, dynamic>))
+        ?.toList()
+    ..upgradeStates = (json['upgradeStates'] as List)
+        ?.map((e) =>
+            e == null ? null : UpgradeState.fromJson(e as Map<String, dynamic>))
+        ?.toList()
     ..totalPower = json['totalPower'] == null
         ? null
         : BigInt.parse(json['totalPower'] as String)
     ..antiMatterCount = json['antiMatterCount'] as int
     ..boostCount = json['boostCount'] as int
+    ..createdTime = json['createdTime'] == null
+        ? null
+        : DateTime.parse(json['createdTime'] as String)
+    ..updatedTime = json['updatedTime'] == null
+        ? null
+        : DateTime.parse(json['updatedTime'] as String)
     ..boostEndTime = json['boostEndTime'] == null
         ? null
         : DateTime.parse(json['boostEndTime'] as String);
@@ -30,11 +36,14 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'language': _$LanguageEnumMap[instance.language],
-      'itemStates': instance.itemStates,
-      'upgradeStates': instance.upgradeStates,
+      'itemStates': instance.itemStates?.map((e) => e?.toJson())?.toList(),
+      'upgradeStates':
+          instance.upgradeStates?.map((e) => e?.toJson())?.toList(),
       'totalPower': instance.totalPower?.toString(),
       'antiMatterCount': instance.antiMatterCount,
       'boostCount': instance.boostCount,
+      'createdTime': instance.createdTime?.toIso8601String(),
+      'updatedTime': instance.updatedTime?.toIso8601String(),
       'boostEndTime': instance.boostEndTime?.toIso8601String(),
     };
 

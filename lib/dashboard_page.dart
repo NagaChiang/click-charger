@@ -101,10 +101,8 @@ class DashboardPage extends StatelessWidget {
             itemCount: Utils.getUnlockedItemCount(gameState),
             itemBuilder: (BuildContext context, int index) {
               ItemData itemData = gameData.itemDatas.values.elementAt(index);
-              ItemState itemState =
-                  gameState.itemStates.values.elementAt(index);
-              UpgradeState upgradeState =
-                  gameState.upgradeStates.values.elementAt(index);
+              ItemState itemState = gameState.itemStates[index];
+              UpgradeState upgradeState = gameState.upgradeStates[index];
 
               return Card(
                 child: Column(
@@ -191,7 +189,7 @@ class DashboardPage extends StatelessWidget {
   }
 
   bool _isAscensionAvailable() {
-    return gameState.upgradeStates.values.last.level > 0;
+    return gameState.upgradeStates.last.level > 0;
   }
 
   Future<void> _showAscensionDialog(BuildContext context) async {

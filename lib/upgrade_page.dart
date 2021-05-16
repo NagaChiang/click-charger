@@ -39,7 +39,7 @@ class _UpgradePageState extends State<UpgradePage> {
       initialItemCount: _unlockedItemCount,
       itemBuilder: (context, index, animation) {
         UpgradeData data = gameData.upgradeDatas.values.elementAt(index);
-        UpgradeState state = gameState.upgradeStates[data.id];
+        UpgradeState state = gameState.upgradeStates[index];
 
         return UpgradeListItem(
           data: data,
@@ -65,7 +65,7 @@ class _UpgradePageState extends State<UpgradePage> {
 
   int _getUnlockedItemCount(GameState gameState) {
     for (int i = gameState.itemStates.length - 1; i >= 0; i--) {
-      ItemState itemState = gameState.itemStates.values.elementAt(i);
+      ItemState itemState = gameState.itemStates[i];
       if (itemState.amount >= Constants.upgradeUnlockItemAmountThreshold) {
         return i + 1;
       }

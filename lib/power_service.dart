@@ -1,6 +1,6 @@
-import 'package:click_charger/item_data.dart';
-import 'package:click_charger/item_state.dart';
-
+import 'item_data.dart';
+import 'item_state.dart';
+import 'utils/utils.dart';
 import 'constants.dart';
 import 'game_data.dart';
 import 'game_state.dart';
@@ -14,16 +14,15 @@ class PowerService {
     String itemId,
   ) {
     assert(gameData.itemDatas.containsKey(itemId));
-    assert(gameState.itemStates.containsKey(itemId));
 
     ItemData itemData = gameData.itemDatas[itemId];
-    ItemState itemState = gameState.itemStates[itemId];
+    ItemState itemState = gameState.itemStates[Utils.itemIdToIndex(itemId)];
 
     assert(gameData.upgradeDatas.containsKey(itemData.upgradeId));
-    assert(gameState.upgradeStates.containsKey(itemData.upgradeId));
 
     UpgradeData upgradeData = gameData.upgradeDatas[itemData.upgradeId];
-    UpgradeState upgradeState = gameState.upgradeStates[itemData.upgradeId];
+    UpgradeState upgradeState =
+        gameState.upgradeStates[Utils.upgradeIdToIndex(itemData.upgradeId)];
 
     double bonus = upgradeData.calculateBonus(upgradeState.level);
     double rate = itemData.calculatePowerRate(bonus) * itemState.amount;
@@ -44,17 +43,17 @@ class PowerService {
     String upgradeId,
   ) {
     assert(gameData.upgradeDatas.containsKey(upgradeId));
-    assert(gameState.upgradeStates.containsKey(upgradeId));
 
     UpgradeData data = gameData.upgradeDatas[upgradeId];
-    UpgradeState state = gameState.upgradeStates[upgradeId];
+    UpgradeState state =
+        gameState.upgradeStates[Utils.upgradeIdToIndex(upgradeId)];
 
     return data.calculateBonus(state.level);
   }
 
   static double getPowerPerPress(GameData gameData, GameState gameState) {
     UpgradeData upgradeData = gameData.upgradeDatas['press'];
-    UpgradeState upgradeState = gameState.upgradeStates['press'];
+    UpgradeState upgradeState = gameState.upgradeStates[0];
     double bonus = upgradeData.calculateBonus(upgradeState.level);
     double globalBonus = gameState.getAntimatterBonus();
 

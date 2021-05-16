@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -10,6 +11,32 @@ import '../item_state.dart';
 class Utils {
   static const int digitNumPerGroup = 3;
   static const int maxGroupNum = 7;
+
+  static const Map<String, int> _itemIdToIndexMap = {
+    'press': 0,
+    'item_01': 1,
+    'item_02': 2,
+    'item_03': 3,
+    'item_04': 4,
+    'item_05': 5,
+    'item_06': 6,
+    'item_07': 7,
+    'item_08': 8,
+    'item_09': 9,
+  };
+
+  static const Map<String, int> _upgradeIdToIndexMap = {
+    'press': 0,
+    'upgrade_01': 1,
+    'upgrade_02': 2,
+    'upgrade_03': 3,
+    'upgrade_04': 4,
+    'upgrade_05': 5,
+    'upgrade_06': 6,
+    'upgrade_07': 7,
+    'upgrade_08': 8,
+    'upgrade_09': 9,
+  };
 
   static String toFormattedNumber(BigInt number) {
     String numberStr = number.toString();
@@ -62,9 +89,29 @@ class Utils {
     }
   }
 
+  static int itemIdToIndex(String itemId) {
+    assert(_itemIdToIndexMap.containsKey(itemId));
+    if (!_itemIdToIndexMap.containsKey(itemId)) {
+      print('Error: Invalid item ID = $itemId');
+      return 0;
+    }
+
+    return _itemIdToIndexMap[itemId];
+  }
+
+  static int upgradeIdToIndex(String upgradeId) {
+    assert(_upgradeIdToIndexMap.containsKey(upgradeId));
+    if (!_upgradeIdToIndexMap.containsKey(upgradeId)) {
+      print('Error: Invalid upgrade ID = $upgradeId');
+      return 0;
+    }
+
+    return _upgradeIdToIndexMap[upgradeId];
+  }
+
   static int getUnlockedItemCount(GameState gameState) {
     int count = 1;
-    for (ItemState state in gameState.itemStates.values) {
+    for (ItemState state in gameState.itemStates) {
       if (state.amount == 0 || count == gameState.itemStates.length) {
         break;
       }
