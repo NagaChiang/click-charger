@@ -6,7 +6,7 @@ import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity() {
     override fun onStop() {
-        super.onResume()
+        super.onStop()
         closeAllNotifications();
     }
 

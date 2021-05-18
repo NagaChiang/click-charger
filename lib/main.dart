@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,14 +98,17 @@ Locale resolveLocale(Iterable<Locale> locales, Iterable<Locale> supports) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
-  SystemChrome.setPreferredOrientations([
+
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
   await EasyLocalization.ensureInitialized();
   pref = await SharedPreferences.getInstance();
+
+  await MobileAds.instance.initialize();
 
   runApp(EasyLocalization(
     path: 'assets/translations',
@@ -181,6 +185,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     _pageController.dispose();
     _updateTimer.cancel();
+    _saveCloudGameTimer.cancel();
 
     super.dispose();
   }

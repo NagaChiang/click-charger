@@ -4,8 +4,17 @@
         android:label="@string/app_name"
         android:icon="@mipmap/launcher_icon">
 
-        <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data 
+            android:name="com.google.android.gms.games.APP_ID" 
+            android:value="@string/app_id" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4921712279387990~1295636078"/>
 
         <activity
             android:name=".MainActivity"

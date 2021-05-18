@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "com.timespawn.click_charger"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

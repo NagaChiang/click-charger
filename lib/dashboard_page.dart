@@ -10,7 +10,9 @@ import 'item_data.dart';
 import 'item_state.dart';
 import 'power_service.dart';
 import 'upgrade_state.dart';
+import 'utils/google_ads.dart';
 import 'utils/utils.dart';
+import 'widgets/banner_ad_widget.dart';
 import 'widgets/fancy_button.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -33,6 +35,9 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Flexible(
+          child: BannerAdWidget(adUnitId: GoogleAds.bannerId),
+        ),
         Flexible(
           flex: 1,
           child: Row(
