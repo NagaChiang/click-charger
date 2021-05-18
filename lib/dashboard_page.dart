@@ -15,7 +15,7 @@ import 'utils/utils.dart';
 import 'widgets/banner_ad_widget.dart';
 import 'widgets/fancy_button.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   final GameData gameData;
   final GameState gameState;
   final Function onChargeButtonPressed;
@@ -32,12 +32,27 @@ class DashboardPage extends StatelessWidget {
         assert(onAscensionButtonPressed != null);
 
   @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  bool isShowAds = true;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Flexible(
-          child: BannerAdWidget(adUnitId: GoogleAds.bannerId),
-        ),
+        if (isShowAds)
+          Flexible(
+            child: BannerAdWidget(
+              adUnitId: GoogleAds.bannerId,
+              onAdFailedToLoad: () {
+                setState(() {
+                  isShowAds = false;
+                });
+              },
+            ),
+          ),
         Flexible(
           flex: 1,
           child: Row(
@@ -55,13 +70,13 @@ class DashboardPage extends StatelessWidget {
                           child: Icon(Icons.flash_on),
                         ),
                         title: Text(
-                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerPerPress(gameData, gameState)))} ${'watt'.tr()}/${'press'.tr()}'),
+                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerPerPress(widget.gameData, widget.gameState)))} ${'watt'.tr()}/${'press'.tr()}'),
                       ),
                     ),
                   ),
                 ),
               ),
-              gameState.antiMatterCount > 0
+              widget.gameState.antiMatterCount > 0
                   ? Flexible(
                       child: Card(
                         child: SizedBox.expand(
@@ -77,10 +92,10 @@ class DashboardPage extends StatelessWidget {
                               subtitle: Row(
                                 children: [
                                   Text(
-                                      'x ${Utils.toFormattedNumber(BigInt.from(gameState.antiMatterCount))}'),
+                                      'x ${Utils.toFormattedNumber(BigInt.from(widget.gameState.antiMatterCount))}'),
                                   Spacer(),
                                   Text(
-                                      '(+${Utils.toFormattedNumber(BigInt.from(gameState.antiMatterCount))}%)'),
+                                      '(+${Utils.toFormattedNumber(BigInt.from(widget.gameState.antiMatterCount))}%)'),
                                 ],
                               ),
                             ),
@@ -103,11 +118,12 @@ class DashboardPage extends StatelessWidget {
               crossAxisCount: 2,
               childAspectRatio: 2 / 1,
             ),
-            itemCount: Utils.getUnlockedItemCount(gameState),
+            itemCount: Utils.getUnlockedItemCount(widget.gameState),
             itemBuilder: (BuildContext context, int index) {
-              ItemData itemData = gameData.itemDatas.values.elementAt(index);
-              ItemState itemState = gameState.itemStates[index];
-              UpgradeState upgradeState = gameState.upgradeStates[index];
+              ItemData itemData =
+                  widget.gameData.itemDatas.values.elementAt(index);
+              ItemState itemState = widget.gameState.itemStates[index];
+              UpgradeState upgradeState = widget.gameState.upgradeStates[index];
 
               return Card(
                 child: Column(
@@ -143,7 +159,7 @@ class DashboardPage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerRate(gameData, gameState, itemData.id)))} ${'watt'.tr()}/${'second'.tr()}'),
+                            '${Utils.toFormattedNumber(BigInt.from(PowerService.getPowerRate(widget.gameData, widget.gameState, itemData.id)))} ${'watt'.tr()}/${'second'.tr()}'),
                       ),
                     ),
                   ],
@@ -169,7 +185,7 @@ class DashboardPage extends StatelessWidget {
                   child: Center(child: Icon(Icons.flash_on)),
                   color: Colors.orange,
                   size: 20,
-                  onPressed: onChargeButtonPressed,
+                  onPressed: widget.onChargeButtonPressed,
                 ),
               ),
               _isAscensionAvailable()
@@ -194,7 +210,7 @@ class DashboardPage extends StatelessWidget {
   }
 
   bool _isAscensionAvailable() {
-    return gameState.upgradeStates.last.level > 0;
+    return widget.gameState.upgradeStates.last.level > 0;
   }
 
   Future<void> _showAscensionDialog(BuildContext context) async {
@@ -233,8 +249,8 @@ class DashboardPage extends StatelessWidget {
               onPressed: convertedAntimatterCount > 0
                   ? () {
                       Navigator.of(context).pop();
-                      onAscensionButtonPressed?.call(() {
-                        gameState.ascend(convertedAntimatterCount);
+                      widget.onAscensionButtonPressed?.call(() {
+                        widget.gameState.ascend(convertedAntimatterCount);
                       });
                     }
                   : null,
@@ -246,6 +262,6 @@ class DashboardPage extends StatelessWidget {
   }
 
   int _getConvertedAntimatterCount() {
-    return (gameState.totalPower ~/ Constants.antimatterPrice).toInt();
+    return (widget.gameState.totalPower ~/ Constants.antimatterPrice).toInt();
   }
 }
