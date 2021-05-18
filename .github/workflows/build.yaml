@@ -1,9 +1,10 @@
 name: Build
 on: 
   push:
-    branches:
+    branches-ignore:
+      - 'github-pages'
+    tags-ignore:
       - '**'
-      - '!github-pages'
 jobs:
   github-pages:
     name: Build and Deploy to GitHub Pages
