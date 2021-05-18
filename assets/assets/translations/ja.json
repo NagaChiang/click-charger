@@ -41,5 +41,23 @@
     "build": "作る",
     "dashboard": "ダッシュボード",
     "upgrade": "強化"
+  },
+  "boost": "能量增幅",
+  "boostDialogDescription": "能量增幅效果持續期間，可以產生{bonus}%的全域加成。一個單位的能量增幅，可以持續{duration}個小時。",
+  "buy": "購買",
+  "useButton": "使用 ({count})",
+  "boostExpiredNotification": {
+    "title": "能量增幅結束",
+    "description": "能量增幅效果持續時間結束！"
+  },
+  "noGooglePlayGamesDialog": {
+    "title": "未連結Google Play Games",
+    "description": "一旦移除遊戲或者清除遊戲資料，你將失去所有遊戲紀錄。\n\n你可以在設定頁面連結Google Play Games來啟用雲端存檔。"
+  },
+  "ok": "確定",
+  "googlePlayGamesSetting": {
+    "title": "Google Play Games",
+    "linked": "已連結",
+    "unlinked": "未連結"
   }
 }
