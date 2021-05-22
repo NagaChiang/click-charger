@@ -3,34 +3,34 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/assets/translations/en.json": "e5e47135a4f18605db875fc64c276bf4",
-"assets/assets/translations/zh-Hans.json": "2c93e51b0742473a66e119e15a37f76f",
-"assets/assets/translations/zh-Hant.json": "cfb8247aba18623f5704c132658c01c8",
-"assets/assets/translations/ja.json": "915bbde3c2dcbf6bacd820ec7a446a79",
-"assets/assets/images/icon.png": "11831ae0e06fd240d916b382750a446e",
-"assets/assets/images/icon_no_background.png": "f85b22be2cd5b4b7971b3b6f9596c87a",
-"assets/assets/data/item_data.json": "5152ce4012e0ed3a49708ccb0b0b0d06",
-"assets/assets/data/upgrade_data.json": "6855f48a2ffa01c081b35d8458336c9f",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/packages/easy_localization/i18n/en.json": "5bd908341879a431441c8208ae30e4fd",
-"assets/packages/easy_localization/i18n/ar-DZ.json": "acc0a8eebb2fcee312764600f7cc41ec",
-"assets/packages/easy_localization/i18n/en-US.json": "5bd908341879a431441c8208ae30e4fd",
-"assets/packages/easy_localization/i18n/ar.json": "acc0a8eebb2fcee312764600f7cc41ec",
+  "version.json": "cdabc0a6ff858b48cec55ef8da1d492c",
+"main.dart.js": "d3cb6b0194be454548caf0961fd4b40a",
+"index.html": "b5c0e858561d130844eb15c211de58ed",
+"/": "b5c0e858561d130844eb15c211de58ed",
+"assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "00bb2b684be61e89d1bc7d75dee30b58",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "dffd9504fcb1894620fa41c700172994",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "4b6a9b7c20913279a3ad3dd9c96e155b",
-"assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "00bb2b684be61e89d1bc7d75dee30b58",
+"assets/packages/easy_localization/i18n/ar.json": "acc0a8eebb2fcee312764600f7cc41ec",
+"assets/packages/easy_localization/i18n/en.json": "5bd908341879a431441c8208ae30e4fd",
+"assets/packages/easy_localization/i18n/en-US.json": "5bd908341879a431441c8208ae30e4fd",
+"assets/packages/easy_localization/i18n/ar-DZ.json": "acc0a8eebb2fcee312764600f7cc41ec",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "assets/AssetManifest.json": "45d8815ca1fbf11e37559bd51b11bbae",
-"assets/NOTICES": "bf5d3d5aa3296e74ce3fdd36d3c9855b",
+"assets/NOTICES": "9be5826718232dc79be12ef7dd56c4ef",
+"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
+"assets/assets/translations/zh-Hans.json": "30e9296a44c1a629276a95699fbf8082",
+"assets/assets/translations/en.json": "eb380a390744dbcab353748d3c912cc2",
+"assets/assets/translations/ja.json": "deedc738b060b97d854aec06e1478648",
+"assets/assets/translations/zh-Hant.json": "f2af80b3e5d611f417a3ffc4c2bce651",
+"assets/assets/data/upgrade_data.json": "6855f48a2ffa01c081b35d8458336c9f",
+"assets/assets/data/item_data.json": "5152ce4012e0ed3a49708ccb0b0b0d06",
+"assets/assets/images/icon.png": "11831ae0e06fd240d916b382750a446e",
+"assets/assets/images/icon_no_background.png": "f85b22be2cd5b4b7971b3b6f9596c87a",
+"assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"version.json": "348c069b14df44d13d40a733930ac647",
 "manifest.json": "d8811fdfc75f1c19cf8776edabbd5e65",
-"main.dart.js": "4989c842c1db5024a0e553c868447d82",
-"index.html": "8af15980a7bf905ef1aa10fd02bd09a8",
-"/": "8af15980a7bf905ef1aa10fd02bd09a8"
+"favicon.png": "5dcef449791fa27946b3d35ad8803796"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -48,7 +48,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
+        CORE.map((value) => new Request(value, {'cache': 'reload'})));
     })
   );
 });
