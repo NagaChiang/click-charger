@@ -83,10 +83,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
           onTap: isPlayGamesLinked
               ? null
               : () {
-                  showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) => Container(),
-                    barrierDismissible: false,
+                  Utils.showLoadingOverlay(
+                    context,
+                    showProgressIndicator: false,
                   );
 
                   Utils.linkWithGooglePlayGames().then((_) {

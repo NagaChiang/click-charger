@@ -16,7 +16,15 @@ class Constants {
 
   static const int bigIntPrecision = 100;
 
-  static Duration saveCloudGameInterval = Duration(minutes: 30);
+  static const Duration saveCloudGameInterval = Duration(minutes: 30);
+
+  static const Set<String> productIds = <String>{
+    'boost',
+    'boost_pack_1',
+    'boost_pack_2',
+    'boost_pack_3',
+    'boost_pack_4',
+  };
 
   static BigInt get antimatterPrice {
     if (_antimatterPrice == null) {

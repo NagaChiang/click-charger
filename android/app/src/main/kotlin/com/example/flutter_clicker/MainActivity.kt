@@ -6,8 +6,8 @@ import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity() {
     override fun onStop() {
-        super.onStop()
         closeAllNotifications();
+        super.onStop()
     }
 
     private fun closeAllNotifications() {

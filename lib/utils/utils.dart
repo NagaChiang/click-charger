@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../constants.dart';
@@ -164,5 +166,20 @@ class Utils {
     );
 
     return credential;
+  }
+
+  static void showLoadingOverlay(
+    BuildContext context, {
+    bool showProgressIndicator = true,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => Container(
+        child: showProgressIndicator
+            ? Center(child: CircularProgressIndicator())
+            : null,
+      ),
+      barrierDismissible: false,
+    );
   }
 }

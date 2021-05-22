@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:click_charger/iapDialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,9 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import 'boost_dialog.dart';
 import 'constants.dart';
@@ -110,6 +113,10 @@ void main() async {
 
   await MobileAds.instance.initialize();
 
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
+
   runApp(EasyLocalization(
     path: 'assets/translations',
     supportedLocales: [
@@ -173,6 +180,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
+    InAppPurchase.instance.purchaseStream.listen(_onPurchaseUpdated);
     WidgetsBinding.instance.addObserver(this);
 
     _pageController = PageController(initialPage: _pageState.page.index);
@@ -192,7 +200,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused) {}
+    if (state == AppLifecycleState.paused) {
+      _saveLocalGame();
+    }
   }
 
   @override
@@ -471,6 +481,32 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _gameState.addUpgradeLevel(upgradeId, 1);
   }
 
+  void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
+    purchases.forEach((purchase) async {
+      if (purchase.status == PurchaseStatus.pending) {
+        // TODO: Pending UI
+        // Utils.showLoadingOverlay(context);
+        return;
+      }
+
+      if (purchase.status == PurchaseStatus.error) {
+        print(
+          'Error: ${purchase.purchaseID} (${purchase.productID}): ${purchase.error.message}',
+        );
+        return;
+      }
+
+      if (purchase.status == PurchaseStatus.purchased ||
+          purchase.status == PurchaseStatus.restored) {
+        // TODO: Verify purchase
+      }
+
+      if (purchase.pendingCompletePurchase) {
+        await InAppPurchase.instance.completePurchase(purchase);
+      }
+    });
+  }
+
   Future<void> _initialize() async {
     if (Platform.isAndroid) {
       await _initializeNotificationPlugin();
@@ -684,9 +720,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     );
   }
 
-  void _showBoostStoreDialog() {
-    _gameState.addBoostCount(1);
-    // TODO: IAP
+  Future<void> _showBoostStoreDialog() async {
+    Utils.showLoadingOverlay(context);
+
+    final ProductDetailsResponse response =
+        await InAppPurchase.instance.queryProductDetails(Constants.productIds);
+    if (response.notFoundIDs.isNotEmpty) {
+      print('Warning: Product IDs not found: ${response.notFoundIDs}');
+    }
+
+    Navigator.of(context).pop();
+
+    List<ProductDetails> products = response.productDetails;
+    showDialog(
+      context: context,
+      builder: (context) => IapDialog(
+        products: products,
+      ),
+    );
   }
 
   void _useBoost() {

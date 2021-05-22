@@ -22,7 +22,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     _bannerAd = BannerAd(
       size: AdSize.banner,
       adUnitId: widget.adUnitId,
-      listener: AdListener(
+      listener: BannerAdListener(
         onAdLoaded: (ad) {
           setState(() {
             _isAdLoaded = true;
