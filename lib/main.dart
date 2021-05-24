@@ -55,6 +55,7 @@ const NotificationDetails powerNotificationDetails = NotificationDetails(
     showProgress: true,
     indeterminate: true,
     category: 'Status',
+    timeoutAfter: 2000,
   ),
 );
 
