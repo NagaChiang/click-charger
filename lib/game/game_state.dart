@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'constants.dart';
+import '../utils/constants.dart';
 import 'game_data.dart';
-import 'item_state.dart';
-import 'upgrade_state.dart';
-import 'utils/enums.dart';
-import 'utils/utils.dart';
+import '../item/item_state.dart';
+import '../upgrade/upgrade_state.dart';
+import '../utils/enums.dart';
+import '../utils/utils.dart';
 
 part 'game_state.g.dart';
 

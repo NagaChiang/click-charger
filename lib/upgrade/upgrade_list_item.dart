@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'upgrade_data.dart';
 import 'upgrade_state.dart';
-import 'utils/utils.dart';
+import '../utils/utils.dart';
 
 class UpgradeListItem extends StatelessWidget {
   final UpgradeData data;

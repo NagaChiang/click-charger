@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
-import '../constants.dart';
-import '../game_state.dart';
-import '../item_state.dart';
+import 'constants.dart';
+import '../game/game_state.dart';
+import '../item/item_state.dart';
 
 class Utils {
   static const int digitNumPerGroup = 3;

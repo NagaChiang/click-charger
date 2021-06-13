@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
-import 'game_data.dart';
-import 'game_state.dart';
-import 'item_data.dart';
-import 'item_state.dart';
-import 'power_service.dart';
-import 'upgrade_state.dart';
-import 'utils/google_ads.dart';
-import 'utils/utils.dart';
-import 'widgets/banner_ad_widget.dart';
-import 'widgets/fancy_button.dart';
+import '../utils/constants.dart';
+import '../game/game_data.dart';
+import '../game/game_state.dart';
+import '../item/item_data.dart';
+import '../item/item_state.dart';
+import '../utils/power_service.dart';
+import '../upgrade/upgrade_state.dart';
+import '../ads/google_ads.dart';
+import '../utils/utils.dart';
+import '../ads/banner_ad_widget.dart';
+import '../widgets/fancy_button.dart';
 
 class DashboardPage extends StatefulWidget {
   final GameData gameData;

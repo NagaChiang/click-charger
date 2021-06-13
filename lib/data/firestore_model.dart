@@ -1,7 +1,7 @@
-import 'package:click_charger/game_data.dart';
+import 'package:click_charger/game/game_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'game_state.dart';
+import '../game/game_state.dart';
 
 class FirestoreModel {
   static const String usersCollectionId = 'users';

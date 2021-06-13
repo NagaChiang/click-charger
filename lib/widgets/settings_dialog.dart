@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'utils/utils.dart';
-import 'utils/enums.dart';
+import '../utils/utils.dart';
+import '../utils/enums.dart';
 
 class SettingsDialog extends StatefulWidget {
   SettingsDialog({this.language, this.onChanged, this.version});

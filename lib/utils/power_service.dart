@@ -1,11 +1,11 @@
-import 'item_data.dart';
-import 'item_state.dart';
-import 'utils/utils.dart';
+import '../item/item_data.dart';
+import '../item/item_state.dart';
+import 'utils.dart';
 import 'constants.dart';
-import 'game_data.dart';
-import 'game_state.dart';
-import 'upgrade_data.dart';
-import 'upgrade_state.dart';
+import '../game/game_data.dart';
+import '../game/game_state.dart';
+import '../upgrade/upgrade_data.dart';
+import '../upgrade/upgrade_state.dart';
 
 class PowerService {
   static double getPowerRate(

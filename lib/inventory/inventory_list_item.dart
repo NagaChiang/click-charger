@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'item_data.dart';
-import 'item_state.dart';
-import 'utils/utils.dart';
+import '../item/item_data.dart';
+import '../item/item_state.dart';
+import '../utils/utils.dart';
 
 class InventoryListItem extends StatelessWidget {
   final ItemData data;

@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/widgets.dart';
 
-import 'utils/utils.dart';
+import '../utils/utils.dart';
 
 part 'item_data.g.dart';
 

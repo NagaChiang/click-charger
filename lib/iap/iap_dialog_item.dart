@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-import 'utils/utils.dart';
+import '../utils/utils.dart';
 
 class IapDialogItem extends StatelessWidget {
   static RegExp _titleRegExp = RegExp(r'^(.*) \((.*)\) \(.*\)$');

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../constants.dart';
+import 'constants.dart';
 
 enum Language {
   systemDefault,

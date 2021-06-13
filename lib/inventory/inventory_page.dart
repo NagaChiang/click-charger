@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'constants.dart';
+import '../utils/constants.dart';
 import 'inventory_list_item.dart';
-import 'item_data.dart';
-import 'item_state.dart';
-import 'game_data.dart';
-import 'game_state.dart';
-import 'upgrade_data.dart';
-import 'power_service.dart';
-import 'utils/utils.dart';
+import '../item/item_data.dart';
+import '../item/item_state.dart';
+import '../game/game_data.dart';
+import '../game/game_state.dart';
+import '../upgrade/upgrade_data.dart';
+import '../utils/power_service.dart';
+import '../utils/utils.dart';
 
 class InventoryPage extends StatefulWidget {
   final Function(String) onItemTapped;

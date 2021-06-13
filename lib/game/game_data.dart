@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'item_data.dart';
-import 'upgrade_data.dart';
-import 'constants.dart';
+import '../item/item_data.dart';
+import '../upgrade/upgrade_data.dart';
+import '../utils/constants.dart';
 
 class GameData {
   Map<String, ItemData> itemDatas = {};

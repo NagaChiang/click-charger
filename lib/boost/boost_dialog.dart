@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'constants.dart';
+import '../utils/constants.dart';
 
 class BoostDialog extends StatefulWidget {
   BoostDialog({

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'constants.dart';
-import 'game_data.dart';
-import 'game_state.dart';
-import 'item_state.dart';
+import '../utils/constants.dart';
+import '../game/game_data.dart';
+import '../game/game_state.dart';
+import '../item/item_state.dart';
 import 'upgrade_data.dart';
 import 'upgrade_list_item.dart';
 import 'upgrade_state.dart';

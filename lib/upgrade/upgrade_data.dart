@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'utils/icondata_json_converter.dart';
-import 'utils/utils.dart';
+import '../utils/icondata_json_converter.dart';
+import '../utils/utils.dart';
 
 part 'upgrade_data.g.dart';
 
