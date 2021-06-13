@@ -1,10 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 import '../game_state.dart';
@@ -181,5 +181,23 @@ class Utils {
       ),
       barrierDismissible: false,
     );
+  }
+
+  static Future<int> verifyPurchase(String uid, String purchaseId) async {
+    try {
+      final response = await http.post(
+        Constants.verifyPurchaseUri,
+        body: json.encode({
+          'uid': uid,
+          'purchaseToken': purchaseId,
+        }),
+      );
+
+      final resultBoostCount = json.decode(response.body)['result'] as int;
+      return resultBoostCount;
+    } catch (error) {
+      print(error);
+      return null;
+    }
   }
 }

@@ -121,8 +121,12 @@ class GameState with ChangeNotifier {
     notifyListeners();
   }
 
-  void addBoostCount(int count) {
-    boostCount += count;
+  void setBoostCount(int count) {
+    if (boostCount == count) {
+      return;
+    }
+
+    boostCount = count;
     notifyListeners();
   }
 

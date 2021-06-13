@@ -484,12 +484,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
     purchases.forEach((purchase) async {
-      if (purchase.status == PurchaseStatus.pending) {
-        // TODO: Pending UI
-        // Utils.showLoadingOverlay(context);
-        return;
-      }
-
+      print(
+          '[Purchase] ${purchase.purchaseID} / ${purchase.productID} / ${purchase.status} / ${purchase.pendingCompletePurchase}');
       if (purchase.status == PurchaseStatus.error) {
         print(
           'Error: ${purchase.purchaseID} (${purchase.productID}): ${purchase.error.message}',
@@ -497,13 +493,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         return;
       }
 
-      if (purchase.status == PurchaseStatus.purchased ||
-          purchase.status == PurchaseStatus.restored) {
-        // TODO: Verify purchase
-      }
+      if (purchase.status == PurchaseStatus.purchased) {
+        int newBoostCount = await Utils.verifyPurchase(
+          FirebaseAuth.instance.currentUser.uid,
+          purchase.purchaseID,
+        );
 
-      if (purchase.pendingCompletePurchase) {
-        await InAppPurchase.instance.completePurchase(purchase);
+        if (newBoostCount != null) {
+          _gameState.setBoostCount(newBoostCount);
+          await InAppPurchase.instance.completePurchase(purchase);
+        } else {
+          print('Error: Failed to complete purchase.');
+        }
       }
     });
   }

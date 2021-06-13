@@ -26,6 +26,9 @@ class Constants {
     'boost_pack_4',
   };
 
+  static final Uri verifyPurchaseUri =
+      Uri.parse('https://click-charger-server-ukep5slxwq-ue.a.run.app/verify');
+
   static BigInt get antimatterPrice {
     if (_antimatterPrice == null) {
       _antimatterPrice = BigInt.parse('10000000000000000000000');
