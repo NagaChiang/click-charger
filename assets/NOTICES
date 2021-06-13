@@ -6165,6 +6165,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 dart_style
+http
 shelf
 
 Copyright 2014, the Dart project authors. 
@@ -8246,6 +8247,7 @@ in_app_purchase
 in_app_purchase_android
 in_app_purchase_ios
 in_app_purchase_platform_interface
+package_info
 path_provider_windows
 
 Copyright 2013 The Flutter Authors. All rights reserved.
@@ -8276,7 +8278,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 google_sign_in_platform_interface
-package_info
 shared_preferences
 shared_preferences_platform_interface
 
