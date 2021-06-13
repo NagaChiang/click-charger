@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -192,6 +193,13 @@ class Utils {
           'purchaseToken': purchaseId,
         }),
       );
+
+      if (response.statusCode != HttpStatus.ok) {
+        print(
+          'Failed to verify purchase: ${response.body} (${response.statusCode})',
+        );
+        return null;
+      }
 
       final resultBoostCount = json.decode(response.body)['result'] as int;
       return resultBoostCount;

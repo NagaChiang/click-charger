@@ -39,6 +39,7 @@ import 'boost/boost_button.dart';
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
+const String pendingPurchaseIdsPrefKey = 'pendingPurchaseIds';
 
 final notificationPlugin = FlutterLocalNotificationsPlugin();
 const NotificationDetails powerNotificationDetails = NotificationDetails(
@@ -501,9 +502,17 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
         if (newBoostCount != null) {
           _gameState.setBoostCount(newBoostCount);
-          await InAppPurchase.instance.completePurchase(purchase);
+          _saveLocalGame();
+          try {
+            await InAppPurchase.instance.completePurchase(purchase);
+          } catch (error) {
+            print(
+              'Error: Failed to complete purchase "${purchase.purchaseID}": ${error.toString()}.',
+            );
+          }
         } else {
-          print('Error: Failed to complete purchase.');
+          _addPendingPurchaseId(purchase.purchaseID);
+          print('Error: Failed to verify purchase "${purchase.purchaseID}".');
         }
       }
     });
@@ -525,6 +534,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     _gameData = await GameData.loadFromAssets(context);
     _gameState = await _loadGame();
+
+    await _verifyAllPendingPurchaseIds();
 
     _updateTimer = Timer.periodic(
       Duration(seconds: _updateIntervalSeconds),
@@ -655,6 +666,32 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       FirebaseAuth.instance.currentUser.uid,
       state,
     );
+  }
+
+  void _addPendingPurchaseId(String purchaseId) {
+    List<String> pendingPurchaseIds =
+        pref.getStringList(pendingPurchaseIdsPrefKey) ?? <String>[];
+    pendingPurchaseIds.add(purchaseId);
+    pref.setStringList(pendingPurchaseIdsPrefKey, pendingPurchaseIds);
+  }
+
+  Future<void> _verifyAllPendingPurchaseIds() async {
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    List<String> pendingPurchaseIds =
+        pref.getStringList(pendingPurchaseIdsPrefKey) ?? <String>[];
+    for (var i = pendingPurchaseIds.length - 1; i >= 0; i--) {
+      String purchaseId = pendingPurchaseIds[i];
+      int newBoostCount = await Utils.verifyPurchase(uid, purchaseId);
+      if (newBoostCount != null) {
+        _gameState.setBoostCount(newBoostCount);
+        _saveLocalGame();
+        pendingPurchaseIds.removeAt(i);
+      } else {
+        print('Error: Failed to verify purchase "$purchaseId".');
+      }
+    }
+
+    pref.setStringList(pendingPurchaseIdsPrefKey, pendingPurchaseIds);
   }
 
   Future<bool> _initializeNotificationPlugin() async {
