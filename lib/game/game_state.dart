@@ -30,6 +30,8 @@ class GameState with ChangeNotifier {
   DateTime updatedTime = DateTime.now();
   DateTime boostEndTime = DateTime.now();
 
+  bool isRemoveAd = false;
+
   GameState({GameData gameData}) {
     if (gameData == null) {
       return;
@@ -68,7 +70,8 @@ class GameState with ChangeNotifier {
           : (json['updatedTime'] as Timestamp).toDate()
       ..boostEndTime = json['boostEndTime'] == null
           ? null
-          : (json['boostEndTime'] as Timestamp).toDate();
+          : (json['boostEndTime'] as Timestamp).toDate()
+      ..isRemoveAd = json['isRemoveAd'] as bool ?? false;
   }
 
   Map<String, dynamic> toJson() => _$GameStateToJson(this);

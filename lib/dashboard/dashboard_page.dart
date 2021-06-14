@@ -39,6 +39,13 @@ class _DashboardPageState extends State<DashboardPage> {
   bool isShowAds = true;
 
   @override
+  void initState() {
+    super.initState();
+
+    isShowAds = !widget.gameState.isRemoveAd;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [

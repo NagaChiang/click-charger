@@ -45,6 +45,7 @@ class FirestoreModel {
     var data = gameState.toFirestoreJson();
     data.remove('boostCount');
     data.remove('boostEndTime');
+    data.remove('isRemoveAd');
 
     await usersCollection.doc(uid).update(data).catchError((error) {
       print('Failed to update document for $uid: $error');

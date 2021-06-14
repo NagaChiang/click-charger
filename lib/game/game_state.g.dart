@@ -31,7 +31,8 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['updatedTime'] as String)
     ..boostEndTime = json['boostEndTime'] == null
         ? null
-        : DateTime.parse(json['boostEndTime'] as String);
+        : DateTime.parse(json['boostEndTime'] as String)
+    ..isRemoveAd = json['isRemoveAd'] as bool ?? false;
 }
 
 Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
@@ -45,6 +46,7 @@ Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'createdTime': instance.createdTime?.toIso8601String(),
       'updatedTime': instance.updatedTime?.toIso8601String(),
       'boostEndTime': instance.boostEndTime?.toIso8601String(),
+      'isRemoveAd': instance.isRemoveAd ?? false,
     };
 
 T _$enumDecode<T>(

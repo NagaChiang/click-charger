@@ -576,6 +576,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         await _saveCloudGame(localGame);
         localGame.boostCount = cloudGame.boostCount ?? 0;
         localGame.boostEndTime = cloudGame.boostEndTime ?? DateTime.now();
+        localGame.isRemoveAd = cloudGame.isRemoveAd ?? false;
         print('Find both save. Use local save. Sync with cloud save.');
         return localGame;
       } else {
