@@ -6,6 +6,8 @@ import '../game/game_state.dart';
 class FirestoreModel {
   static const String usersCollectionId = 'users';
 
+  static CollectionReference _userCollection;
+
   static CollectionReference get usersCollection {
     if (_userCollection == null) {
       _userCollection =
@@ -14,8 +16,6 @@ class FirestoreModel {
 
     return _userCollection;
   }
-
-  static CollectionReference _userCollection;
 
   static Future<void> createGameState(String uid, GameData gameData) async {
     GameState gameState = GameState(gameData: gameData);
@@ -42,10 +42,11 @@ class FirestoreModel {
   }
 
   static Future<void> updateGameState(String uid, GameState gameState) async {
-    await usersCollection
-        .doc(uid)
-        .update(gameState.toFirestoreJson())
-        .catchError((error) {
+    var data = gameState.toFirestoreJson();
+    data.remove('boostCount');
+    data.remove('boostEndTime');
+
+    await usersCollection.doc(uid).update(data).catchError((error) {
       print('Failed to update document for $uid: $error');
     });
   }
