@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../utils/constants.dart';
+import '../utils/utils.dart';
+import '../game/boost_state.dart';
 
 class BoostDialog extends StatefulWidget {
   BoostDialog({
@@ -20,7 +22,7 @@ class BoostDialog extends StatefulWidget {
   final DateTime endTime;
   final int boostCount;
   final int Function() onBuyButtonPressed;
-  final DateTime Function() onUseButtonPressed;
+  final Future<BoostState> Function() onUseButtonPressed;
 
   @override
   _BoostDialogState createState() => _BoostDialogState();
@@ -108,10 +110,17 @@ class _BoostDialogState extends State<BoostDialog> {
             ),
           ),
           onPressed: _boostCount > 0
-              ? () {
-                  _boostCount--; // Hack
-                  _endTime = widget.onUseButtonPressed.call();
-                  _updateRemainTime();
+              ? () async {
+                  Utils.showLoadingOverlay(context);
+
+                  final newBoostState = await widget.onUseButtonPressed.call();
+                  if (newBoostState != null) {
+                    _boostCount = newBoostState.count;
+                    _endTime = newBoostState.endTime;
+                    _updateRemainTime();
+                  }
+
+                  Navigator.of(context).pop();
                 }
               : null,
         ),

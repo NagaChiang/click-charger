@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:click_charger/iap/iap_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,6 +35,9 @@ import 'widgets/animated_number_text.dart';
 import 'widgets/settings_dialog.dart';
 import 'utils/enums.dart';
 import 'boost/boost_button.dart';
+import 'iap/iap_dialog.dart';
+import 'utils/server_api.dart';
+import 'game/boost_state.dart';
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
@@ -495,7 +497,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       }
 
       if (purchase.status == PurchaseStatus.purchased) {
-        int newBoostCount = await Utils.verifyPurchase(
+        int newBoostCount = await ServerApi.verifyPurchase(
           FirebaseAuth.instance.currentUser.uid,
           purchase.purchaseID,
         );
@@ -684,7 +686,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         pref.getStringList(pendingPurchaseIdsPrefKey) ?? <String>[];
     for (var i = pendingPurchaseIds.length - 1; i >= 0; i--) {
       String purchaseId = pendingPurchaseIds[i];
-      int newBoostCount = await Utils.verifyPurchase(uid, purchaseId);
+      int newBoostCount = await ServerApi.verifyPurchase(uid, purchaseId);
       if (newBoostCount != null) {
         _gameState.setBoostCount(newBoostCount);
         _saveLocalGame();
@@ -754,9 +756,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           _showBoostStoreDialog();
           return _gameState.boostCount;
         },
-        onUseButtonPressed: () {
-          _useBoost();
-          return _gameState.boostEndTime;
+        onUseButtonPressed: () async {
+          return await _gameState.useBoost(1);
         },
       ),
     );
@@ -780,14 +781,5 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         products: products,
       ),
     );
-  }
-
-  void _useBoost() {
-    assert(_gameState.boostCount > 0);
-    if (_gameState.boostCount <= 0) {
-      return;
-    }
-
-    _gameState.useBoost(1);
   }
 }

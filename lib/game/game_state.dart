@@ -1,14 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../utils/constants.dart';
+import 'boost_state.dart';
 import 'game_data.dart';
 import '../item/item_state.dart';
 import '../upgrade/upgrade_state.dart';
 import '../utils/enums.dart';
 import '../utils/utils.dart';
+import '../utils/server_api.dart';
 
 part 'game_state.g.dart';
 
@@ -133,23 +135,25 @@ class GameState with ChangeNotifier {
     notifyListeners();
   }
 
-  void useBoost(int count) {
+  Future<BoostState> useBoost(int count) async {
     assert(boostCount >= count);
     if (boostCount < count) {
       print('Trying to use $count boosts when you only have $boostCount.');
-      return;
+      return null;
     }
 
-    boostCount -= count;
-
-    Duration boostDuration = Constants.durationPerBoost * count;
-    if (boostEndTime.isAfter(DateTime.now())) {
-      boostEndTime = boostEndTime.add(boostDuration);
-    } else {
-      boostEndTime = DateTime.now().add(boostDuration);
+    final uid = FirebaseAuth.instance.currentUser.uid;
+    final newBoostState = await ServerApi.useBoost(uid, count);
+    if (newBoostState == null) {
+      return null;
     }
+
+    boostCount = newBoostState.count;
+    boostEndTime = newBoostState.endTime;
 
     notifyListeners();
+
+    return newBoostState;
   }
 
   bool isBoostActive() {

@@ -26,8 +26,10 @@ class Constants {
     'boost_pack_4',
   };
 
-  static final Uri verifyPurchaseUri =
-      Uri.parse('https://click-charger-server-ukep5slxwq-ue.a.run.app/verify');
+  static const String serverBaseUrl =
+      'https://click-charger-server-ukep5slxwq-ue.a.run.app';
+  static final Uri verifyPurchaseUri = Uri.parse('$serverBaseUrl/verify');
+  static final Uri useBoostUri = Uri.parse('$serverBaseUrl/useBoost');
 
   static BigInt get antimatterPrice {
     if (_antimatterPrice == null) {
