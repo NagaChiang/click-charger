@@ -7,12 +7,17 @@ import 'constants.dart';
 import '../game/boost_state.dart';
 
 class ServerApi {
-  static Future<int> verifyPurchase(String uid, String purchaseId) async {
+  static Future<int> verifyPurchase(
+    String uid,
+    String productId,
+    String purchaseId,
+  ) async {
     try {
       final response = await http.post(
         Constants.verifyPurchaseUri,
         body: json.encode({
           'uid': uid,
+          'productId': productId,
           'purchaseToken': purchaseId,
         }),
       );

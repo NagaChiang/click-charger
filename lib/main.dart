@@ -497,10 +497,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       }
 
       if (purchase.status == PurchaseStatus.purchased) {
+        Utils.showLoadingOverlay(context);
         int newBoostCount = await ServerApi.verifyPurchase(
           FirebaseAuth.instance.currentUser.uid,
+          purchase.productID,
           purchase.purchaseID,
         );
+
+        Navigator.of(context).pop();
 
         if (newBoostCount != null) {
           _gameState.setBoostCount(newBoostCount);
@@ -512,9 +516,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               'Error: Failed to complete purchase "${purchase.purchaseID}": ${error.toString()}.',
             );
           }
-        } else {
-          _addPendingPurchaseId(purchase.purchaseID);
-          print('Error: Failed to verify purchase "${purchase.purchaseID}".');
         }
       }
     });
@@ -537,7 +538,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _gameData = await GameData.loadFromAssets(context);
     _gameState = await _loadGame();
 
-    await _verifyAllPendingPurchaseIds();
+    //await _verifyAllPendingPurchaseIds();
 
     _updateTimer = Timer.periodic(
       Duration(seconds: _updateIntervalSeconds),
@@ -680,24 +681,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     pref.setStringList(pendingPurchaseIdsPrefKey, pendingPurchaseIds);
   }
 
-  Future<void> _verifyAllPendingPurchaseIds() async {
-    String uid = FirebaseAuth.instance.currentUser.uid;
-    List<String> pendingPurchaseIds =
-        pref.getStringList(pendingPurchaseIdsPrefKey) ?? <String>[];
-    for (var i = pendingPurchaseIds.length - 1; i >= 0; i--) {
-      String purchaseId = pendingPurchaseIds[i];
-      int newBoostCount = await ServerApi.verifyPurchase(uid, purchaseId);
-      if (newBoostCount != null) {
-        _gameState.setBoostCount(newBoostCount);
-        _saveLocalGame();
-        pendingPurchaseIds.removeAt(i);
-      } else {
-        print('Error: Failed to verify purchase "$purchaseId".');
-      }
-    }
+  // Future<void> _verifyAllPendingPurchaseIds() async {
+  //   String uid = FirebaseAuth.instance.currentUser.uid;
+  //   List<String> pendingPurchaseIds =
+  //       pref.getStringList(pendingPurchaseIdsPrefKey) ?? <String>[];
+  //   for (var i = pendingPurchaseIds.length - 1; i >= 0; i--) {
+  //     String purchaseId = pendingPurchaseIds[i];
+  //     int newBoostCount = await ServerApi.verifyPurchase(uid, purchaseId);
+  //     if (newBoostCount != null) {
+  //       _gameState.setBoostCount(newBoostCount);
+  //       _saveLocalGame();
+  //       pendingPurchaseIds.removeAt(i);
+  //     } else {
+  //       print('Error: Failed to verify purchase "$purchaseId".');
+  //     }
+  //   }
 
-    pref.setStringList(pendingPurchaseIdsPrefKey, pendingPurchaseIds);
-  }
+  //   pref.setStringList(pendingPurchaseIdsPrefKey, pendingPurchaseIds);
+  // }
 
   Future<bool> _initializeNotificationPlugin() async {
     final settings = InitializationSettings(
