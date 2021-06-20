@@ -10,7 +10,7 @@ class ServerApi {
   static Future<int> verifyPurchase(
     String uid,
     String productId,
-    String purchaseId,
+    String purchaseToken,
   ) async {
     try {
       final response = await http.post(
@@ -18,7 +18,7 @@ class ServerApi {
         body: json.encode({
           'uid': uid,
           'productId': productId,
-          'purchaseToken': purchaseId,
+          'purchaseToken': purchaseToken,
         }),
       );
 

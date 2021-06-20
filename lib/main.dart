@@ -488,7 +488,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
     purchases.forEach((purchase) async {
       print(
-          '[Purchase] ${purchase.purchaseID} / ${purchase.productID} / ${purchase.status} / ${purchase.pendingCompletePurchase}');
+          '[Purchase] ${purchase.purchaseID} / ${purchase.productID} / ${purchase.status} / ${purchase.pendingCompletePurchase} / ${purchase.verificationData.localVerificationData} / ${purchase.verificationData.serverVerificationData} / ${purchase.verificationData.source}');
       if (purchase.status == PurchaseStatus.error) {
         print(
           'Error: ${purchase.purchaseID} (${purchase.productID}): ${purchase.error.message}',
@@ -501,7 +501,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         int newBoostCount = await ServerApi.verifyPurchase(
           FirebaseAuth.instance.currentUser.uid,
           purchase.productID,
-          purchase.purchaseID,
+          purchase.verificationData.serverVerificationData,
         );
 
         Navigator.of(context).pop();
@@ -513,7 +513,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             await InAppPurchase.instance.completePurchase(purchase);
           } catch (error) {
             print(
-              'Error: Failed to complete purchase "${purchase.purchaseID}": ${error.toString()}.',
+              'Error: Failed to complete purchase "${purchase.verificationData.serverVerificationData}": ${error.toString()}.',
             );
           }
         }
