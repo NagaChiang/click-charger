@@ -487,11 +487,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
     purchases.forEach((purchase) async {
-      print(
-          '[Purchase] ${purchase.purchaseID} / ${purchase.productID} / ${purchase.status} / ${purchase.pendingCompletePurchase} / ${purchase.verificationData.localVerificationData} / ${purchase.verificationData.serverVerificationData} / ${purchase.verificationData.source}');
       if (purchase.status == PurchaseStatus.error) {
         print(
-          'Error: ${purchase.purchaseID} (${purchase.productID}): ${purchase.error.message}',
+          'Error purchase: ${purchase.productID}: ${purchase.error.message} (${purchase.verificationData.serverVerificationData})',
         );
         return;
       }
@@ -504,7 +502,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           purchase.verificationData.serverVerificationData,
         );
 
-        Navigator.of(context).pop();
+        Navigator.of(context).popUntil((route) => route.isFirst);
 
         if (newBoostCount != null) {
           _gameState.setBoostCount(newBoostCount);
