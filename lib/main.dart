@@ -37,7 +37,6 @@ import 'utils/enums.dart';
 import 'boost/boost_button.dart';
 import 'iap/iap_dialog.dart';
 import 'utils/server_api.dart';
-import 'game/boost_state.dart';
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
@@ -506,6 +505,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
         if (newBoostCount != null) {
           _gameState.setBoostCount(newBoostCount);
+          _gameState.removeAd();
           _saveLocalGame();
           try {
             await InAppPurchase.instance.completePurchase(purchase);
@@ -578,6 +578,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         localGame.boostCount = cloudGame.boostCount ?? 0;
         localGame.boostEndTime = cloudGame.boostEndTime ?? DateTime.now();
         localGame.isRemoveAd = cloudGame.isRemoveAd ?? false;
+        localGame.nextRewardedAdTime =
+            cloudGame.nextRewardedAdTime ?? DateTime.now();
         print('Find both save. Use local save. Sync with cloud save.');
         return localGame;
       } else {
@@ -749,14 +751,22 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     showDialog(
       context: context,
       builder: (context) => BoostDialog(
-        endTime: _gameState.boostEndTime,
+        boostEndTime: _gameState.boostEndTime,
         boostCount: _gameState.boostCount,
+        nextRewardedAdTime: _gameState.nextRewardedAdTime,
         onBuyButtonPressed: () {
           _showBoostStoreDialog();
           return _gameState.boostCount;
         },
         onUseButtonPressed: () async {
           return await _gameState.useBoost(1);
+        },
+        onUserEarnedReward: (
+          DateTime newBoostEndTime,
+          DateTime newNextRewardedAdTime,
+        ) {
+          _gameState.setBoostEndTime(newBoostEndTime);
+          _gameState.setNextRewardedAdTime(newNextRewardedAdTime);
         },
       ),
     );

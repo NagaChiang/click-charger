@@ -43,7 +43,7 @@
     "upgrade": "升级"
   },
   "boost": "能量增幅",
-  "boostDialogDescription": "能量增幅效果持续期间，可以产生{bonus}%的全域加成。一个能量增幅器，可以持续{duration}个小时。",
+  "boostDialogDescription": "能量增幅效果持续期间，可以产生{bonus}%的全域加成。一个能量增幅器可以持续{duration}个小时。",
   "buy": "购买",
   "useButton": "使用 ({count})",
   "boostExpiredNotification": {
@@ -60,5 +60,6 @@
     "linked": "已连接",
     "unlinked": "未连接"
   },
-  "store": "商店"
+  "store": "商店",
+  "watchAd": "观看广告"
 }

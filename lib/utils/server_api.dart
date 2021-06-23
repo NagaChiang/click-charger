@@ -1,10 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import 'constants.dart';
 import '../game/boost_state.dart';
+
+class RewardedAdResult {
+  final DateTime nextRewardedAdTime;
+  final DateTime boostEndTime;
+
+  RewardedAdResult({
+    @required this.nextRewardedAdTime,
+    @required this.boostEndTime,
+  });
+}
 
 class ServerApi {
   static Future<int> verifyPurchase(
@@ -61,6 +72,35 @@ class ServerApi {
       );
 
       return resultBoostState;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  static Future<RewardedAdResult> rewardedAd(String uid) async {
+    try {
+      final response = await http.post(
+        Constants.rewardedAdUri,
+        body: json.encode({
+          'uid': uid,
+        }),
+      );
+
+      if (response.statusCode != HttpStatus.ok) {
+        print(
+          'Failed to earn rewarded ad: ${response.body} (${response.statusCode})',
+        );
+        return null;
+      }
+
+      final bodyJson = json.decode(response.body);
+      final result = RewardedAdResult(
+        boostEndTime: DateTime.parse(bodyJson['boostEndTime']),
+        nextRewardedAdTime: DateTime.parse(bodyJson['nextRewardedAdTime']),
+      );
+
+      return result;
     } catch (error) {
       print(error);
       return null;

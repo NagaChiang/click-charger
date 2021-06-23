@@ -30,6 +30,7 @@ class Constants {
       'https://click-charger-server-ukep5slxwq-ue.a.run.app';
   static final Uri verifyPurchaseUri = Uri.parse('$serverBaseUrl/verify');
   static final Uri useBoostUri = Uri.parse('$serverBaseUrl/useBoost');
+  static final Uri rewardedAdUri = Uri.parse('$serverBaseUrl/rewardedAd');
 
   static BigInt get antimatterPrice {
     if (_antimatterPrice == null) {

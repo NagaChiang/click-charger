@@ -31,6 +31,7 @@ class GameState with ChangeNotifier {
   DateTime createdTime = DateTime.now();
   DateTime updatedTime = DateTime.now();
   DateTime boostEndTime = DateTime.now();
+  DateTime nextRewardedAdTime = DateTime.now();
 
   bool isRemoveAd = false;
 
@@ -80,7 +81,10 @@ class GameState with ChangeNotifier {
       ..boostEndTime = json['boostEndTime'] == null
           ? null
           : (json['boostEndTime'] as Timestamp).toDate()
-      ..isRemoveAd = json['isRemoveAd'] as bool ?? false;
+      ..isRemoveAd = json['isRemoveAd'] as bool ?? false
+      ..nextRewardedAdTime = json['nextRewardedAdTime'] == null
+          ? null
+          : (json['nextRewardedAdTime'] as Timestamp).toDate();
   }
 
   Map<String, dynamic> toJson() => _$GameStateToJson(this);
@@ -89,7 +93,6 @@ class GameState with ChangeNotifier {
     Map<String, dynamic> data = toJson();
     data['createdTime'] = Timestamp.fromDate(createdTime);
     data['updatedTime'] = Timestamp.fromDate(updatedTime);
-    data['boostEndTime'] = Timestamp.fromDate(boostEndTime);
 
     return data;
   }
@@ -146,6 +149,24 @@ class GameState with ChangeNotifier {
     }
 
     boostCount = count;
+    notifyListeners();
+  }
+
+  void setBoostEndTime(DateTime time) {
+    if (boostEndTime == time) {
+      return;
+    }
+
+    boostEndTime = time;
+    notifyListeners();
+  }
+
+  void setNextRewardedAdTime(DateTime time) {
+    if (nextRewardedAdTime == time) {
+      return;
+    }
+
+    nextRewardedAdTime = time;
     notifyListeners();
   }
 

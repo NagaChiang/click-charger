@@ -46,6 +46,7 @@ class FirestoreModel {
     data.remove('boostCount');
     data.remove('boostEndTime');
     data.remove('isRemoveAd');
+    data.remove('nextRewardedAdTime');
 
     await usersCollection.doc(uid).update(data).catchError((error) {
       print('Failed to update document for $uid: $error');
