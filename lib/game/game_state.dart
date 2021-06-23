@@ -39,8 +39,15 @@ class GameState with ChangeNotifier {
       return;
     }
 
-    itemStates = List.filled(gameData.itemDatas.length, ItemState());
-    upgradeStates = List.filled(gameData.upgradeDatas.length, UpgradeState());
+    itemStates = List.generate(
+      gameData.itemDatas.length,
+      (index) => ItemState(),
+    );
+
+    upgradeStates = List.generate(
+      gameData.upgradeDatas.length,
+      (index) => UpgradeState(),
+    );
   }
 
   factory GameState.fromJson(Map<String, dynamic> json) =>
@@ -111,8 +118,15 @@ class GameState with ChangeNotifier {
     antiMatterCount += antimatter;
 
     totalPower = BigInt.zero;
-    itemStates.fillRange(0, itemStates.length, ItemState());
-    upgradeStates.fillRange(0, upgradeStates.length, UpgradeState());
+    itemStates = List.generate(
+      itemStates.length,
+      (index) => ItemState(),
+    );
+
+    upgradeStates = List.generate(
+      upgradeStates.length,
+      (index) => UpgradeState(),
+    );
 
     notifyListeners();
   }
@@ -132,6 +146,15 @@ class GameState with ChangeNotifier {
     }
 
     boostCount = count;
+    notifyListeners();
+  }
+
+  void removeAd() {
+    if (isRemoveAd) {
+      return;
+    }
+
+    isRemoveAd = true;
     notifyListeners();
   }
 
