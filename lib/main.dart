@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -104,34 +106,46 @@ Locale resolveLocale(Iterable<Locale> locales, Iterable<Locale> supports) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-  await SystemChrome.setEnabledSystemUIOverlays([]);
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  runZonedGuarded<Future<void>>(() async {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    Isolate.current.addErrorListener(RawReceivePort((pair) async {
+      final List<dynamic> errorAndStacktrace = pair;
+      await FirebaseCrashlytics.instance.recordError(
+        errorAndStacktrace.first,
+        errorAndStacktrace.last,
+      );
+    }).sendPort);
 
-  await EasyLocalization.ensureInitialized();
-  pref = await SharedPreferences.getInstance();
+    await SystemChrome.setEnabledSystemUIOverlays([]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
-  await MobileAds.instance.initialize();
+    await EasyLocalization.ensureInitialized();
+    pref = await SharedPreferences.getInstance();
 
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-  }
+    await MobileAds.instance.initialize();
 
-  runApp(EasyLocalization(
-    path: 'assets/translations',
-    supportedLocales: [
-      const Locale('en'),
-      const Locale('ja'),
-      Constants.traditionalChineseLocale,
-      Constants.simplifiedChineseLocale,
-    ],
-    fallbackLocale: const Locale('en'),
-    useFallbackTranslations: true,
-    child: ClickChargerApp(),
-  ));
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+    }
+
+    runApp(EasyLocalization(
+      path: 'assets/translations',
+      supportedLocales: [
+        const Locale('en'),
+        const Locale('ja'),
+        Constants.traditionalChineseLocale,
+        Constants.simplifiedChineseLocale,
+      ],
+      fallbackLocale: const Locale('en'),
+      useFallbackTranslations: true,
+      child: ClickChargerApp(),
+    ));
+  }, FirebaseCrashlytics.instance.recordError);
 }
 
 class ClickChargerApp extends StatelessWidget {
@@ -509,9 +523,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           _saveLocalGame();
           try {
             await InAppPurchase.instance.completePurchase(purchase);
-          } catch (error) {
-            print(
-              'Error: Failed to complete purchase "${purchase.verificationData.serverVerificationData}": ${error.toString()}.',
+          } catch (error, stackTrace) {
+            final msg =
+                'Error: Failed to complete purchase "${purchase.verificationData.serverVerificationData}": ${error.toString()}.';
+            print(msg);
+
+            await FirebaseCrashlytics.instance.recordError(
+              error,
+              stackTrace,
+              reason: msg,
             );
           }
         }
@@ -524,7 +544,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       await _initializeNotificationPlugin();
       _packageInfo = await PackageInfo.fromPlatform();
 
-      await Firebase.initializeApp();
       FirebaseAuth.instance.authStateChanges().listen(_onAuthStateChanged);
 
       if (FirebaseAuth.instance.currentUser == null) {
@@ -532,6 +551,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         await _signIn();
       }
     }
+
+    await _initializeCrashlytics();
 
     _gameData = await GameData.loadFromAssets(context);
     _gameState = await _loadGame();
@@ -547,6 +568,16 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       Constants.saveCloudGameInterval,
       _onSaveCloudGameTimerUpdate,
     );
+  }
+
+  Future<void> _initializeCrashlytics() async {
+    if (kDebugMode) {
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+      return;
+    }
+
+    final uid = FirebaseAuth.instance.currentUser.uid;
+    FirebaseCrashlytics.instance.setUserIdentifier(uid);
   }
 
   Future<GameState> _loadGame() async {

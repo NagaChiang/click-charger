@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -42,8 +43,15 @@ class ServerApi {
 
       final resultBoostCount = json.decode(response.body)['result'] as int;
       return resultBoostCount;
-    } catch (error) {
+    } catch (error, stackTrace) {
       print(error);
+      await FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason:
+            '$uid failed to verify purchase for $productId ($purchaseToken)',
+      );
+
       return null;
     }
   }
@@ -72,8 +80,14 @@ class ServerApi {
       );
 
       return resultBoostState;
-    } catch (error) {
+    } catch (error, stackTrace) {
       print(error);
+      await FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: '$uid failed to use $count boost.',
+      );
+
       return null;
     }
   }
@@ -101,8 +115,14 @@ class ServerApi {
       );
 
       return result;
-    } catch (error) {
+    } catch (error, stackTrace) {
       print(error);
+      await FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: '$uid failed to earn rewarded ad.',
+      );
+
       return null;
     }
   }
