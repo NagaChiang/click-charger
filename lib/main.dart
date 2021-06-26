@@ -39,6 +39,7 @@ import 'utils/enums.dart';
 import 'boost/boost_button.dart';
 import 'iap/iap_dialog.dart';
 import 'utils/server_api.dart';
+import 'utils/analytics.dart';
 
 SharedPreferences pref;
 const String gameStatePrefKey = 'gameState';
@@ -133,6 +134,8 @@ void main() async {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
     }
 
+    Analytics.instance.setEnabled(kReleaseMode);
+
     runApp(EasyLocalization(
       path: 'assets/translations',
       supportedLocales: [
@@ -217,6 +220,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      await Analytics.instance.logAppResume(_gameState);
+    }
+
     if (state == AppLifecycleState.paused) {
       _saveLocalGame();
     }
@@ -475,24 +482,28 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _gameState.addPower(power);
   }
 
-  void _onBuildItemTapped(String itemId) {
+  void _onBuildItemTapped(String itemId) async {
     ItemData data = _gameData.itemDatas[itemId];
     ItemState state = _gameState.itemStates[Utils.itemIdToIndex(itemId)];
     BigInt price = data.calculatePrice(state.amount);
 
     assert(_gameState.totalPower >= price);
 
+    await Analytics.instance.logBuild(_gameState, itemId);
+
     _gameState.addPower(-price);
     _gameState.addItemAmount(itemId, 1);
   }
 
-  void _onUpgradeItemTapped(String upgradeId) {
+  void _onUpgradeItemTapped(String upgradeId) async {
     UpgradeData data = _gameData.upgradeDatas[upgradeId];
     UpgradeState state =
         _gameState.upgradeStates[Utils.upgradeIdToIndex(upgradeId)];
     BigInt price = data.calculatePrice(state.level);
 
     assert(_gameState.totalPower >= price);
+
+    await Analytics.instance.logUpgrade(_gameState, upgradeId);
 
     _gameState.addPower(-price);
     _gameState.addUpgradeLevel(upgradeId, 1);
@@ -518,6 +529,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         Navigator.of(context).popUntil((route) => route.isFirst);
 
         if (newBoostCount != null) {
+          await Analytics.instance.logPurchase(
+            _gameState,
+            purchase.productID,
+            purchase.verificationData.serverVerificationData,
+          );
+
           _gameState.setBoostCount(newBoostCount);
           _gameState.removeAd();
           _saveLocalGame();
@@ -540,19 +557,22 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _initialize() async {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isIOS) {
       await _initializeNotificationPlugin();
       _packageInfo = await PackageInfo.fromPlatform();
+    }
 
-      FirebaseAuth.instance.authStateChanges().listen(_onAuthStateChanged);
-
-      if (FirebaseAuth.instance.currentUser == null) {
-        print('First time opening the game. Trying to sign in...');
-        await _signIn();
-      }
+    FirebaseAuth.instance.authStateChanges().listen(_onAuthStateChanged);
+    if (FirebaseAuth.instance.currentUser == null) {
+      print('First time opening the game. Trying to sign in...');
+      await _signIn();
     }
 
     await _initializeCrashlytics();
+
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    Analytics.instance.setUserId(uid);
+    await Analytics.instance.logAppOpen();
 
     _gameData = await GameData.loadFromAssets(context);
     _gameState = await _loadGame();
@@ -790,12 +810,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           return _gameState.boostCount;
         },
         onUseButtonPressed: () async {
+          await Analytics.instance.logUseBoost(_gameState);
           return await _gameState.useBoost(1);
         },
         onUserEarnedReward: (
           DateTime newBoostEndTime,
           DateTime newNextRewardedAdTime,
-        ) {
+        ) async {
+          await Analytics.instance.logWatchAd(_gameState);
+
           _gameState.setBoostEndTime(newBoostEndTime);
           _gameState.setNextRewardedAdTime(newNextRewardedAdTime);
         },

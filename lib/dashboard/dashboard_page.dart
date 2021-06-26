@@ -14,6 +14,7 @@ import '../ads/google_ads.dart';
 import '../utils/utils.dart';
 import '../ads/banner_ad_widget.dart';
 import '../widgets/fancy_button.dart';
+import '../utils/analytics.dart';
 
 class DashboardPage extends StatefulWidget {
   final GameData gameData;
@@ -254,7 +255,12 @@ class _DashboardPageState extends State<DashboardPage> {
             ElevatedButton(
               child: Text('ascend'.tr()),
               onPressed: convertedAntimatterCount > 0
-                  ? () {
+                  ? () async {
+                      await Analytics.instance.logAscend(
+                        widget.gameState,
+                        convertedAntimatterCount,
+                      );
+
                       Navigator.of(context).pop();
                       widget.onAscensionButtonPressed?.call(() {
                         widget.gameState.ascend(convertedAntimatterCount);
