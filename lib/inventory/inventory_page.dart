@@ -71,8 +71,8 @@ class _InventoryPageState extends State<InventoryPage>
               data: data,
               state: state,
               rate: data.baseProduction * (1 + bonus),
-              onItemTapped: (String itemId) {
-                widget.onItemTapped.call(itemId);
+              onItemTapped: (String itemId) async {
+                await widget.onItemTapped.call(itemId);
                 _checkUnlockedItem(context, gameState);
                 _checkUnlockedUpgrade(context, gameState, itemId);
               },
