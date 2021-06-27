@@ -93,6 +93,7 @@ class GameState with ChangeNotifier {
     Map<String, dynamic> data = toJson();
     data['createdTime'] = Timestamp.fromDate(createdTime);
     data['updatedTime'] = Timestamp.fromDate(updatedTime);
+    data['boostEndTime'] = Timestamp.fromDate(boostEndTime);
 
     return data;
   }
