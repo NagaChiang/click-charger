@@ -221,7 +221,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      await Analytics.instance.logAppResume(_gameState);
+      if (_gameState != null) {
+        await Analytics.instance.logAppResume(_gameState);
+      }
     }
 
     if (state == AppLifecycleState.paused) {
