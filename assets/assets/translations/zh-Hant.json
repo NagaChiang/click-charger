@@ -61,5 +61,13 @@
     "unlinked": "未連結"
   },
   "store": "商店",
-  "watchAd": "觀看廣告"
+  "watchAd": "觀看廣告",
+  "product": {
+    "title": "能量增幅器 x{}",
+    "subtitle": {
+      "zero": "+移除廣告",
+      "one": "含免費贈送{}個+移除廣告",
+      "other": "含免費贈送{}個+移除廣告"
+    }
+  }
 }
