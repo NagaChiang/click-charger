@@ -61,5 +61,13 @@
     "unlinked": "Unlinked"
   },
   "store": "Store",
-  "watchAd": "Watch Ad"
+  "watchAd": "Watch Ad",
+  "product": {
+    "title": "Boost x{}",
+    "subtitle": {
+      "zero": "+ no ads",
+      "one": "{} for free included + no ads",
+      "other": "{} for free included + no ads"
+    }
+  }
 }

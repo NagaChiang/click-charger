@@ -1,28 +1,26 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../utils/utils.dart';
+import '../utils/constants.dart';
 
 class IapDialogItem extends StatelessWidget {
-  static RegExp _titleRegExp = RegExp(r'^(.*) \((.*)\) \(.*\)$');
-
   final ProductDetails product;
 
   const IapDialogItem({this.product});
 
   @override
   Widget build(BuildContext context) {
-    final RegExpMatch match = _titleRegExp.firstMatch(product.title);
-    if (match == null) {
-      print(
-        'Error: RegExp can not find match in the product title: ${product.title}.',
-      );
+    final boostProduct = Constants.boostProductData[product.id];
+    if (boostProduct == null) {
+      print("Error: Boost product ID not found: ${product.id}");
       return Container();
     }
 
-    final String title = match.group(1);
-    final String subtitle = match.group(2);
+    final title = tr('product.title', args: ['${boostProduct.totalCount}']);
+    final subtitle = 'product.subtitle'.plural(boostProduct.freeCount);
 
     return Card(
       child: ListTile(

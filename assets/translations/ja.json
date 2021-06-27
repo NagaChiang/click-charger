@@ -61,5 +61,13 @@
     "unlinked": "未連携"
   },
   "store": "ショップ",
-  "watchAd": "CMを見る"
+  "watchAd": "CMを見る",
+  "product": {
+    "title": "ブーストアイテム x{}",
+    "subtitle": {
+      "zero": "+広告削除",
+      "one": "{}個無料付き+広告削除",
+      "other": "{}個無料付き+広告削除"
+    }
+  }
 }
