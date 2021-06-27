@@ -203,7 +203,7 @@ class _BoostDialogState extends State<BoostDialog> {
 
   void _showRewardedAdErrorSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to show rewarded ad.')),
+      SnackBar(content: Text(tr('failedToShowRewardedAd'))),
     );
   }
 }

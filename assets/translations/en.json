@@ -69,5 +69,6 @@
       "one": "{} for free included + no ads",
       "other": "{} for free included + no ads"
     }
-  }
+  },
+  "failedToShowRewardedAd": "Failed to show rewarded ad."
 }
