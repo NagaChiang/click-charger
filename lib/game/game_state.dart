@@ -73,17 +73,17 @@ class GameState with ChangeNotifier {
       ..antiMatterCount = json['antiMatterCount'] as int
       ..boostCount = json['boostCount'] as int
       ..createdTime = json['createdTime'] == null
-          ? null
+          ? DateTime.now()
           : (json['createdTime'] as Timestamp).toDate()
       ..updatedTime = json['updatedTime'] == null
-          ? null
+          ? DateTime.now()
           : (json['updatedTime'] as Timestamp).toDate()
       ..boostEndTime = json['boostEndTime'] == null
-          ? null
+          ? DateTime.now()
           : (json['boostEndTime'] as Timestamp).toDate()
       ..isRemoveAd = json['isRemoveAd'] as bool ?? false
       ..nextRewardedAdTime = json['nextRewardedAdTime'] == null
-          ? null
+          ? DateTime.now()
           : (json['nextRewardedAdTime'] as Timestamp).toDate();
   }
 
