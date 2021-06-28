@@ -3,7 +3,7 @@ description: Clicker game made with Flutter.
 
 publish_to: 'none'
 
-version: 0.9.3+16
+version: 0.9.4+17
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
