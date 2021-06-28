@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -128,16 +129,34 @@ class Utils {
         BigInt.from(Constants.bigIntPrecision);
   }
 
-  static Future linkWithGooglePlayGames() async {
+  static Future<bool> linkWithGooglePlayGames() async {
     User user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return;
+      return false;
     }
 
     AuthCredential credential = await createGoogleCredential();
     if (credential != null) {
-      await user.linkWithCredential(credential);
+      try {
+        await user.linkWithCredential(credential);
+      } catch (error, callStacks) {
+        if (error is FirebaseAuthException) {
+          if (error.code == 'credential-already-in-use') {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+            return true;
+          }
+        }
+
+        print(error);
+        await FirebaseCrashlytics.instance.recordError(
+          error,
+          callStacks,
+          reason: '${user.uid} failed to link with Google Play Games.',
+        );
+      }
     }
+
+    return false;
   }
 
   static Future<AuthCredential> createGoogleCredential() async {

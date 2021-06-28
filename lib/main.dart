@@ -321,6 +321,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                           _gameState.language]);
                                     }
                                   },
+                                  onLinkedWithExistAccount: () async {
+                                    _gameState.copyFrom(await _loadGame(true));
+                                    print(
+                                      'Linked with existing account. Reload game state with cloud save.',
+                                    );
+                                  },
                                 ),
                               );
                             },
@@ -602,12 +608,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     FirebaseCrashlytics.instance.setUserIdentifier(uid);
   }
 
-  Future<GameState> _loadGame() async {
+  Future<GameState> _loadGame([bool ignoreLocal = false]) async {
     // Local save
     GameState localGame;
-    String jsonString = pref.getString(gameStatePrefKey);
-    if (jsonString != null) {
-      localGame = GameState.fromJson(json.decode(jsonString));
+    if (!ignoreLocal) {
+      String jsonString = pref.getString(gameStatePrefKey);
+      if (jsonString != null) {
+        localGame = GameState.fromJson(json.decode(jsonString));
+      }
     }
 
     // Cloud save
@@ -652,7 +660,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
-  void _onAuthStateChanged(User user) {
+  void _onAuthStateChanged(User user) async {
     if (user != null) {
       print('User signed in: $user');
     } else {

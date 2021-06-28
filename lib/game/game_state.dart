@@ -98,6 +98,48 @@ class GameState with ChangeNotifier {
     return data;
   }
 
+  void copyFrom(GameState state) {
+    if (state == null) {
+      return;
+    }
+
+    isDebugMode = state.isDebugMode;
+    language = state.language;
+    itemStates = List.from(state.itemStates);
+    upgradeStates = List.from(state.upgradeStates);
+    totalPower = BigInt.parse(state.totalPower.toString());
+    antiMatterCount = state.antiMatterCount;
+    boostCount = state.boostCount;
+
+    if (state.createdTime != null) {
+      createdTime = DateTime.fromMillisecondsSinceEpoch(
+        state.createdTime.millisecondsSinceEpoch,
+      );
+    }
+
+    if (state.updatedTime != null) {
+      updatedTime = DateTime.fromMillisecondsSinceEpoch(
+        state.updatedTime.millisecondsSinceEpoch,
+      );
+    }
+
+    if (state.boostEndTime != null) {
+      boostEndTime = DateTime.fromMillisecondsSinceEpoch(
+        state.boostEndTime.millisecondsSinceEpoch,
+      );
+    }
+
+    if (state.nextRewardedAdTime != null) {
+      nextRewardedAdTime = DateTime.fromMillisecondsSinceEpoch(
+        state.nextRewardedAdTime.millisecondsSinceEpoch,
+      );
+    }
+
+    isRemoveAd = state.isRemoveAd;
+
+    notifyListeners();
+  }
+
   double getAntimatterBonus() {
     return 0.01 * antiMatterCount;
   }

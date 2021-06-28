@@ -7,10 +7,16 @@ import '../utils/utils.dart';
 import '../utils/enums.dart';
 
 class SettingsDialog extends StatefulWidget {
-  SettingsDialog({this.language, this.onChanged, this.version});
+  SettingsDialog({
+    this.language,
+    this.onChanged,
+    this.version,
+    this.onLinkedWithExistAccount,
+  });
 
   final Language language;
   final Function(int) onChanged;
+  final Function onLinkedWithExistAccount;
   final String version;
 
   @override
@@ -88,9 +94,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     showProgressIndicator: false,
                   );
 
-                  Utils.linkWithGooglePlayGames().then((_) {
+                  Utils.linkWithGooglePlayGames().then((isLinkedWithExist) {
                     Navigator.of(context).pop();
                     setState(() {});
+
+                    if (isLinkedWithExist) {
+                      widget.onLinkedWithExistAccount?.call();
+                    }
                   });
                 },
         ),
