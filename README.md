@@ -6,7 +6,7 @@ Minimalist idle clicker game made with Flutter. Available on [Google Play Store]
 
 [Server](https://github.com/NagaChiang/click-charger-server) is made with dart and hosted on Google Cloud Run.
 
-![](https://raw.githubusercontent.com/NagaChiang/click-charger/master/google-play/feature-en.png)
+![](https://raw.githubusercontent.com/NagaChiang/click-charger/master/google-play/gameplay.gif)
 
 ## Features
 
